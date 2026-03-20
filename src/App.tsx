@@ -1,21 +1,22 @@
-import { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import About from "./components/About";
 import Career from "./components/Career";
+import FadeIn from "./components/FadeIn";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
 import Projects from "./components/Projects";
 import Services from "./components/Services";
+import { LangProvider } from "./context/LangContext";
 
 function Home() {
   return (
     <>
       <Hero />
-      <Services />
-      <Career />
-      <Projects />
-      <Footer />
+      <FadeIn><Services /></FadeIn>
+      <FadeIn delay={50}><Career /></FadeIn>
+      <FadeIn delay={50}><Projects /></FadeIn>
+      <FadeIn delay={50}><Footer /></FadeIn>
     </>
   );
 }
@@ -23,23 +24,23 @@ function Home() {
 function AboutPage() {
   return (
     <>
-      <About />
-      <Footer />
+      <FadeIn><About /></FadeIn>
+      <FadeIn delay={50}><Footer /></FadeIn>
     </>
   );
 }
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
-
   return (
-    <BrowserRouter>
-      <Navbar darkMode={darkMode} toggleDark={() => setDarkMode(!darkMode)} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutPage />} />
-      </Routes>
-    </BrowserRouter>
+    <LangProvider>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
+        </Routes>
+      </BrowserRouter>
+    </LangProvider>
   );
 }
 

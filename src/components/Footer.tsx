@@ -1,90 +1,82 @@
+// TODO: Si le site est en FR, servir le CV en français (cv_fullStack_fr.pdf) — cohérence linguistique
 import { Github, Linkedin, Mail } from "lucide-react";
+import { useLang } from "../context/LangContext";
+import { useResponsive } from "../hooks/useResponsive";
 
 function Footer() {
+  const { t, dark } = useLang();
+  const { isMobile } = useResponsive();
+
+  const iconColor = dark ? "#6b7280" : "#9ca3af";
+  const iconHoverColor = dark ? "#f0f0f0" : "#1a1a2e";
+
   return (
     <footer
       style={{
-        borderTop: "1px solid #f3f4f6",
-        padding: "3rem 5rem",
+        borderTop: dark ? "1px solid #2d2d4e" : "1px solid #f3f4f6",
+        background: dark ? "#0d0d1a" : "transparent",
+        padding: isMobile ? "2.5rem 1.25rem" : "3rem 5rem",
         maxWidth: "72rem",
         margin: "0 auto",
         display: "flex",
+        flexDirection: isMobile ? "column" : "row",
         alignItems: "center",
         justifyContent: "space-between",
+        gap: isMobile ? "2rem" : "0",
+        textAlign: isMobile ? "center" : "left",
       }}
     >
       {/* Left */}
       <div>
-        <p
-          style={{
-            fontWeight: 800,
-            fontSize: "0.9rem",
-            color: "#1a1a2e",
-            marginBottom: "0.25rem",
-          }}
-        >
+        <p style={{ fontWeight: 800, fontSize: "1rem", color: dark ? "#f0f0f0" : "#1a1a2e", marginBottom: "0.25rem" }}>
           SA <span style={{ color: "#f5c518" }}>·</span> Soro Amidou
         </p>
-        <p style={{ fontSize: "0.8rem", color: "#9ca3af" }}>
-          © 2025 — Built with React & TypeScript
-        </p>
+        <p style={{ fontSize: "0.95rem", color: "#9ca3af" }}>{t.footer.built}</p>
       </div>
 
       {/* Center — CTA */}
       <div style={{ textAlign: "center" }}>
-        <p
-          style={{
-            fontSize: "0.85rem",
-            color: "#6b7280",
-            marginBottom: "0.75rem",
-          }}
-        >
-          Interested in working together?
+        <p style={{ fontSize: "0.95rem", color: dark ? "#8080a0" : "#6b7280", marginBottom: "0.75rem" }}>
+          {t.footer.cta}
         </p>
         <a
-          href="mailto:soro.amidou@isep.fr"
+          href="mailto:amidousorox23@gmail.com"
           style={{
             padding: "0.6rem 1.5rem",
-            background: "#1a1a2e",
-            color: "#ffffff",
+            background: dark ? "#f0f0f0" : "#1a1a2e",
+            color: dark ? "#0d0d1a" : "#ffffff",
             fontWeight: 600,
-            fontSize: "0.85rem",
+            fontSize: "0.95rem",
             borderRadius: "9999px",
             textDecoration: "none",
+            transition: "opacity 0.2s",
           }}
+          onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"}
+          onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.opacity = "1"}
         >
-          Send Me a Message
+          {t.footer.sendMessage}
         </a>
       </div>
 
       {/* Right — socials */}
       <div style={{ display: "flex", gap: "1.25rem" }}>
-        <a
-          href="https://github.com"
-          target="_blank"
-          style={{ color: "#9ca3af" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#1a1a2e")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#9ca3af")}
-        >
-          <Github size={20} />
-        </a>
-        <a
-          href="https://linkedin.com"
-          target="_blank"
-          style={{ color: "#9ca3af" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#1a1a2e")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#9ca3af")}
-        >
-          <Linkedin size={20} />
-        </a>
-        <a
-          href="mailto:soro.amidou@isep.fr"
-          style={{ color: "#9ca3af" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#1a1a2e")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#9ca3af")}
-        >
-          <Mail size={20} />
-        </a>
+        {[
+          { href: "https://github.com/AmidNova", label: "GitHub", Icon: Github },
+          { href: "https://www.linkedin.com/in/amidou-soro-09b94a327/", label: "LinkedIn", Icon: Linkedin },
+          { href: "mailto:amidousorox23@gmail.com", label: "Email", Icon: Mail },
+        ].map(({ href, label, Icon }) => (
+          <a
+            key={label}
+            href={href}
+            target={href.startsWith("http") ? "_blank" : undefined}
+            aria-label={label}
+            style={{ color: iconColor, display: "flex", transition: "color 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.color = iconHoverColor)}
+            onMouseLeave={e => (e.currentTarget.style.color = iconColor)}
+          >
+            <Icon size={20} />
+          </a>
+        ))}
       </div>
     </footer>
   );

@@ -1,196 +1,125 @@
+// TODO: Repenser la page About comme une histoire narrative (storytelling chronologique ou thématique)
 import PhotoPro from "../assets/images/Confident professional in office attire.png";
+import { useLang } from "../context/LangContext";
+import { useResponsive } from "../hooks/useResponsive";
+
+const divider = (dark: boolean) => (
+  <div style={{ height: "1px", background: dark ? "#1e1e35" : "#f0f0f0", margin: "2.5rem 0" }} />
+);
+
+const sectionLabel = (text: string) => (
+  <p style={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "#9ca3af", marginBottom: "1.25rem" }}>
+    {text}
+  </p>
+);
 
 function About() {
+  const { t, dark } = useLang();
+  const { isMobile } = useResponsive();
+
   return (
     <section
-      id="about"
       style={{
-        padding: "6rem 5rem",
+        padding: isMobile ? "6rem 1.25rem 4rem" : "8rem 5rem 6rem",
         maxWidth: "72rem",
         margin: "0 auto",
       }}
     >
-      {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: "4rem" }}>
-        <h2
-          style={{
-            fontSize: "2.5rem",
+      {/* Header + photo */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 300px",
+        gap: isMobile ? "2.5rem" : "5rem",
+        alignItems: "flex-start",
+        marginBottom: "0",
+      }}>
+        <div>
+          <p style={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "#f5c518", marginBottom: "1rem" }}>
+            {t.about.title}
+          </p>
+          <h1 style={{
+            fontSize: isMobile ? "1.9rem" : "2.6rem",
             fontWeight: 800,
-            color: "#1a1a2e",
-          }}
-        >
-          About
-        </h2>
-        <p
-          style={{ color: "#9ca3af", marginTop: "0.5rem", fontSize: "0.9rem" }}
-        >
-          soro.amidou@isep.fr
-        </p>
-      </div>
+            color: dark ? "#f0f0f0" : "#1a1a2e",
+            lineHeight: 1.2,
+            letterSpacing: "-0.02em",
+            marginBottom: "2rem",
+          }}>
+            {t.about.tagline}
+          </h1>
 
-      {/* Photo */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "4rem",
-        }}
-      >
-        <div
-          style={{
-            width: "420px",
-            height: "480px",
-            borderRadius: "1.5rem",
-            overflow: "hidden",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-          }}
-        >
-          <img
-            src={PhotoPro}
-            alt="Soro Amidou"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "top",
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Contenu deux colonnes */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "200px 1fr",
-          gap: "3rem 4rem",
-        }}
-      >
-        {/* Background */}
-        <div>
-          <h3 style={{ fontWeight: 700, fontSize: "1rem", color: "#1a1a2e" }}>
-            Background
-          </h3>
-        </div>
-        <div>
-          <p
-            style={{
-              color: "#4b5563",
-              lineHeight: 1.8,
-              fontSize: "0.95rem",
-              marginBottom: "1rem",
-            }}
-          >
-            I am a full-stack engineering student at ISEP Paris, specializing in
-            Information Systems Architecture. I build full-stack applications,
-            deploy scalable cloud systems, and deliver applied solutions at the
-            intersection of software engineering and AI.
+          {sectionLabel(t.about.background)}
+          <p style={{ fontSize: "1rem", color: dark ? "#a0a0b8" : "#4b5563", lineHeight: 1.85, marginBottom: "1rem" }}>
+            {t.about.bio1}
           </p>
-          <p style={{ color: "#4b5563", lineHeight: 1.8, fontSize: "0.95rem" }}>
-            Passionate about clean architecture, real-time performance, and
-            software that solves real problems. I connect technical execution
-            with meaningful impact.
+          <p style={{ fontSize: "1rem", color: dark ? "#a0a0b8" : "#4b5563", lineHeight: 1.85 }}>
+            {t.about.bio2}
           </p>
         </div>
 
-        {/* Séparateur */}
-        <div
-          style={{ gridColumn: "1 / -1", height: "1px", background: "#f3f4f6" }}
-        />
+        {/* Photo */}
+        <div style={{
+          width: "100%",
+          height: isMobile ? "280px" : "380px",
+          borderRadius: "1.25rem",
+          overflow: "hidden",
+          flexShrink: 0,
+          boxShadow: dark ? "0 20px 50px rgba(0,0,0,0.4)" : "0 20px 50px rgba(0,0,0,0.1)",
+        }}>
+          <img src={PhotoPro} alt="Soro Amidou" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+        </div>
+      </div>
 
-        {/* Education */}
+      {divider(dark)}
+
+      {/* Education */}
+      {sectionLabel(t.about.education)}
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {t.about.educationItems.map((item, i) => (
+          <p key={i} style={{ fontSize: "1rem", color: dark ? "#c0c0d0" : "#1a1a2e", lineHeight: 1.7 }}>
+            {item}
+          </p>
+        ))}
+      </div>
+
+      {divider(dark)}
+
+      {/* Skills */}
+      {sectionLabel(t.about.skills)}
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+        {t.about.skillItems.map((s) => (
+          <div key={s.label} style={{ display: "flex", gap: "1.5rem", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "baseline" }}>
+            <span style={{ fontSize: "0.875rem", fontWeight: 700, color: dark ? "#f0f0f0" : "#1a1a2e", minWidth: "140px", flexShrink: 0 }}>
+              {s.label}
+            </span>
+            <span style={{ fontSize: "0.95rem", color: dark ? "#8080a0" : "#6b7280", lineHeight: 1.6 }}>
+              {s.value}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {divider(dark)}
+
+      {/* Certifications + Languages */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? "2rem" : "4rem" }}>
         <div>
-          <h3 style={{ fontWeight: 700, fontSize: "1rem", color: "#1a1a2e" }}>
-            Education
-          </h3>
+          {sectionLabel(t.about.certifications)}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {t.about.certificationItems.map((c, i) => (
+              <p key={i} style={{ fontSize: "0.95rem", color: dark ? "#c0c0d0" : "#4b5563" }}>— {c}</p>
+            ))}
+          </div>
         </div>
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
-        >
-          {[
-            "Bachelor's in Information Systems Architecture — ISEP Paris (2022 — Present)",
-          ].map((item, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "0.75rem",
-              }}
-            >
-              <span
-                style={{ color: "#f5c518", fontWeight: 700, flexShrink: 0 }}
-              >
-                •
-              </span>
-              <p
-                style={{
-                  color: "#4b5563",
-                  fontSize: "0.9rem",
-                  lineHeight: 1.7,
-                }}
-              >
-                {item}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Séparateur */}
-        <div
-          style={{ gridColumn: "1 / -1", height: "1px", background: "#f3f4f6" }}
-        />
-
-        {/* Skills */}
         <div>
-          <h3 style={{ fontWeight: 700, fontSize: "1rem", color: "#1a1a2e" }}>
-            Skills
-          </h3>
-        </div>
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
-        >
-          {[
-            {
-              label: "Frontend",
-              value: "React, Next.js, TypeScript, HTML, CSS, JavaScript",
-            },
-            {
-              label: "Backend",
-              value: "Node.js, Express.js, PHP, Laravel, Python",
-            },
-            { label: "Database", value: "MySQL, PostgreSQL" },
-            { label: "Tools", value: "Git, Docker, VS Code, Figma" },
-            {
-              label: "Languages",
-              value: "Java, Python, JavaScript, TypeScript, PHP",
-            },
-          ].map((s) => (
-            <div
-              key={s.label}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "0.75rem",
-              }}
-            >
-              <span
-                style={{ color: "#f5c518", fontWeight: 700, flexShrink: 0 }}
-              >
-                •
-              </span>
-              <p
-                style={{
-                  color: "#4b5563",
-                  fontSize: "0.9rem",
-                  lineHeight: 1.7,
-                }}
-              >
-                <strong style={{ color: "#1a1a2e" }}>{s.label}:</strong>{" "}
-                {s.value}
+          {sectionLabel(t.about.languages)}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {t.about.languageItems.map((l) => (
+              <p key={l.label} style={{ fontSize: "0.95rem", color: dark ? "#c0c0d0" : "#4b5563" }}>
+                <span style={{ fontWeight: 600, color: dark ? "#f0f0f0" : "#1a1a2e" }}>{l.label}</span> — {l.value}
               </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

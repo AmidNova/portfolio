@@ -5,6 +5,8 @@ import {
   SiTypescript,
 } from "react-icons/si";
 import PhotoPro from "../assets/images/Confident professional in office attire.png";
+import { useLang } from "../context/LangContext";
+import { useResponsive } from "../hooks/useResponsive";
 
 const skills = [
   { label: "React/Node", icon: <SiReact /> },
@@ -14,6 +16,9 @@ const skills = [
 ];
 
 function Hero() {
+  const { t, dark } = useLang();
+  const { isMobile, isTablet } = useResponsive();
+
   return (
     <section
       id="home"
@@ -21,94 +26,8 @@ function Hero() {
         minHeight: "100vh",
         position: "relative",
         overflow: "hidden",
-        background: "#f8f7ff",
       }}
     >
-      {/* Blob violet top center */}
-      <div
-        style={{
-          position: "absolute",
-          top: "-10%",
-          left: "20%",
-          width: "60%",
-          height: "70%",
-          background:
-            "radial-gradient(ellipse, rgba(167,139,250,0.45) 0%, transparent 70%)",
-          filter: "blur(40px)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Blob rose top right */}
-      <div
-        style={{
-          position: "absolute",
-          top: "-5%",
-          right: "-5%",
-          width: "40%",
-          height: "50%",
-          background:
-            "radial-gradient(ellipse, rgba(244,114,182,0.3) 0%, transparent 70%)",
-          filter: "blur(50px)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Blob lavande top left */}
-      <div
-        style={{
-          position: "absolute",
-          top: "0%",
-          left: "-10%",
-          width: "35%",
-          height: "45%",
-          background:
-            "radial-gradient(ellipse, rgba(196,181,253,0.4) 0%, transparent 70%)",
-          filter: "blur(45px)",
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Ligne incurvée SVG comme Moya */}
-      <svg
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          opacity: 0.15,
-        }}
-        viewBox="0 0 1440 800"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M-100,200 Q400,50 800,180 Q1200,310 1600,100"
-          stroke="rgba(139,92,246,0.6)"
-          strokeWidth="1.5"
-          fill="none"
-        />
-        <path
-          d="M-100,300 Q500,150 900,280 Q1300,410 1700,200"
-          stroke="rgba(167,139,250,0.4)"
-          strokeWidth="1"
-          fill="none"
-        />
-      </svg>
-      {/* Fade bas */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: "65%",
-          background: "linear-gradient(to top, #ffffff 20%, transparent)",
-          pointerEvents: "none",
-        }}
-      />
-
       {/* Contenu */}
       <div
         style={{
@@ -116,53 +35,52 @@ function Hero() {
           zIndex: 10,
           maxWidth: "72rem",
           margin: "0 auto",
-          paddingTop: "9rem",
+          paddingTop: isMobile ? "7rem" : "9rem",
           paddingBottom: "4rem",
-          paddingLeft: "5rem",
-          paddingRight: "5rem",
+          paddingLeft: isMobile ? "1.25rem" : "5rem",
+          paddingRight: isMobile ? "1.25rem" : "5rem",
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "4rem",
+          gap: isMobile ? "2.5rem" : "4rem",
           minHeight: "100vh",
           boxSizing: "border-box" as const,
         }}
       >
-        <div style={{ flex: 1, maxWidth: "36rem" }}>
+        {/* Photo mobile — en haut */}
+        {isMobile && (
+          <div style={{ width: "100%", height: "320px", borderRadius: "1.25rem", overflow: "hidden", boxShadow: dark ? "0 20px 60px rgba(0,0,0,0.5)" : "0 20px 60px rgba(0,0,0,0.15)", border: dark ? "1px solid #2d2d4e" : "1px solid #e5e5e5" }}>
+            <img src={PhotoPro} alt="Soro Amidou" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+          </div>
+        )}
+
+        <div style={{ flex: 1, maxWidth: isMobile ? "100%" : "36rem" }}>
           <h1
             style={{
-              fontSize: "3.75rem",
+              fontSize: isMobile ? "2.5rem" : isTablet ? "3.2rem" : "4rem",
               fontWeight: 800,
-              color: "#1a1a2e",
+              color: dark ? "#f0f0f0" : "#1a1a2e",
               lineHeight: 1.1,
               marginBottom: "1.25rem",
+              letterSpacing: "-0.02em",
             }}
           >
-            Hi, I'm Soro Amidou
+            {t.hero.greeting}
           </h1>
           <p
             style={{
-              fontSize: "1.05rem",
-              color: "#4b5563",
+              fontSize: "1.1rem",
+              color: dark ? "#a0a0b8" : "#4b5563",
               lineHeight: 1.8,
               marginBottom: "2rem",
             }}
           >
-            I specialize in building full-stack applications and deploying
-            scalable cloud systems. I love turning ideas into scalable reality.
-            My focus is on building robust architecture and delivering software
-            that solves real problems.
+            {t.hero.bio}
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "nowrap",
-              gap: "0.75rem",
-              marginBottom: "2.5rem",
-              overflow: "hidden",
-            }}
-          >
+          {/* Skills */}
+          <div className="hide-scrollbar" style={{ display: "flex", flexWrap: "nowrap", gap: "0.75rem", marginBottom: "2.5rem", overflowX: "auto" }}>
             {skills.map((skill) => (
               <span
                 key={skill.label}
@@ -170,84 +88,81 @@ function Hero() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "0.5rem",
-                  padding: "0.35rem 0.75rem",
+                  padding: "0.4rem 0.9rem",
                   borderRadius: "999px",
                   background: "#1e1b4b",
                   border: "1px solid rgba(139,92,246,0.3)",
                   color: "white",
                   fontWeight: 500,
-                  fontSize: "0.875rem",
+                  fontSize: "1rem",
+                  whiteSpace: "nowrap" as const,
                 }}
               >
-                <span
-                  style={{
-                    fontSize: "0.9rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {skill.icon}
-                </span>
+                <span style={{ fontSize: "1rem", display: "flex", alignItems: "center" }}>{skill.icon}</span>
                 {skill.label}
               </span>
             ))}
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {/* CTAs */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
             <a
               href="#work"
               style={{
-                padding: "0.75rem 1.75rem",
+                padding: "0.8rem 1.9rem",
                 background: "#f5c518",
                 color: "#1a1a2e",
                 fontWeight: 700,
-                fontSize: "0.9rem",
+                fontSize: "1rem",
                 borderRadius: "9999px",
                 textDecoration: "none",
-                boxShadow: "0 4px 20px rgba(245,197,24,0.4)",
+                boxShadow: "0 4px 20px rgba(245,197,24,0.35)",
+                transition: "transform 0.2s, box-shadow 0.2s",
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-1px)";
+                (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 8px 28px rgba(245,197,24,0.45)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
+                (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 20px rgba(245,197,24,0.35)";
               }}
             >
-              See My Work
+              {t.hero.seeWork}
             </a>
             <a
-              href="mailto:soro.amidou@isep.fr"
+              href="mailto:amidousorox23@gmail.com"
               style={{
-                padding: "0.75rem 1.75rem",
-                border: "1px solid #d1d5db",
-                color: "#4b5563",
+                padding: "0.8rem 1.9rem",
+                border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(26,26,46,0.15)",
+                color: dark ? "#c0c0d0" : "#1a1a2e",
                 fontWeight: 600,
-                fontSize: "0.9rem",
+                fontSize: "1rem",
                 borderRadius: "9999px",
                 textDecoration: "none",
+                background: "transparent",
+                transition: "background 0.2s, border-color 0.2s",
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLAnchorElement).style.background = dark ? "rgba(255,255,255,0.06)" : "rgba(26,26,46,0.05)";
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = dark ? "rgba(255,255,255,0.25)" : "rgba(26,26,46,0.3)";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = dark ? "rgba(255,255,255,0.12)" : "rgba(26,26,46,0.15)";
               }}
             >
-              Contact Me
+              {t.hero.contact}
             </a>
           </div>
         </div>
 
-        <div
-          style={{
-            flexShrink: 0,
-            width: "420px",
-            height: "580px",
-            borderRadius: "1.5rem",
-            overflow: "hidden",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.4)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        >
-          <img
-            src={PhotoPro}
-            alt="Soro Amidou"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
-          />
-        </div>
+        {/* Photo desktop */}
+        {!isMobile && (
+          <div style={{ flexShrink: 0, width: isTablet ? "320px" : "420px", height: isTablet ? "440px" : "580px", borderRadius: "1.5rem", overflow: "hidden", boxShadow: dark ? "0 30px 80px rgba(0,0,0,0.6)" : "0 30px 80px rgba(0,0,0,0.18)", border: dark ? "1px solid #2d2d4e" : "1px solid #e5e5e5" }}>
+            <img src={PhotoPro} alt="Soro Amidou" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+          </div>
+        )}
       </div>
     </section>
   );

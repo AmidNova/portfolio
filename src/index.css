@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+/* TODO: Revoir le dark mode — adapter les couleurs et intégrer le thème Catppuccin */
+
 * {
   margin: 0;
   padding: 0;
@@ -7,11 +9,45 @@
 }
 
 body {
-  background-color: #ffffff;
-  font-family: "Plus Jakarta Sans", sans-serif;
+  background-color: #f5f5f5;
+  font-family: "Outfit", sans-serif;
   overflow-x: hidden;
+  font-size: 16px;
 }
+
+body.dark {
+  background-color: #0d0d1a;
+}
+
 
 #root {
   position: relative;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+body.dark::after {
+  opacity: 0.06;
+}
+
+:focus-visible {
+  outline: 2px solid #f5c518;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
