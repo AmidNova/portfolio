@@ -44,7 +44,7 @@ function Projects() {
         <p style={{ fontSize: "1rem", fontWeight: 600, color: "#f5c518", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem" }}>
           {t.projects.featured}
         </p>
-        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: dark ? "#f0f0f0" : "#1a1a2e", lineHeight: 1 }}>
+        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: dark ? "#cdd6f4" : "#1a1a2e", lineHeight: 1 }}>
           {t.projects.title}
         </h2>
       </div>
@@ -65,7 +65,7 @@ function Projects() {
 
           {/* Titre + status */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", flexWrap: "wrap" }}>
-            <h3 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: dark ? "#f0f0f0" : "#1a1a2e", letterSpacing: "-0.02em", lineHeight: 1 }}>
+            <h3 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: dark ? "#cdd6f4" : "#1a1a2e", letterSpacing: "-0.02em", lineHeight: 1 }}>
               {project.title}
             </h3>
             <span style={{
@@ -79,7 +79,7 @@ function Projects() {
             </span>
           </div>
 
-          <p style={{ fontSize: "1rem", color: dark ? "#a0a0b8" : "#6b7280", lineHeight: 1.75, marginBottom: "2rem" }}>
+          <p style={{ fontSize: "1rem", color: dark ? "#a6adc8" : "#6b7280", lineHeight: 1.75, marginBottom: "2rem" }}>
             {project.description}
           </p>
 
@@ -95,7 +95,7 @@ function Projects() {
                   borderRadius: "999px",
                   background: dark ? "rgba(255,255,255,0.05)" : "rgba(26,26,46,0.06)",
                   border: dark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(26,26,46,0.1)",
-                  color: dark ? "#c0c0d0" : "#4b5563",
+                  color: dark ? "#bac2de" : "#4b5563",
                   fontSize: "0.875rem",
                   fontWeight: 500,
                 }}>
@@ -119,13 +119,13 @@ function Projects() {
               onMouseEnter={e => (e.currentTarget.style.background = dark ? "rgba(255,255,255,0.12)" : "rgba(26,26,46,0.12)")}
               onMouseLeave={e => (e.currentTarget.style.background = dark ? "rgba(255,255,255,0.06)" : "rgba(26,26,46,0.06)")}
             >
-              <ArrowLeft size={16} color={dark ? "#f0f0f0" : "#1a1a2e"} />
+              <ArrowLeft size={16} color={dark ? "#cdd6f4" : "#1a1a2e"} />
             </button>
             <button
               onClick={next}
               style={{
                 width: "42px", height: "42px", borderRadius: "50%",
-                background: dark ? "#f0f0f0" : "#1a1a2e",
+                background: dark ? "#cdd6f4" : "#1a1a2e",
                 border: "none",
                 cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
                 transition: "opacity 0.2s",
@@ -140,12 +140,12 @@ function Projects() {
               <a href={project.link} target="_blank" style={{
                 marginLeft: "0.5rem",
                 display: "inline-flex", alignItems: "center", gap: "0.4rem",
-                color: dark ? "#a0a0b8" : "#6b7280",
+                color: dark ? "#a6adc8" : "#6b7280",
                 fontSize: "0.9rem", fontWeight: 500, textDecoration: "none",
                 transition: "color 0.2s",
               }}
-                onMouseEnter={e => (e.currentTarget.style.color = dark ? "#f0f0f0" : "#1a1a2e")}
-                onMouseLeave={e => (e.currentTarget.style.color = dark ? "#a0a0b8" : "#6b7280")}
+                onMouseEnter={e => (e.currentTarget.style.color = dark ? "#cdd6f4" : "#1a1a2e")}
+                onMouseLeave={e => (e.currentTarget.style.color = dark ? "#a6adc8" : "#6b7280")}
               >
                 <Globe size={14} /> Website
               </a>
@@ -167,10 +167,10 @@ function Projects() {
       <div style={{ display: "flex", justifyContent: "center", marginTop: "3rem" }}>
         <button style={{
           padding: "0.75rem 2rem",
-          border: dark ? "1px solid #3d3d5e" : "1px solid #e5e7eb",
+          border: dark ? "1px solid #45475a" : "1px solid #e5e7eb",
           borderRadius: "999px",
           background: "transparent",
-          color: dark ? "#8080a0" : "#6b7280",
+          color: dark ? "#7f849c" : "#6b7280",
           fontSize: "0.95rem",
           fontWeight: 500,
           cursor: "pointer",
@@ -178,11 +178,11 @@ function Projects() {
         }}
           onMouseEnter={e => {
             (e.currentTarget as HTMLButtonElement).style.borderColor = dark ? "#6b7280" : "#9ca3af";
-            (e.currentTarget as HTMLButtonElement).style.color = dark ? "#f0f0f0" : "#1a1a2e";
+            (e.currentTarget as HTMLButtonElement).style.color = dark ? "#cdd6f4" : "#1a1a2e";
           }}
           onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = dark ? "#3d3d5e" : "#e5e7eb";
-            (e.currentTarget as HTMLButtonElement).style.color = dark ? "#8080a0" : "#6b7280";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = dark ? "#45475a" : "#e5e7eb";
+            (e.currentTarget as HTMLButtonElement).style.color = dark ? "#7f849c" : "#6b7280";
           }}
         >
           {t.projects.showAll}

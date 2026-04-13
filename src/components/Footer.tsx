@@ -8,13 +8,13 @@ function Footer() {
   const { isMobile } = useResponsive();
 
   const iconColor = dark ? "#6b7280" : "#9ca3af";
-  const iconHoverColor = dark ? "#f0f0f0" : "#1a1a2e";
+  const iconHoverColor = dark ? "#cdd6f4" : "#1a1a2e";
 
   return (
     <footer
       style={{
-        borderTop: dark ? "1px solid #2d2d4e" : "1px solid #f3f4f6",
-        background: dark ? "#0d0d1a" : "transparent",
+        borderTop: dark ? "1px solid #313244" : "1px solid #f3f4f6",
+        background: dark ? "#11111b" : "transparent",
         padding: isMobile ? "2.5rem 1.25rem" : "3rem 5rem",
         maxWidth: "72rem",
         margin: "0 auto",
@@ -28,7 +28,7 @@ function Footer() {
     >
       {/* Left */}
       <div>
-        <p style={{ fontWeight: 800, fontSize: "1rem", color: dark ? "#f0f0f0" : "#1a1a2e", marginBottom: "0.25rem" }}>
+        <p style={{ fontWeight: 800, fontSize: "1rem", color: dark ? "#cdd6f4" : "#1a1a2e", marginBottom: "0.25rem" }}>
           SA <span style={{ color: "#f5c518" }}>·</span> Soro Amidou
         </p>
         <p style={{ fontSize: "0.95rem", color: "#9ca3af" }}>{t.footer.built}</p>
@@ -36,15 +36,15 @@ function Footer() {
 
       {/* Center — CTA */}
       <div style={{ textAlign: "center" }}>
-        <p style={{ fontSize: "0.95rem", color: dark ? "#8080a0" : "#6b7280", marginBottom: "0.75rem" }}>
+        <p style={{ fontSize: "0.95rem", color: dark ? "#a6adc8" : "#6b7280", marginBottom: "0.75rem" }}>
           {t.footer.cta}
         </p>
         <a
           href="mailto:amidousorox23@gmail.com"
           style={{
             padding: "0.6rem 1.5rem",
-            background: dark ? "#f0f0f0" : "#1a1a2e",
-            color: dark ? "#0d0d1a" : "#ffffff",
+            background: dark ? "#cdd6f4" : "#1a1a2e",
+            color: dark ? "#11111b" : "#ffffff",
             fontWeight: 600,
             fontSize: "0.95rem",
             borderRadius: "9999px",
@@ -69,6 +69,7 @@ function Footer() {
             key={label}
             href={href}
             target={href.startsWith("http") ? "_blank" : undefined}
+            rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
             aria-label={label}
             style={{ color: iconColor, display: "flex", transition: "color 0.2s" }}
             onMouseEnter={e => (e.currentTarget.style.color = iconHoverColor)}

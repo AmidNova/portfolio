@@ -16,7 +16,7 @@ function Services() {
   return (
     <section
       style={{
-        padding: isMobile ? "2rem 1.25rem 4rem" : "2rem 5rem 5rem",
+        padding: isMobile ? "5rem 1.25rem 4rem" : "5rem 5rem 6rem",
         maxWidth: "72rem",
         margin: "0 auto",
       }}
@@ -26,7 +26,7 @@ function Services() {
         <p style={{ fontSize: "1rem", fontWeight: 600, color: "#f5c518", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem" }}>
           {t.services.label}
         </p>
-        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: dark ? "#f0f0f0" : "#1a1a2e", lineHeight: 1 }}>
+        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: dark ? "#cdd6f4" : "#1a1a2e", lineHeight: 1 }}>
           {t.services.title}
         </h2>
       </div>
@@ -46,8 +46,8 @@ function Services() {
               style={{
                 padding: isMobile ? "1.75rem" : "2rem",
                 borderRadius: "1.25rem",
-                background: dark ? "#13131f" : "#ffffff",
-                border: dark ? "1px solid #1e1e35" : "1px solid rgba(0,0,0,0.06)",
+                background: dark ? "#181825" : "#ffffff",
+                border: dark ? "1px solid #1e1e2e" : "1px solid rgba(0,0,0,0.06)",
                 boxShadow: dark
                   ? "0 0 0 1px rgba(255,255,255,0.03)"
                   : "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)",
@@ -86,7 +86,7 @@ function Services() {
                 style={{
                   fontSize: "1.15rem",
                   fontWeight: 700,
-                  color: dark ? "#f0f0f0" : "#1a1a2e",
+                  color: dark ? "#cdd6f4" : "#1a1a2e",
                   lineHeight: 1.3,
                   marginBottom: "0.75rem",
                   letterSpacing: "-0.01em",
@@ -97,7 +97,7 @@ function Services() {
               <p
                 style={{
                   fontSize: "0.95rem",
-                  color: dark ? "#8080a0" : "#6b7280",
+                  color: dark ? "#a6adc8" : "#6b7280",
                   lineHeight: 1.75,
                 }}
               >

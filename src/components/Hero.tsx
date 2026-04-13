@@ -1,19 +1,6 @@
-import {
-  SiAmazonwebservices,
-  SiPython,
-  SiReact,
-  SiTypescript,
-} from "react-icons/si";
-import PhotoPro from "../assets/images/Confident professional in office attire.png";
+import PhotoPro from "../assets/images/Confident professional in office attire.webp";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
-
-const skills = [
-  { label: "React/Node", icon: <SiReact /> },
-  { label: "Python", icon: <SiPython /> },
-  { label: "TypeScript", icon: <SiTypescript /> },
-  { label: "AWS/Azure", icon: <SiAmazonwebservices /> },
-];
 
 function Hero() {
   const { t, dark } = useLang();
@@ -50,8 +37,8 @@ function Hero() {
       >
         {/* Photo mobile — en haut */}
         {isMobile && (
-          <div style={{ width: "100%", height: "320px", borderRadius: "1.25rem", overflow: "hidden", boxShadow: dark ? "0 20px 60px rgba(0,0,0,0.5)" : "0 20px 60px rgba(0,0,0,0.15)", border: dark ? "1px solid #2d2d4e" : "1px solid #e5e5e5" }}>
-            <img src={PhotoPro} alt="Soro Amidou" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+          <div style={{ width: "100%", height: "320px", borderRadius: "1.25rem", overflow: "hidden", boxShadow: dark ? "0 20px 60px rgba(0,0,0,0.5)" : "0 20px 60px rgba(0,0,0,0.15)", border: dark ? "1px solid #313244" : "1px solid #e5e5e5" }}>
+            <img src={PhotoPro} alt="Soro Amidou" fetchPriority="high" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
           </div>
         )}
 
@@ -60,7 +47,7 @@ function Hero() {
             style={{
               fontSize: isMobile ? "2.5rem" : isTablet ? "3.2rem" : "4rem",
               fontWeight: 800,
-              color: dark ? "#f0f0f0" : "#1a1a2e",
+              color: dark ? "#cdd6f4" : "#1a1a2e",
               lineHeight: 1.1,
               marginBottom: "1.25rem",
               letterSpacing: "-0.02em",
@@ -71,38 +58,13 @@ function Hero() {
           <p
             style={{
               fontSize: "1.1rem",
-              color: dark ? "#a0a0b8" : "#4b5563",
+              color: dark ? "#a6adc8" : "#4b5563",
               lineHeight: 1.8,
               marginBottom: "2rem",
             }}
           >
             {t.hero.bio}
           </p>
-
-          {/* Skills */}
-          <div className="hide-scrollbar" style={{ display: "flex", flexWrap: "nowrap", gap: "0.75rem", marginBottom: "2.5rem", overflowX: "auto" }}>
-            {skills.map((skill) => (
-              <span
-                key={skill.label}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                  padding: "0.4rem 0.9rem",
-                  borderRadius: "999px",
-                  background: "#1e1b4b",
-                  border: "1px solid rgba(139,92,246,0.3)",
-                  color: "white",
-                  fontWeight: 500,
-                  fontSize: "1rem",
-                  whiteSpace: "nowrap" as const,
-                }}
-              >
-                <span style={{ fontSize: "1rem", display: "flex", alignItems: "center" }}>{skill.icon}</span>
-                {skill.label}
-              </span>
-            ))}
-          </div>
 
           {/* CTAs */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
@@ -135,7 +97,7 @@ function Hero() {
               style={{
                 padding: "0.8rem 1.9rem",
                 border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(26,26,46,0.15)",
-                color: dark ? "#c0c0d0" : "#1a1a2e",
+                color: dark ? "#bac2de" : "#1a1a2e",
                 fontWeight: 600,
                 fontSize: "1rem",
                 borderRadius: "9999px",
@@ -159,8 +121,8 @@ function Hero() {
 
         {/* Photo desktop */}
         {!isMobile && (
-          <div style={{ flexShrink: 0, width: isTablet ? "320px" : "420px", height: isTablet ? "440px" : "580px", borderRadius: "1.5rem", overflow: "hidden", boxShadow: dark ? "0 30px 80px rgba(0,0,0,0.6)" : "0 30px 80px rgba(0,0,0,0.18)", border: dark ? "1px solid #2d2d4e" : "1px solid #e5e5e5" }}>
-            <img src={PhotoPro} alt="Soro Amidou" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
+          <div style={{ flexShrink: 0, width: isTablet ? "320px" : "420px", height: isTablet ? "440px" : "580px", borderRadius: "1.5rem", overflow: "hidden", boxShadow: dark ? "0 30px 80px rgba(0,0,0,0.6)" : "0 30px 80px rgba(0,0,0,0.18)", border: dark ? "1px solid #313244" : "1px solid #e5e5e5" }}>
+            <img src={PhotoPro} alt="Soro Amidou" fetchPriority="high" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
           </div>
         )}
       </div>

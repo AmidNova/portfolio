@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
-/* TODO: Revoir le dark mode — adapter les couleurs et intégrer le thème Catppuccin */
+/* ── Catppuccin Mocha — dark mode palette ─────────────────────────────────── */
+/* Crust   #11111b  │  Mantle  #181825  │  Base    #1e1e2e                     */
+/* Surface0 #313244 │  Surface1 #45475a │  Surface2 #585b70                    */
+/* Overlay0 #6c7086 │  Overlay1 #7f849c │  Overlay2 #9399b2                    */
+/* Subtext0 #a6adc8 │  Subtext1 #bac2de │  Text    #cdd6f4                     */
+/* Mauve   #cba6f7  │  Yellow (accent)  #f5c518                                */
 
 * {
   margin: 0;
@@ -16,7 +21,7 @@ body {
 }
 
 body.dark {
-  background-color: #0d0d1a;
+  background-color: #11111b;
 }
 
 

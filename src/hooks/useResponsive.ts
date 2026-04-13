@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 
 export function useResponsive() {
-  const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
 
   useEffect(() => {
     const handler = () => setWidth(window.innerWidth);

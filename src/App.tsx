@@ -7,6 +7,7 @@ import Hero from "./components/Hero";
 import Navbar from "./components/Navbar";
 import Projects from "./components/Projects";
 import Services from "./components/Services";
+import Skills from "./components/Skills";
 import { LangProvider } from "./context/LangContext";
 
 function Home() {
@@ -14,6 +15,7 @@ function Home() {
     <>
       <Hero />
       <FadeIn><Services /></FadeIn>
+      <FadeIn delay={50}><Skills /></FadeIn>
       <FadeIn delay={50}><Career /></FadeIn>
       <FadeIn delay={50}><Projects /></FadeIn>
       <FadeIn delay={50}><Footer /></FadeIn>
@@ -34,11 +36,13 @@ function App() {
   return (
     <LangProvider>
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutPage />} />
-        </Routes>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+          </Routes>
+        </div>
       </BrowserRouter>
     </LangProvider>
   );

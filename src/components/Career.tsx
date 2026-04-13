@@ -111,10 +111,10 @@ function Career() {
     <section
       id="work"
       style={{
-        padding: isMobile ? "2rem 1.25rem 4rem" : "2rem 5rem 6rem",
+        padding: isMobile ? "5rem 1.25rem 6rem" : "5rem 5rem 6rem",
         maxWidth: "72rem",
         margin: "0 auto",
-        background: dark ? "#0d0d1a" : "transparent",
+        background: dark ? "#11111b" : "transparent",
       }}
     >
       {/* Header */}
@@ -146,7 +146,7 @@ function Career() {
               style={{
                 fontSize: isMobile ? "2rem" : "2.5rem",
                 fontWeight: 800,
-                color: dark ? "#f0f0f0" : "#1a1a2e",
+                color: dark ? "#cdd6f4" : "#1a1a2e",
                 lineHeight: 1,
               }}
             >
@@ -277,8 +277,8 @@ function Career() {
                 fontSize: "1rem",
                 whiteSpace: isMobile ? "nowrap" : "normal",
                 flexShrink: isMobile ? 0 : 1,
-                color: active === exp.id ? (dark ? "#f0f0f0" : "#1a1a2e") : "#9ca3af",
-                background: active === exp.id ? (dark ? "#1e1e35" : "#f3f4f6") : "transparent",
+                color: active === exp.id ? (dark ? "#cdd6f4" : "#1a1a2e") : "#9ca3af",
+                background: active === exp.id ? (dark ? "#1e1e2e" : "#f3f4f6") : "transparent",
                 borderLeft: isMobile ? "none" : (active === exp.id ? "3px solid #f5c518" : "3px solid transparent"),
                 borderBottom: isMobile ? (active === exp.id ? "2px solid #f5c518" : "2px solid transparent") : "none",
                 transition: "all 0.2s",
@@ -298,8 +298,8 @@ function Career() {
         <div style={{
           padding: isMobile ? "1.5rem" : "2rem",
           borderRadius: "1.25rem",
-          background: dark ? "#13131f" : "#ffffff",
-          border: dark ? "1px solid #1e1e35" : "1px solid rgba(0,0,0,0.06)",
+          background: dark ? "#181825" : "#ffffff",
+          border: dark ? "1px solid #1e1e2e" : "1px solid rgba(0,0,0,0.06)",
           boxShadow: dark ? "none" : "0 4px 24px rgba(0,0,0,0.05)",
         }}>
           {/* Header */}
@@ -309,14 +309,14 @@ function Career() {
                 <img
                   src={current.logo}
                   alt={current.company}
-                  style={{ width: "52px", height: "52px", objectFit: "contain", borderRadius: "0.75rem", border: dark ? "1px solid #2d2d4e" : "1px solid #f0f0f0", padding: "6px", background: "#fff", flexShrink: 0 }}
+                  style={{ width: "52px", height: "52px", objectFit: "contain", borderRadius: "0.75rem", border: dark ? "1px solid #313244" : "1px solid #cdd6f4", padding: "6px", background: "#fff", flexShrink: 0 }}
                 />
               )}
               <div>
-                <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: dark ? "#f0f0f0" : "#1a1a2e", marginBottom: "0.2rem" }}>
+                <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: dark ? "#cdd6f4" : "#1a1a2e", marginBottom: "0.2rem" }}>
                   {current.company}
                 </h3>
-                <p style={{ fontSize: "0.9rem", color: dark ? "#8080a0" : "#6b7280" }}>
+                <p style={{ fontSize: "0.9rem", color: dark ? "#a6adc8" : "#6b7280" }}>
                   {current.subtitle}
                 </p>
               </div>
@@ -336,7 +336,7 @@ function Career() {
           <div style={{
             display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap",
             paddingBottom: "1.25rem",
-            borderBottom: dark ? "1px solid #1e1e35" : "1px solid #f3f4f6",
+            borderBottom: dark ? "1px solid #1e1e2e" : "1px solid #f3f4f6",
             marginBottom: "1.25rem",
           }}>
             <span style={{ fontSize: "0.875rem", color: "#9ca3af", fontWeight: 500 }}>
@@ -347,17 +347,17 @@ function Career() {
 
             <div style={{ display: "flex", gap: "0.6rem", marginLeft: "auto" }}>
               {current.website && (
-                <a href={current.website} target="_blank" style={{ color: "#9ca3af", display: "flex", transition: "color 0.2s" }} onMouseEnter={e => (e.currentTarget.style.color = dark ? "#f0f0f0" : "#1a1a2e")} onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}>
+                <a href={current.website} target="_blank" rel="noopener noreferrer" style={{ color: "#9ca3af", display: "flex", transition: "color 0.2s" }} onMouseEnter={e => (e.currentTarget.style.color = dark ? "#cdd6f4" : "#1a1a2e")} onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}>
                   <Globe size={15} />
                 </a>
               )}
               {current.twitter && (
-                <a href={current.twitter} target="_blank" style={{ color: "#9ca3af", display: "flex", transition: "color 0.2s" }} onMouseEnter={e => (e.currentTarget.style.color = dark ? "#f0f0f0" : "#1a1a2e")} onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}>
+                <a href={current.twitter} target="_blank" rel="noopener noreferrer" style={{ color: "#9ca3af", display: "flex", transition: "color 0.2s" }} onMouseEnter={e => (e.currentTarget.style.color = dark ? "#cdd6f4" : "#1a1a2e")} onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}>
                   <Twitter size={15} />
                 </a>
               )}
               {current.linkedin && (
-                <a href={current.linkedin} target="_blank" style={{ color: "#9ca3af", display: "flex", transition: "color 0.2s" }} onMouseEnter={e => (e.currentTarget.style.color = "#0077b5")} onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}>
+                <a href={current.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: "#9ca3af", display: "flex", transition: "color 0.2s" }} onMouseEnter={e => (e.currentTarget.style.color = "#0077b5")} onMouseLeave={e => (e.currentTarget.style.color = "#9ca3af")}>
                   <Linkedin size={15} />
                 </a>
               )}
@@ -374,7 +374,7 @@ function Career() {
                 <div key={i} style={{
                   padding: "0.4rem 0.6rem",
                   background: dark ? "rgba(255,255,255,0.04)" : "#f9fafb",
-                  border: dark ? "1px solid rgba(255,255,255,0.06)" : "1px solid #f0f0f0",
+                  border: dark ? "1px solid rgba(255,255,255,0.06)" : "1px solid #cdd6f4",
                   borderRadius: "0.5rem",
                 }}>
                   {tool.icon}
@@ -389,7 +389,7 @@ function Career() {
               {current.bullets.map((bullet, i) => (
                 <div key={i} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
                   <span style={{ color: "#f5c518", fontWeight: 700, marginTop: "0.2rem", flexShrink: 0, fontSize: "0.75rem" }}>▸</span>
-                  <p style={{ fontSize: "0.9rem", color: dark ? "#a0a0b8" : "#4b5563", lineHeight: 1.7 }}>{bullet}</p>
+                  <p style={{ fontSize: "0.9rem", color: dark ? "#a6adc8" : "#4b5563", lineHeight: 1.7 }}>{bullet}</p>
                 </div>
               ))}
             </div>
