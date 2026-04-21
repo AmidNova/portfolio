@@ -1,6 +1,19 @@
+import {
+  SiAmazonwebservices,
+  SiPython,
+  SiReact,
+  SiTypescript,
+} from "react-icons/si";
 import PhotoPro from "../assets/images/Confident professional in office attire.webp";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
+
+const skills = [
+  { label: "React/Node", icon: <SiReact /> },
+  { label: "Python", icon: <SiPython /> },
+  { label: "TypeScript", icon: <SiTypescript /> },
+  { label: "AWS/Azure", icon: <SiAmazonwebservices /> },
+];
 
 function Hero() {
   const { t, dark } = useLang();
@@ -65,6 +78,31 @@ function Hero() {
           >
             {t.hero.bio}
           </p>
+
+          {/* Skills */}
+          <div className="hide-scrollbar" style={{ display: "flex", flexWrap: "nowrap", gap: "0.75rem", marginBottom: "2.5rem", overflowX: "auto" }}>
+            {skills.map((skill) => (
+              <span
+                key={skill.label}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  padding: "0.4rem 0.9rem",
+                  borderRadius: "999px",
+                  background: dark ? "#181825" : "#1e1b4b",
+                  border: dark ? "1px solid rgba(203,166,247,0.25)" : "1px solid rgba(139,92,246,0.3)",
+                  color: "white",
+                  fontWeight: 500,
+                  fontSize: "1rem",
+                  whiteSpace: "nowrap" as const,
+                }}
+              >
+                <span style={{ fontSize: "1rem", display: "flex", alignItems: "center" }}>{skill.icon}</span>
+                {skill.label}
+              </span>
+            ))}
+          </div>
 
           {/* CTAs */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>

@@ -1,9 +1,8 @@
 const en = {
   nav: {
     home: "Home",
+    work: "Work",
     about: "About",
-    explore: "Explore",
-    comingSoon: "Coming soon",
     dark: "Dark",
     light: "Light",
   },

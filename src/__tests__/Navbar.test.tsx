@@ -34,11 +34,6 @@ describe("Navbar", () => {
     expect(screen.getByText("About")).toBeInTheDocument();
   });
 
-  it("affiche le bouton Explore", () => {
-    renderNavbar();
-    expect(screen.getByText(/Explore/i)).toBeInTheDocument();
-  });
-
   it("affiche les liens sociaux (GitHub, LinkedIn, email)", () => {
     renderNavbar();
     expect(screen.getByLabelText("GitHub")).toBeInTheDocument();

@@ -1,9 +1,8 @@
 const fr = {
   nav: {
     home: "Accueil",
+    work: "Projets",
     about: "À propos",
-    explore: "Explorer",
-    comingSoon: "Bientôt disponible",
     dark: "Sombre",
     light: "Clair",
   },
@@ -35,10 +34,10 @@ const fr = {
     ],
   },
   career: {
-    soFar: "Jusqu'ici",
+    soFar: "Mon parcours",
     title: "Parcours",
     hearMe: "Écoutez-moi en parler",
-    needCopy: "Besoin d'une copie ?",
+    needCopy: "Besoin de voir mon CV ?",
     resume: "CV",
     techTools: "Technologies & Outils",
     bullets: {
@@ -103,9 +102,20 @@ const fr = {
     ],
     skills: "Compétences techniques",
     skillItems: [
-      { label: "Full Stack", value: "React.js, Next.js, Tailwind CSS, TypeScript, Node.js, Express, NestJS, REST API" },
-      { label: "Data & Cloud", value: "AWS, Azure, PostgreSQL, MongoDB, Cassandra, Apache Spark, Power BI" },
-      { label: "Outils & Langages", value: "Python, SQL, Java, Git, Docker, Linux, Figma" },
+      {
+        label: "Full Stack",
+        value:
+          "React.js, Next.js, Tailwind CSS, TypeScript, Node.js, Express, NestJS, REST API",
+      },
+      {
+        label: "Data & Cloud",
+        value:
+          "AWS, Azure, PostgreSQL, MongoDB, Cassandra, Apache Spark, Power BI",
+      },
+      {
+        label: "Outils & Langages",
+        value: "Python, SQL, Java, Git, Docker, Linux, Figma",
+      },
     ],
     certifications: "Certifications",
     certificationItems: [

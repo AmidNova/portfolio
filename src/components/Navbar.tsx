@@ -91,6 +91,7 @@ function Navbar() {
 
   const links = [
     { label: t.nav.home, path: "/" },
+    { label: t.nav.work, path: "/#work" },
     { label: t.nav.about, path: "/about" },
   ];
 
@@ -162,35 +163,6 @@ function Navbar() {
                 </Link>
               );
             })}
-            <span
-              style={{
-                position: "relative",
-                padding: "0.5rem 1.5rem",
-                borderRadius: "9999px",
-                fontSize: "1.05rem",
-                fontWeight: 600,
-                color: dark ? "#585b70" : "#9ca3af",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.35rem",
-                cursor: "default",
-              }}
-            >
-              ✦ {t.nav.explore}
-              <span style={{
-                fontSize: "0.65rem",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                background: dark ? "rgba(245,197,24,0.15)" : "rgba(245,197,24,0.2)",
-                color: "#f5c518",
-                padding: "0.15rem 0.45rem",
-                borderRadius: "9999px",
-                marginLeft: "0.15rem",
-              }}>
-                {t.nav.comingSoon}
-              </span>
-            </span>
           </div>
         )}
 
@@ -339,30 +311,6 @@ function Navbar() {
               {link.label}
             </Link>
           ))}
-          <span
-            style={{
-              fontSize: "2rem", fontWeight: 700,
-              color: dark ? "#585b70" : "#9ca3af",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              cursor: "default",
-            }}
-          >
-            ✦ {t.nav.explore}
-            <span style={{
-              fontSize: "0.7rem",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-              background: dark ? "rgba(245,197,24,0.15)" : "rgba(245,197,24,0.2)",
-              color: "#f5c518",
-              padding: "0.2rem 0.5rem",
-              borderRadius: "9999px",
-            }}>
-              {t.nav.comingSoon}
-            </span>
-          </span>
           <LangDropdown />
           <div style={{ display: "flex", gap: "1.75rem" }}>
             <a href="https://github.com/AmidNova" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{ color: dark ? "#bac2de" : "#1a1a2e" }}><Github size={24} /></a>
