@@ -8,7 +8,7 @@ import Navbar from "./components/Navbar";
 import Projects from "./components/Projects";
 import Services from "./components/Services";
 import Skills from "./components/Skills";
-import { LangProvider } from "./context/LangContext";
+import { LangProvider, useLang } from "./context/LangContext";
 
 function Home() {
   return (
@@ -32,18 +32,30 @@ function AboutPage() {
   );
 }
 
-function App() {
+function AppShell() {
+  const { t } = useLang();
   return (
-    <LangProvider>
-      <BrowserRouter>
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <Navbar />
+    <BrowserRouter>
+      <a href="#main" className="skip-link">
+        {t.a11y.skipToContent}
+      </a>
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <Navbar />
+        <main id="main">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
           </Routes>
-        </div>
-      </BrowserRouter>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+function App() {
+  return (
+    <LangProvider>
+      <AppShell />
     </LangProvider>
   );
 }

@@ -37,6 +37,11 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
     document.body.classList.toggle("dark", dark);
   }, []);
 
+  // Keep <html lang> in sync with current language for a11y and SEO
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
   const setLang = (l: Lang) => {
     setLangState(l);
     localStorage.setItem("lang", l);

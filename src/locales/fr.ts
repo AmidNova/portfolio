@@ -6,6 +6,9 @@ const fr = {
     dark: "Sombre",
     light: "Clair",
   },
+  a11y: {
+    skipToContent: "Aller au contenu principal",
+  },
   hero: {
     greeting: "Bonjour, je suis Soro Amidou",
     bio: "Je me spécialise dans le développement d'applications full-stack et le déploiement de systèmes cloud scalables. J'aime transformer les idées en réalité concrète. Mon objectif est de concevoir des architectures robustes et livrer des logiciels qui résolvent de vrais problèmes.",

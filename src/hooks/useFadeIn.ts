@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "./useResponsive";
 
 export function useFadeIn(threshold = 0.12) {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
+  const [visible, setVisible] = useState(reducedMotion);
 
   useEffect(() => {
+    if (reducedMotion) {
+      setVisible(true);
+      return;
+    }
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -18,7 +24,7 @@ export function useFadeIn(threshold = 0.12) {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, reducedMotion]);
 
-  return { ref, visible };
+  return { ref, visible, reducedMotion };
 }

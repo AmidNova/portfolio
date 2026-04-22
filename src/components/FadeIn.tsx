@@ -6,7 +6,11 @@ interface FadeInProps {
 }
 
 function FadeIn({ children, delay = 0 }: FadeInProps) {
-  const { ref, visible } = useFadeIn();
+  const { ref, visible, reducedMotion } = useFadeIn();
+
+  if (reducedMotion) {
+    return <div ref={ref}>{children}</div>;
+  }
 
   return (
     <div

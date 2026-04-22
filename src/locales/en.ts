@@ -6,6 +6,9 @@ const en = {
     dark: "Dark",
     light: "Light",
   },
+  a11y: {
+    skipToContent: "Skip to main content",
+  },
   hero: {
     greeting: "Hi, I'm Soro Amidou",
     bio: "I specialize in building full-stack applications and deploying scalable cloud systems. I love turning ideas into scalable reality. My focus is on building robust architecture and delivering software that solves real problems.",
