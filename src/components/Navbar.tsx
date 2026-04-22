@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
+import { useThemeColors } from "../theme";
 
 function LangDropdown() {
   const { lang, setLang, dark } = useLang();
+  const c = useThemeColors();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,7 @@ function LangDropdown() {
           cursor: "pointer",
           fontSize: "0.9rem",
           fontWeight: 700,
-          color: dark ? "#cdd6f4" : "#1a1a2e",
+          color: c.text.primary,
           letterSpacing: "0.05em",
           padding: "0.25rem 0",
         }}
@@ -45,7 +47,7 @@ function LangDropdown() {
           top: "calc(100% + 0.5rem)",
           right: 0,
           background: dark ? "#1e1e2e" : "#ffffff",
-          border: dark ? "1px solid #313244" : "1px solid #e5e7eb",
+          border: `1px solid ${c.border.default}`,
           borderRadius: "0.625rem",
           boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
           overflow: "hidden",
@@ -69,8 +71,8 @@ function LangDropdown() {
                   ? (dark ? "rgba(205,214,244,0.08)" : "#f3f4f6")
                   : "transparent",
                 color: lang === l
-                  ? (dark ? "#cdd6f4" : "#1a1a2e")
-                  : (dark ? "#7f849c" : "#6b7280"),
+                  ? c.text.primary
+                  : (dark ? "#7f849c" : c.text.muted),
               }}
             >
               {l.toUpperCase()}
@@ -88,6 +90,7 @@ function Navbar() {
   const location = useLocation();
   const { t, dark, toggleDark } = useLang();
   const { isMobile } = useResponsive();
+  const c = useThemeColors();
 
   const links = [
     { label: t.nav.home, path: "/" },
@@ -95,8 +98,12 @@ function Navbar() {
     { label: t.nav.about, path: "/about" },
   ];
 
-  const iconColor = dark ? "#6c7086" : "#6b7280";
-  const iconHoverColor = dark ? "#cdd6f4" : "#1a1a2e";
+  const iconColor = c.icon.default;
+  const iconHoverColor = c.icon.hover;
+
+  const toggleBg = dark ? "#1e1e2e" : "#e2e2e8";
+  const toggleBorder = dark ? `1px solid ${c.border.default}` : "1px solid rgba(0,0,0,0.08)";
+  const toggleKnob = dark ? "#45475a" : c.brand.ink;
 
   return (
     <>
@@ -115,8 +122,8 @@ function Navbar() {
       >
         {/* Logo */}
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: "0.4rem", textDecoration: "none" }}>
-          <span style={{ fontWeight: 800, fontSize: "1.05rem", color: dark ? "#cdd6f4" : "#1a1a2e" }}>SA</span>
-          <span style={{ fontWeight: 600, fontSize: "1.05rem", color: dark ? "#cdd6f4" : "#1a1a2e" }}>Soro Amidou</span>
+          <span style={{ fontWeight: 800, fontSize: "1.05rem", color: c.text.primary }}>SA</span>
+          <span style={{ fontWeight: 600, fontSize: "1.05rem", color: c.text.primary }}>Soro Amidou</span>
         </Link>
 
         {/* Desktop — pill nav */}
@@ -151,11 +158,11 @@ function Navbar() {
                     textDecoration: "none",
                     transition: "all 0.25s ease",
                     background: isActive
-                      ? (dark ? "#cdd6f4" : "#1a1a2e")
+                      ? c.text.primary
                       : hovered === link.label
                         ? (dark ? "rgba(205,214,244,0.08)" : "rgba(255,255,255,0.6)")
                         : "transparent",
-                    color: isActive ? (dark ? "#1e1e2e" : "#ffffff") : (dark ? "#bac2de" : "#4b5563"),
+                    color: isActive ? (dark ? "#1e1e2e" : c.text.inverse) : (dark ? "#bac2de" : "#4b5563"),
                     boxShadow: isActive ? (dark ? "0 2px 16px rgba(203,166,247,0.2)" : "0 2px 12px rgba(26,26,46,0.2)") : "none",
                   }}
                 >
@@ -190,8 +197,8 @@ function Navbar() {
                 width: "72px",
                 height: "36px",
                 borderRadius: "9999px",
-                background: dark ? "#1e1e2e" : "#e2e2e8",
-                border: dark ? "1px solid #313244" : "1px solid rgba(0,0,0,0.08)",
+                background: toggleBg,
+                border: toggleBorder,
                 cursor: "pointer",
                 padding: 0,
                 flexShrink: 0,
@@ -206,7 +213,7 @@ function Navbar() {
                 width: "28px",
                 height: "28px",
                 borderRadius: "50%",
-                background: dark ? "#45475a" : "#1a1a2e",
+                background: toggleKnob,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -219,7 +226,7 @@ function Navbar() {
               <span style={{ position: "absolute", left: "10px", color: dark ? "#585b70" : "transparent", display: "flex", transition: "color 0.3s" }}>
                 <Sun size={14} />
               </span>
-              <span style={{ position: "absolute", right: "10px", color: dark ? "transparent" : "#9ca3af", display: "flex", transition: "color 0.3s" }}>
+              <span style={{ position: "absolute", right: "10px", color: dark ? "transparent" : c.text.faint, display: "flex", transition: "color 0.3s" }}>
                 <Moon size={14} />
               </span>
             </button>
@@ -239,8 +246,8 @@ function Navbar() {
                 width: "64px",
                 height: "32px",
                 borderRadius: "9999px",
-                background: dark ? "#1e1e2e" : "#e2e2e8",
-                border: dark ? "1px solid #313244" : "1px solid rgba(0,0,0,0.08)",
+                background: toggleBg,
+                border: toggleBorder,
                 cursor: "pointer",
                 padding: 0,
                 flexShrink: 0,
@@ -254,7 +261,7 @@ function Navbar() {
                 width: "26px",
                 height: "26px",
                 borderRadius: "50%",
-                background: dark ? "#45475a" : "#1a1a2e",
+                background: toggleKnob,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -266,11 +273,11 @@ function Navbar() {
               <span style={{ position: "absolute", left: "9px", color: dark ? "#585b70" : "transparent", display: "flex", transition: "color 0.3s" }}>
                 <Sun size={13} />
               </span>
-              <span style={{ position: "absolute", right: "9px", color: dark ? "transparent" : "#9ca3af", display: "flex", transition: "color 0.3s" }}>
+              <span style={{ position: "absolute", right: "9px", color: dark ? "transparent" : c.text.faint, display: "flex", transition: "color 0.3s" }}>
                 <Moon size={13} />
               </span>
             </button>
-            <button onClick={() => setMenuOpen((o) => !o)} aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={menuOpen} style={{ background: "none", border: "none", cursor: "pointer", color: dark ? "#cdd6f4" : "#1a1a2e", display: "flex", padding: "0.25rem" }}>
+            <button onClick={() => setMenuOpen((o) => !o)} aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={menuOpen} style={{ background: "none", border: "none", cursor: "pointer", color: c.text.primary, display: "flex", padding: "0.25rem" }}>
               {menuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
@@ -304,7 +311,7 @@ function Navbar() {
               style={{
                 fontSize: "2rem",
                 fontWeight: 700,
-                color: location.pathname === link.path ? "#f5c518" : (dark ? "#cdd6f4" : "#1a1a2e"),
+                color: location.pathname === link.path ? c.accent.gold : c.text.primary,
                 textDecoration: "none",
               }}
             >
@@ -313,9 +320,9 @@ function Navbar() {
           ))}
           <LangDropdown />
           <div style={{ display: "flex", gap: "1.75rem" }}>
-            <a href="https://github.com/AmidNova" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{ color: dark ? "#bac2de" : "#1a1a2e" }}><Github size={24} /></a>
-            <a href="https://www.linkedin.com/in/amidou-soro-09b94a327/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: dark ? "#bac2de" : "#1a1a2e" }}><Linkedin size={24} /></a>
-            <a href="mailto:amidousorox23@gmail.com" aria-label="Envoyer un email" style={{ color: dark ? "#bac2de" : "#1a1a2e" }}><Mail size={24} /></a>
+            <a href="https://github.com/AmidNova" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{ color: dark ? "#bac2de" : c.brand.ink }}><Github size={24} /></a>
+            <a href="https://www.linkedin.com/in/amidou-soro-09b94a327/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: dark ? "#bac2de" : c.brand.ink }}><Linkedin size={24} /></a>
+            <a href="mailto:amidousorox23@gmail.com" aria-label="Envoyer un email" style={{ color: dark ? "#bac2de" : c.brand.ink }}><Mail size={24} /></a>
           </div>
         </div>
       )}

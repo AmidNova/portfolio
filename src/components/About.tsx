@@ -8,6 +8,7 @@ import PhotoScene   from "../assets/images/MoiAUnConcoursEloquence.webp";
 import PhotoTrophee from "../assets/images/MoiEtTrophéEloquence.webp";
 import { useLang }       from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
+import { useThemeColors } from "../theme";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -16,6 +17,22 @@ const PASSIONS = [
   { title: "Chess",   desc: "A love for systems and strategy. Every game is a problem to solve." },
   { title: "Running", desc: "The only time I stop thinking about code. Almost." },
 ] as const;
+
+// ─── Editorial palette ────────────────────────────────────────────────────────
+// Alternating chapter bands — deliberately distinct from c.bg.page to signal
+// "storytelling mode." Warm off-white + lavender tint for light; deeper than
+// Catppuccin crust for dark.
+const BAND_A_LIGHT = "#fafaf8";
+const BAND_A_DARK  = "#0d0d1a";
+const BAND_B_LIGHT = "#f2f0fb";
+const BAND_B_DARK  = "#111120";
+
+// One-off purple accent for the opening "I had no talent." beat.
+const TALENT_ACCENT = "#a87bfd";
+
+// On-dark-panel text — Chapter IV and Trophy sections force a dark bg in both
+// modes, so their text stays fixed-light rather than following c.text.primary.
+const ON_DARK_PANEL_TEXT = "#ededf0";
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
@@ -58,12 +75,11 @@ function About() {
   const ref = useRevealOnScroll();
   const { dark }     = useLang();
   const { isMobile } = useResponsive();
+  const c = useThemeColors();
 
-  // Palette — adapts to dark mode
-  const bg  = dark ? "#0d0d1a" : "#fafaf8";
-  const bgB = dark ? "#111120" : "#f2f0fb";
-  const txt = dark ? "#ededf0" : "#111";
-  const sub = dark ? "#6a6a90" : "#525252";
+  // Editorial chapter bands (distinct from c.bg.page on purpose)
+  const bg  = dark ? BAND_A_DARK : BAND_A_LIGHT;
+  const bgB = dark ? BAND_B_DARK : BAND_B_LIGHT;
 
   // ─ Layout helpers ─
   const panel: CSSProperties = {
@@ -101,7 +117,7 @@ function About() {
   const h2: CSSProperties = {
     fontSize: isMobile ? "2rem" : "clamp(2rem, 3vw, 2.75rem)",
     fontWeight: 800,
-    color: txt,
+    color: c.text.primary,
     lineHeight: 1.15,
     marginBottom: "2rem",
     letterSpacing: "-0.025em",
@@ -109,7 +125,7 @@ function About() {
 
   const body: CSSProperties = {
     fontSize: "1rem",
-    color: sub,
+    color: c.text.muted,
     lineHeight: 2.05,
     maxWidth: "400px",
   };
@@ -125,8 +141,8 @@ function About() {
         .delay-2 { transition-delay: .25s; }
         .delay-3 { transition-delay: .40s; }
         .delay-4 { transition-delay: .55s; }
-        .eyebrow { display: block; font-size: .64rem; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: #f5c518; margin-bottom: 1.1rem; }
-        .divider { width: 32px; height: 1px; background: #f5c518; margin-bottom: 2.5rem; }
+        .eyebrow { display: block; font-size: .64rem; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: ${c.accent.gold}; margin-bottom: 1.1rem; }
+        .divider { width: 32px; height: 1px; background: ${c.accent.gold}; margin-bottom: 2.5rem; }
       `}</style>
 
       <div ref={ref} style={{ background: bg, overflowX: "hidden" }}>
@@ -140,7 +156,7 @@ function About() {
               style={{
                 fontSize: isMobile ? "2.75rem" : "clamp(2.8rem, 4.5vw, 4.25rem)",
                 fontWeight: 900,
-                color: txt,
+                color: c.text.primary,
                 lineHeight: 1.06,
                 marginBottom: "1.75rem",
                 letterSpacing: "-0.03em",
@@ -148,13 +164,13 @@ function About() {
             >
               I spent years convinced
               <br />
-              <span style={{ color: "#a87bfd" }}>I had no talent.</span>
+              <span style={{ color: TALENT_ACCENT }}>I had no talent.</span>
             </h1>
-            <p className="reveal-up delay-2" style={{ fontSize: "1.1rem", color: sub, lineHeight: 1.9, maxWidth: "360px", marginBottom: "3rem" }}>
+            <p className="reveal-up delay-2" style={{ fontSize: "1.1rem", color: c.text.muted, lineHeight: 1.9, maxWidth: "360px", marginBottom: "3rem" }}>
               Turns out I just hadn't found my medium.
             </p>
             <div className="reveal-up delay-3" style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <div style={{ width: "26px", height: "1px", background: "#f5c518" }} />
+              <div style={{ width: "26px", height: "1px", background: c.accent.gold }} />
               <span style={{ fontSize: "0.66rem", letterSpacing: "0.15em", color: dark ? "#36365a" : "#ccc", textTransform: "uppercase" }}>
                 Scroll
               </span>
@@ -178,7 +194,7 @@ function About() {
             <img src={PhotoLouvre} alt="Au Louvre" loading="lazy" style={coverImg} />
             <span style={{
               position: "absolute", bottom: "1.25rem", left: "1.25rem",
-              background: "#f5c518", color: "#1a1a2e",
+              background: c.accent.gold, color: c.text.onAccent,
               fontSize: "0.63rem", fontWeight: 700, letterSpacing: "0.08em", padding: "0.3rem 0.8rem",
             }}>
               Louvre, Paris
@@ -226,12 +242,12 @@ function About() {
           <div className="reveal-up" style={{ maxWidth: "780px", margin: "0 auto" }}>
             <div style={{
               fontSize: isMobile ? "5rem" : "9rem", lineHeight: 0.8,
-              color: "#f5c518", fontFamily: "Georgia, serif",
+              color: c.accent.gold, fontFamily: "Georgia, serif",
               opacity: 0.4, marginBottom: "1.5rem",
             }}>"</div>
             <p style={{
               fontSize: isMobile ? "1.45rem" : "clamp(1.45rem, 2.8vw, 2.35rem)",
-              fontWeight: 600, color: txt, lineHeight: 1.5,
+              fontWeight: 600, color: c.text.primary, lineHeight: 1.5,
               fontStyle: "italic", letterSpacing: "-0.015em",
             }}>
               I didn't find creativity. I found out it had been there all along — just waiting for the right language.
@@ -259,7 +275,7 @@ function About() {
           }}>
             <span style={{
               display: "block", fontSize: "0.64rem", fontWeight: 700,
-              color: "#f5c518", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: "1.25rem",
+              color: c.accent.gold, letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: "1.25rem",
             }}>
               Interlude
             </span>
@@ -274,12 +290,12 @@ function About() {
         </section>
 
         {/* ─── Interlude — Trophy ────────────────────────────────────────────── */}
-        <section style={{ ...panel, minHeight: isMobile ? "auto" : "72vh", background: "#1a1a2e" }}>
+        <section style={{ ...panel, minHeight: isMobile ? "auto" : "72vh", background: c.brand.ink }}>
           <div className="reveal-left" style={photoSide({ position: "relative" })}>
             <img src={PhotoTrophee} alt="Trophée éloquence ISEP" loading="lazy" style={coverImg} />
             <div style={{
               position: "absolute", inset: 0,
-              background: "linear-gradient(to right, transparent 65%, rgba(26,26,46,0.65) 100%)",
+              background: `linear-gradient(to right, transparent 65%, ${c.brand.ink} 100%)`,
               pointerEvents: "none",
             }} />
           </div>
@@ -299,7 +315,7 @@ function About() {
               borderRadius: "9999px", alignSelf: "flex-start",
             }}>
               <span>🏆</span>
-              <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#c9a43a", letterSpacing: "0.03em" }}>
+              <span style={{ fontSize: "0.82rem", fontWeight: 700, color: c.accent.goldDim, letterSpacing: "0.03em" }}>
                 Éloquence Championship — ISEP
               </span>
             </div>
@@ -308,10 +324,10 @@ function About() {
 
         {/* ─── Chapter IV — Outside the terminal ────────────────────────────── */}
         <section style={{ ...panel, minHeight: isMobile ? "auto" : "76vh" }}>
-          <div style={{ ...textSide({ order: isMobile ? 2 : 1 }), background: "#1a1a2e" }}>
+          <div style={{ ...textSide({ order: isMobile ? 2 : 1 }), background: c.brand.ink }}>
             <div className="divider reveal-up" />
             <span className="reveal-up eyebrow">Chapter IV</span>
-            <h2 className="reveal-up delay-1" style={{ ...h2, color: "#ededf0" }}>
+            <h2 className="reveal-up delay-1" style={{ ...h2, color: ON_DARK_PANEL_TEXT }}>
               Outside the terminal
             </h2>
             <div style={{ display: "flex", flexDirection: "column" }}>
@@ -320,7 +336,7 @@ function About() {
                   padding: "1.75rem 0",
                   borderTop: "1px solid rgba(255,255,255,0.07)",
                 }}>
-                  <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#ededf0", marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>
+                  <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: ON_DARK_PANEL_TEXT, marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>
                     {item.title}
                   </h3>
                   <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.85 }}>
@@ -334,7 +350,7 @@ function About() {
             <img src={PhotoLit} alt="Reading" loading="lazy" style={{ ...coverImg, filter: "brightness(0.88) saturate(0.9)" }} />
             <div style={{
               position: "absolute", inset: 0,
-              background: "linear-gradient(to right, rgba(26,26,46,0.55) 0%, transparent 40%)",
+              background: `linear-gradient(to right, ${c.brand.ink}8c 0%, transparent 40%)`,
               pointerEvents: "none",
             }} />
           </div>
@@ -348,13 +364,13 @@ function About() {
             className="reveal-up delay-1"
             style={{
               fontSize: isMobile ? "2.5rem" : "clamp(2.75rem, 5.5vw, 4.25rem)",
-              fontWeight: 900, color: txt, lineHeight: 1.06,
+              fontWeight: 900, color: c.text.primary, lineHeight: 1.06,
               marginBottom: "1.5rem", letterSpacing: "-0.035em",
             }}
           >
             Let's build something<br />that matters.
           </h2>
-          <p className="reveal-up delay-2" style={{ fontSize: "1.05rem", color: sub, lineHeight: 1.85, maxWidth: "380px", margin: "0 auto 3.5rem" }}>
+          <p className="reveal-up delay-2" style={{ fontSize: "1.05rem", color: c.text.muted, lineHeight: 1.85, maxWidth: "380px", margin: "0 auto 3.5rem" }}>
             I'm available for internships, collaborations, and projects that solve real problems.
           </p>
           <div className="reveal-up delay-3" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
@@ -363,7 +379,7 @@ function About() {
               style={{
                 display: "inline-flex", alignItems: "center",
                 padding: "1rem 2.5rem",
-                background: "#f5c518", color: "#1a1a2e",
+                background: c.accent.gold, color: c.text.onAccent,
                 fontWeight: 700, fontSize: "1rem",
                 textDecoration: "none", borderRadius: "9999px",
                 transition: "transform .25s ease",

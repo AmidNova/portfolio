@@ -7,6 +7,7 @@ import {
 import PhotoPro from "../assets/images/Confident professional in office attire.webp";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
+import { useThemeColors } from "../theme";
 
 const skills = [
   { label: "React/Node", icon: <SiReact /> },
@@ -15,9 +16,18 @@ const skills = [
   { label: "AWS/Azure", icon: <SiAmazonwebservices /> },
 ];
 
+// Light-mode skill pill background — deliberate editorial indigo, outside the theme palette.
+const SKILL_PILL_BG_LIGHT = "#1e1b4b";
+
 function Hero() {
   const { t, dark } = useLang();
   const { isMobile, isTablet } = useResponsive();
+  const c = useThemeColors();
+
+  const photoBorder = dark ? `1px solid ${c.border.default}` : "1px solid #e5e5e5";
+  const ctaOutlineBorder = dark ? "rgba(255,255,255,0.12)" : "rgba(26,26,46,0.15)";
+  const ctaOutlineBorderHover = dark ? "rgba(255,255,255,0.25)" : "rgba(26,26,46,0.3)";
+  const ctaOutlineBgHover = dark ? "rgba(255,255,255,0.06)" : "rgba(26,26,46,0.05)";
 
   return (
     <section
@@ -50,7 +60,7 @@ function Hero() {
       >
         {/* Photo mobile — en haut */}
         {isMobile && (
-          <div style={{ width: "100%", height: "320px", borderRadius: "1.25rem", overflow: "hidden", boxShadow: dark ? "0 20px 60px rgba(0,0,0,0.5)" : "0 20px 60px rgba(0,0,0,0.15)", border: dark ? "1px solid #313244" : "1px solid #e5e5e5" }}>
+          <div style={{ width: "100%", height: "320px", borderRadius: "1.25rem", overflow: "hidden", boxShadow: dark ? "0 20px 60px rgba(0,0,0,0.5)" : "0 20px 60px rgba(0,0,0,0.15)", border: photoBorder }}>
             <img src={PhotoPro} alt="Soro Amidou" fetchPriority="high" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
           </div>
         )}
@@ -60,7 +70,7 @@ function Hero() {
             style={{
               fontSize: isMobile ? "2.5rem" : isTablet ? "3.2rem" : "4rem",
               fontWeight: 800,
-              color: dark ? "#cdd6f4" : "#1a1a2e",
+              color: c.text.primary,
               lineHeight: 1.1,
               marginBottom: "1.25rem",
               letterSpacing: "-0.02em",
@@ -71,7 +81,7 @@ function Hero() {
           <p
             style={{
               fontSize: "1.1rem",
-              color: dark ? "#a6adc8" : "#4b5563",
+              color: dark ? c.text.muted : "#4b5563",
               lineHeight: 1.8,
               marginBottom: "2rem",
             }}
@@ -90,7 +100,7 @@ function Hero() {
                   gap: "0.5rem",
                   padding: "0.4rem 0.9rem",
                   borderRadius: "999px",
-                  background: dark ? "#181825" : "#1e1b4b",
+                  background: dark ? c.bg.elevated : SKILL_PILL_BG_LIGHT,
                   border: dark ? "1px solid rgba(203,166,247,0.25)" : "1px solid rgba(139,92,246,0.3)",
                   color: "white",
                   fontWeight: 500,
@@ -110,8 +120,8 @@ function Hero() {
               href="#work"
               style={{
                 padding: "0.8rem 1.9rem",
-                background: "#f5c518",
-                color: "#1a1a2e",
+                background: c.accent.gold,
+                color: c.text.onAccent,
                 fontWeight: 700,
                 fontSize: "1rem",
                 borderRadius: "9999px",
@@ -134,8 +144,8 @@ function Hero() {
               href="mailto:amidousorox23@gmail.com"
               style={{
                 padding: "0.8rem 1.9rem",
-                border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(26,26,46,0.15)",
-                color: dark ? "#bac2de" : "#1a1a2e",
+                border: `1px solid ${ctaOutlineBorder}`,
+                color: dark ? "#bac2de" : c.brand.ink,
                 fontWeight: 600,
                 fontSize: "1rem",
                 borderRadius: "9999px",
@@ -144,12 +154,12 @@ function Hero() {
                 transition: "background 0.2s, border-color 0.2s",
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLAnchorElement).style.background = dark ? "rgba(255,255,255,0.06)" : "rgba(26,26,46,0.05)";
-                (e.currentTarget as HTMLAnchorElement).style.borderColor = dark ? "rgba(255,255,255,0.25)" : "rgba(26,26,46,0.3)";
+                (e.currentTarget as HTMLAnchorElement).style.background = ctaOutlineBgHover;
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = ctaOutlineBorderHover;
               }}
               onMouseLeave={e => {
                 (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
-                (e.currentTarget as HTMLAnchorElement).style.borderColor = dark ? "rgba(255,255,255,0.12)" : "rgba(26,26,46,0.15)";
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = ctaOutlineBorder;
               }}
             >
               {t.hero.contact}
@@ -159,7 +169,7 @@ function Hero() {
 
         {/* Photo desktop */}
         {!isMobile && (
-          <div style={{ flexShrink: 0, width: isTablet ? "320px" : "420px", height: isTablet ? "440px" : "580px", borderRadius: "1.5rem", overflow: "hidden", boxShadow: dark ? "0 30px 80px rgba(0,0,0,0.6)" : "0 30px 80px rgba(0,0,0,0.18)", border: dark ? "1px solid #313244" : "1px solid #e5e5e5" }}>
+          <div style={{ flexShrink: 0, width: isTablet ? "320px" : "420px", height: isTablet ? "440px" : "580px", borderRadius: "1.5rem", overflow: "hidden", boxShadow: dark ? "0 30px 80px rgba(0,0,0,0.6)" : "0 30px 80px rgba(0,0,0,0.18)", border: photoBorder }}>
             <img src={PhotoPro} alt="Soro Amidou" fetchPriority="high" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} />
           </div>
         )}

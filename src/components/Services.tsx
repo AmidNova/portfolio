@@ -1,6 +1,7 @@
 import { Cloud, Layers, Lightbulb } from "lucide-react";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
+import { useThemeColors } from "../theme";
 
 const iconConfigs = [
   { Icon: Lightbulb },
@@ -11,6 +12,7 @@ const iconConfigs = [
 function Services() {
   const { t, dark } = useLang();
   const { isMobile, isTablet } = useResponsive();
+  const c = useThemeColors();
   const cols = isMobile ? 1 : isTablet ? 1 : 3;
 
   return (
@@ -23,10 +25,10 @@ function Services() {
     >
       {/* Header */}
       <div style={{ marginBottom: "2.5rem" }}>
-        <p style={{ fontSize: "1rem", fontWeight: 600, color: "#f5c518", letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+        <p style={{ fontSize: "1rem", fontWeight: 600, color: c.accent.gold, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem" }}>
           {t.services.label}
         </p>
-        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: dark ? "#cdd6f4" : "#1a1a2e", lineHeight: 1 }}>
+        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: c.text.primary, lineHeight: 1 }}>
           {t.services.title}
         </h2>
       </div>
@@ -46,8 +48,8 @@ function Services() {
               style={{
                 padding: isMobile ? "1.75rem" : "2rem",
                 borderRadius: "1.25rem",
-                background: dark ? "#181825" : "#ffffff",
-                border: dark ? "1px solid #1e1e2e" : "1px solid rgba(0,0,0,0.06)",
+                background: c.bg.elevated,
+                border: `1px solid ${dark ? c.bg.muted : "rgba(0,0,0,0.06)"}`,
                 boxShadow: dark
                   ? "0 0 0 1px rgba(255,255,255,0.03)"
                   : "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)",
@@ -72,21 +74,21 @@ function Services() {
                   width: "48px",
                   height: "48px",
                   borderRadius: "0.875rem",
-                  background: dark ? "rgba(245,197,24,0.1)" : "#1a1a2e",
+                  background: dark ? c.accent.goldSoft : c.brand.ink,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   marginBottom: "1.5rem",
                 }}
               >
-                <Icon size={24} strokeWidth={1.75} color={dark ? "#f5c518" : "#f5c518"} />
+                <Icon size={24} strokeWidth={1.75} color={c.accent.gold} />
               </div>
 
               <h3
                 style={{
                   fontSize: "1.15rem",
                   fontWeight: 700,
-                  color: dark ? "#cdd6f4" : "#1a1a2e",
+                  color: c.text.primary,
                   lineHeight: 1.3,
                   marginBottom: "0.75rem",
                   letterSpacing: "-0.01em",
@@ -97,7 +99,7 @@ function Services() {
               <p
                 style={{
                   fontSize: "0.95rem",
-                  color: dark ? "#a6adc8" : "#6b7280",
+                  color: c.text.muted,
                   lineHeight: 1.75,
                 }}
               >

@@ -2,19 +2,18 @@
 import { Github, Linkedin, Mail } from "lucide-react";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
+import { useThemeColors } from "../theme";
 
 function Footer() {
   const { t, dark } = useLang();
   const { isMobile } = useResponsive();
-
-  const iconColor = dark ? "#6b7280" : "#9ca3af";
-  const iconHoverColor = dark ? "#cdd6f4" : "#1a1a2e";
+  const c = useThemeColors();
 
   return (
     <footer
       style={{
-        borderTop: dark ? "1px solid #313244" : "1px solid #f3f4f6",
-        background: dark ? "#11111b" : "transparent",
+        borderTop: `1px solid ${dark ? c.border.default : c.border.subtle}`,
+        background: dark ? c.bg.page : "transparent",
         padding: isMobile ? "2.5rem 1.25rem" : "3rem 5rem",
         maxWidth: "72rem",
         margin: "0 auto",
@@ -28,23 +27,23 @@ function Footer() {
     >
       {/* Left */}
       <div>
-        <p style={{ fontWeight: 800, fontSize: "1rem", color: dark ? "#cdd6f4" : "#1a1a2e", marginBottom: "0.25rem" }}>
-          SA <span style={{ color: "#f5c518" }}>·</span> Soro Amidou
+        <p style={{ fontWeight: 800, fontSize: "1rem", color: c.text.primary, marginBottom: "0.25rem" }}>
+          SA <span style={{ color: c.accent.gold }}>·</span> Soro Amidou
         </p>
-        <p style={{ fontSize: "0.95rem", color: "#9ca3af" }}>{t.footer.built}</p>
+        <p style={{ fontSize: "0.95rem", color: c.text.faint }}>{t.footer.built}</p>
       </div>
 
       {/* Center — CTA */}
       <div style={{ textAlign: "center" }}>
-        <p style={{ fontSize: "0.95rem", color: dark ? "#a6adc8" : "#6b7280", marginBottom: "0.75rem" }}>
+        <p style={{ fontSize: "0.95rem", color: c.text.muted, marginBottom: "0.75rem" }}>
           {t.footer.cta}
         </p>
         <a
           href="mailto:amidousorox23@gmail.com"
           style={{
             padding: "0.6rem 1.5rem",
-            background: dark ? "#cdd6f4" : "#1a1a2e",
-            color: dark ? "#11111b" : "#ffffff",
+            background: c.text.primary,
+            color: c.text.inverse,
             fontWeight: 600,
             fontSize: "0.95rem",
             borderRadius: "9999px",
@@ -71,9 +70,9 @@ function Footer() {
             target={href.startsWith("http") ? "_blank" : undefined}
             rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
             aria-label={label}
-            style={{ color: iconColor, display: "flex", transition: "color 0.2s" }}
-            onMouseEnter={e => (e.currentTarget.style.color = iconHoverColor)}
-            onMouseLeave={e => (e.currentTarget.style.color = iconColor)}
+            style={{ color: c.icon.default, display: "flex", transition: "color 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.color = c.icon.hover)}
+            onMouseLeave={e => (e.currentTarget.style.color = c.icon.default)}
           >
             <Icon size={20} />
           </a>
