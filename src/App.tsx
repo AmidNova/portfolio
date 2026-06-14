@@ -26,7 +26,7 @@ function Home() {
 function AboutPage() {
   return (
     <>
-      <FadeIn><About /></FadeIn>
+      <About />
       <FadeIn delay={50}><Footer /></FadeIn>
     </>
   );
