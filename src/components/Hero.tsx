@@ -1,9 +1,5 @@
-import {
-  SiAmazonwebservices,
-  SiPython,
-  SiReact,
-  SiTypescript,
-} from "react-icons/si";
+import { SiPython, SiReact, SiTypescript } from "react-icons/si";
+import { FaAws } from "react-icons/fa";
 import PhotoPro from "../assets/images/Confident professional in office attire.webp";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
@@ -13,7 +9,7 @@ const skills = [
   { label: "React/Node", icon: <SiReact /> },
   { label: "Python", icon: <SiPython /> },
   { label: "TypeScript", icon: <SiTypescript /> },
-  { label: "AWS/Azure", icon: <SiAmazonwebservices /> },
+  { label: "AWS/Azure", icon: <FaAws /> },
 ];
 
 // Light-mode skill pill background — deliberate editorial indigo, outside the theme palette.
