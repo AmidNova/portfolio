@@ -1,10 +1,19 @@
-import { ArrowLeft, ArrowRight, Globe } from "lucide-react";
+import { ArrowLeft, ArrowRight, Globe, Maximize2 } from "lucide-react";
 import { useState } from "react";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
 import { useThemeColors } from "../theme";
+import ProjectCaseStudy from "./ProjectCaseStudy";
+import { projectMediaById } from "./projectMedia";
 
 const projectsBase = [
+  {
+    id: "wikipedia-pulse",
+    title: "Wikipedia Pulse",
+    tags: ["Apache Kafka", "Airflow", "dbt", "Elasticsearch", "Kibana", "Python"],
+    gradient: "linear-gradient(135deg, #0a2540 0%, #1e6091 50%, #34a0a4 100%)",
+    link: null,
+  },
   {
     id: "kairos",
     title: "Kairos",
@@ -23,11 +32,14 @@ const projectsBase = [
 
 function Projects() {
   const [current, setCurrent] = useState(0);
+  const [caseStudyOpen, setCaseStudyOpen] = useState(false);
   const { t, dark } = useLang();
   const { isMobile } = useResponsive();
   const c = useThemeColors();
   const projects = projectsBase.map((p, i) => ({ ...p, ...t.projects.items[i] }));
   const project = projects[current];
+  const media = projectMediaById[project.id];
+  const cover = media?.images[0]?.src;
 
   const prev = () => setCurrent((c) => (c - 1 + projects.length) % projects.length);
   const next = () => setCurrent((c) => (c + 1) % projects.length);
@@ -145,6 +157,25 @@ function Projects() {
               <ArrowRight size={16} color={c.text.inverse} />
             </button>
 
+            {media && (
+              <button
+                onClick={() => setCaseStudyOpen(true)}
+                style={{
+                  marginLeft: "0.5rem",
+                  display: "inline-flex", alignItems: "center", gap: "0.4rem",
+                  padding: "0.5rem 1.1rem", borderRadius: "999px",
+                  background: c.accent.gold, border: "none",
+                  color: c.text.onAccent,
+                  fontSize: "0.9rem", fontWeight: 600, cursor: "pointer",
+                  transition: "opacity 0.2s",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")}
+                onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+              >
+                <Maximize2 size={14} /> {t.projects.caseStudy}
+              </button>
+            )}
+
             {project.link && (
               <a href={project.link} target="_blank" style={{
                 marginLeft: "0.5rem",
@@ -163,13 +194,26 @@ function Projects() {
         </div>
 
         {/* Visuel */}
-        <div style={{
-          borderRadius: "1.5rem",
-          overflow: "hidden",
-          background: project.gradient,
-          height: isMobile ? "260px" : "420px",
-          transition: "background 0.4s ease",
-        }} />
+        <div
+          onClick={media ? () => setCaseStudyOpen(true) : undefined}
+          style={{
+            borderRadius: "1.5rem",
+            overflow: "hidden",
+            background: project.gradient,
+            height: isMobile ? "260px" : "420px",
+            transition: "background 0.4s ease",
+            cursor: media ? "pointer" : "default",
+            position: "relative",
+          }}
+        >
+          {cover && (
+            <img
+              src={cover}
+              alt={project.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          )}
+        </div>
       </div>
 
       {/* Show All */}
@@ -197,6 +241,17 @@ function Projects() {
           {t.projects.showAll}
         </button>
       </div>
+
+      {caseStudyOpen && media && (
+        <ProjectCaseStudy
+          projectId={project.id}
+          title={project.title}
+          description={project.description}
+          tags={project.tags}
+          media={media}
+          onClose={() => setCaseStudyOpen(false)}
+        />
+      )}
     </section>
   );
 }

@@ -72,7 +72,30 @@ const en = {
     title: "Projects",
     techStack: "Tech Stack",
     showAll: "Show All Projects",
+    caseStudy: "Case study",
+    watchDemo: "Watch demo",
+    readDoc: "Full documentation (PDF)",
+    close: "Close",
+    media: {
+      "wikipedia-pulse": {
+        shots: {
+          metric: "Real-time KPIs on the live edit stream",
+          trending1: "Trending articles — surfacing spikes",
+          trending2: "Trending breakdown by topic",
+          scoop: "Scoop detection — early edit bursts",
+          country: "Edit activity by country",
+          tempo: "Edit tempo histogram over time",
+          velocity: "Editorial velocity per article",
+          ratio: "Effort / attention ratio analysis",
+        },
+      },
+    },
     items: [
+      {
+        description:
+          "Real-time analytics pipeline on the Wikipedia edit stream. Kafka ingestion, Airflow orchestration, dbt transforms, Elasticsearch indexing and Kibana dashboards — surfacing trends, scoops and editorial velocity as edits happen.",
+        status: "Personal Project",
+      },
       {
         description:
           "AI-powered price & stock alert platform. Set a target price or request a restock notification — Kairos monitors it and alerts you instantly.",

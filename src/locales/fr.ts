@@ -72,7 +72,30 @@ const fr = {
     title: "Projets",
     techStack: "Stack technique",
     showAll: "Voir tous les projets",
+    caseStudy: "Étude de cas",
+    watchDemo: "Voir la démo",
+    readDoc: "Documentation complète (PDF)",
+    close: "Fermer",
+    media: {
+      "wikipedia-pulse": {
+        shots: {
+          metric: "KPIs en temps réel sur le flux d'éditions",
+          trending1: "Articles tendance — détection des pics",
+          trending2: "Tendances par thématique",
+          scoop: "Détection de scoops — rafales d'éditions précoces",
+          country: "Activité d'édition par pays",
+          tempo: "Histogramme du tempo des éditions",
+          velocity: "Vélocité éditoriale par article",
+          ratio: "Analyse du ratio effort / attention",
+        },
+      },
+    },
     items: [
+      {
+        description:
+          "Pipeline d'analyse en temps réel du flux d'éditions Wikipédia. Ingestion via Kafka, orchestration Airflow, transformations dbt, indexation Elasticsearch et tableaux de bord Kibana — détection des tendances, scoops et vélocité éditoriale au fil des éditions.",
+        status: "Projet personnel",
+      },
       {
         description:
           "Plateforme d'alertes prix & stock alimentée par l'IA. Définissez un prix cible ou demandez une notification de réapprovisionnement — Kairos surveille et vous alerte instantanément.",
