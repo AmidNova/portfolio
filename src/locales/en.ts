@@ -114,6 +114,28 @@ const en = {
       },
     ],
   },
+  skills: {
+    label: "Stack",
+    title: "Skills",
+    groups: {
+      data: {
+        title: "Data Engineering",
+        blurb: "I build data ingestion and processing pipelines — from real-time streaming to analytics modeling and visualization.",
+      },
+      devops: {
+        title: "DevOps",
+        blurb: "I automate build, deployment and infrastructure: CI/CD, orchestrated containers and infrastructure as code.",
+      },
+      cloud: {
+        title: "Cloud",
+        blurb: "I design and deploy on the cloud with a Solutions Architect mindset — AWS Solutions Architect Associate certified.",
+      },
+      web: {
+        title: "Development (bonus)",
+        blurb: "On top of that, I build full-stack applications end to end, from front to back.",
+      },
+    },
+  },
   footer: {
     built: "© 2026 — Built with React & TypeScript",
     cta: "Let's work together",
