@@ -8,6 +8,7 @@ import imVelocity from "../assets/papers/im6_velocity.png";
 import imRatio from "../assets/papers/im7_ratio_effort_attention.png";
 import wikiPulseVideo from "../assets/papers/wiki_pulse.mp4";
 import wikiPulseDoc from "../assets/papers/wikipedia-pulse.pdf";
+import wikiPulseArchi from "../assets/papers/wiki_pulse_archi.png";
 
 export interface ProjectGalleryImage {
   src: string;
@@ -18,7 +19,10 @@ export interface ProjectGalleryImage {
 export interface ProjectMedia {
   video?: string;
   doc?: string;
-  /** First gallery image doubles as the carousel cover. */
+  /** Explicit carousel cover. Falls back to the first gallery image. */
+  cover?: string;
+  /** Architecture diagram shown in the case-study Architecture section. */
+  architectureImage?: string;
   images: ProjectGalleryImage[];
 }
 
@@ -26,6 +30,8 @@ export const projectMediaById: Record<string, ProjectMedia> = {
   "wikipedia-pulse": {
     video: wikiPulseVideo,
     doc: wikiPulseDoc,
+    cover: imTrending2,
+    architectureImage: wikiPulseArchi,
     images: [
       { src: imMetric, captionKey: "metric" },
       { src: imTrending1, captionKey: "trending1" },

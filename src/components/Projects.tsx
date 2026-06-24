@@ -10,7 +10,7 @@ const projectsBase = [
   {
     id: "wikipedia-pulse",
     title: "Wikipedia Pulse",
-    tags: ["Apache Kafka", "Airflow", "dbt", "Elasticsearch", "Kibana", "Python"],
+    tags: ["Apache Kafka", "Airflow", "Spark", "Isolation Forest", "Elasticsearch", "Kibana", "Python"],
     gradient: "linear-gradient(135deg, #0a2540 0%, #1e6091 50%, #34a0a4 100%)",
     link: null,
   },
@@ -39,7 +39,7 @@ function Projects() {
   const projects = projectsBase.map((p, i) => ({ ...p, ...t.projects.items[i] }));
   const project = projects[current];
   const media = projectMediaById[project.id];
-  const cover = media?.images[0]?.src;
+  const cover = media?.cover ?? media?.images[0]?.src;
 
   const prev = () => setCurrent((c) => (c - 1 + projects.length) % projects.length);
   const next = () => setCurrent((c) => (c + 1) % projects.length);

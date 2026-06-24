@@ -76,8 +76,14 @@ const en = {
     watchDemo: "Watch demo",
     readDoc: "Full documentation (PDF)",
     close: "Close",
+    sectionOverview: "Overview",
+    sectionArchitecture: "Architecture",
+    sectionResults: "Results",
+    techDoc: "Technical documentation",
     media: {
       "wikipedia-pulse": {
+        architecture:
+          "Two sources feed the pipeline: Wikimedia's real-time SSE stream (lead indicator) and the Wikimedia API in batch (lag indicator D+1). Kafka buffers the stream; a 6-task Airflow DAG orchestrates the flow. Spark computes raw usage and an Isolation Forest ML model flags anomalies — results are indexed in Elasticsearch and visualized in Kibana.",
         shots: {
           metric: "Real-time KPIs on the live edit stream",
           trending1: "Trending articles — surfacing spikes",
@@ -93,7 +99,7 @@ const en = {
     items: [
       {
         description:
-          "Real-time analytics pipeline on the Wikipedia edit stream. Kafka ingestion, Airflow orchestration, dbt transforms, Elasticsearch indexing and Kibana dashboards — surfacing trends, scoops and editorial velocity as edits happen.",
+          "Real-time analytics pipeline on the Wikipedia edit stream. Kafka ingestion, Airflow orchestration, Spark processing and ML anomaly detection (Isolation Forest), Elasticsearch indexing and Kibana dashboards — surfacing trends, scoops and editorial velocity as edits happen.",
         status: "Personal Project",
       },
       {

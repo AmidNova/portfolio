@@ -76,8 +76,14 @@ const fr = {
     watchDemo: "Voir la démo",
     readDoc: "Documentation complète (PDF)",
     close: "Fermer",
+    sectionOverview: "Le projet",
+    sectionArchitecture: "Architecture",
+    sectionResults: "Résultats",
+    techDoc: "Documentation technique",
     media: {
       "wikipedia-pulse": {
+        architecture:
+          "Deux sources alimentent le pipeline : le flux SSE temps réel de Wikimedia (lead indicator) et l'API Wikimedia en batch (lag indicator J+1). Kafka encaisse le flux ; un DAG Airflow de 6 tâches atomiques orchestre le tout. Spark calcule les usages bruts et un modèle ML Isolation Forest détecte les anomalies — les résultats sont indexés dans Elasticsearch puis visualisés dans Kibana.",
         shots: {
           metric: "KPIs en temps réel sur le flux d'éditions",
           trending1: "Articles tendance — détection des pics",
@@ -93,7 +99,7 @@ const fr = {
     items: [
       {
         description:
-          "Pipeline d'analyse en temps réel du flux d'éditions Wikipédia. Ingestion via Kafka, orchestration Airflow, transformations dbt, indexation Elasticsearch et tableaux de bord Kibana — détection des tendances, scoops et vélocité éditoriale au fil des éditions.",
+          "Pipeline d'analyse en temps réel du flux d'éditions Wikipédia. Ingestion via Kafka, orchestration Airflow, traitements Spark et détection d'anomalies par ML (Isolation Forest), indexation Elasticsearch et tableaux de bord Kibana — détection des tendances, scoops et vélocité éditoriale au fil des éditions.",
         status: "Projet personnel",
       },
       {

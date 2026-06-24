@@ -1,5 +1,6 @@
 import { FileText, Play, X } from "lucide-react";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useLang } from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
 import { useThemeColors } from "../theme";
@@ -33,12 +34,34 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
     };
   }, [onClose]);
 
-  const shots = t.projects.media?.[projectId as keyof typeof t.projects.media]?.shots ?? {};
+  const mediaContent = t.projects.media?.[projectId as keyof typeof t.projects.media];
+  const shots = mediaContent?.shots ?? {};
+  const architecture = (mediaContent as { architecture?: string } | undefined)?.architecture;
   const cardBg = dark ? "#1e1e2e" : "#ffffff";
   const chipBg = dark ? "rgba(255,255,255,0.05)" : "rgba(26,26,46,0.06)";
   const chipBorder = dark ? "rgba(255,255,255,0.08)" : "rgba(26,26,46,0.1)";
 
-  return (
+  const sectionLabelStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    fontSize: "0.8rem",
+    color: c.text.faint,
+    letterSpacing: "0.12em",
+    textTransform: "uppercase" as const,
+    marginBottom: "0.75rem",
+    fontWeight: 600,
+  };
+  const boxStyle = {
+    background: chipBg,
+    border: `1px solid ${chipBorder}`,
+    borderRadius: "0.9rem",
+    padding: "1.25rem",
+    display: "flex",
+    flexDirection: "column" as const,
+  };
+
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -93,10 +116,6 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
           </button>
         </div>
 
-        <p style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.75, marginBottom: "1.25rem" }}>
-          {description}
-        </p>
-
         {/* Tags */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2rem" }}>
           {tags.map((tag) => (
@@ -114,24 +133,47 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
           ))}
         </div>
 
-        {/* Demo video */}
-        {media.video && (
-          <div style={{ marginBottom: "2rem" }}>
-            <p style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.8rem", color: c.text.faint, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "0.75rem", fontWeight: 600 }}>
-              <Play size={14} color={c.accent.gold} /> {t.projects.watchDemo}
-            </p>
-            <video
-              src={media.video}
-              controls
-              preload="metadata"
-              style={{ width: "100%", borderRadius: "0.75rem", background: "#000", display: "block" }}
-            />
-          </div>
+        {/* Overview */}
+        <section style={{ marginBottom: "2rem" }}>
+          <p style={sectionLabelStyle}>{t.projects.sectionOverview}</p>
+          <p style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.75 }}>
+            {description}
+          </p>
+        </section>
+
+        {/* Architecture */}
+        {(architecture || media.architectureImage) && (
+          <section style={{ marginBottom: "2rem" }}>
+            <p style={sectionLabelStyle}>{t.projects.sectionArchitecture}</p>
+            {architecture && (
+              <p style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.75, marginBottom: media.architectureImage ? "1.25rem" : 0 }}>
+                {architecture}
+              </p>
+            )}
+            {media.architectureImage && (
+              <img
+                src={media.architectureImage}
+                alt={`${title} — architecture`}
+                loading="lazy"
+                style={{
+                  width: "100%",
+                  maxHeight: "min(70vh, 560px)",
+                  objectFit: "contain",
+                  borderRadius: "0.75rem",
+                  border: `1px solid ${chipBorder}`,
+                  background: dark ? "#181825" : "#f8f8fb",
+                  padding: "1rem",
+                  display: "block",
+                }}
+              />
+            )}
+          </section>
         )}
 
-        {/* Gallery */}
+        {/* Results */}
         {media.images.length > 0 && (
-          <div style={{ marginBottom: media.doc ? "2rem" : 0 }}>
+          <section style={{ marginBottom: (media.doc || media.video) ? "2rem" : 0 }}>
+            <p style={sectionLabelStyle}>{t.projects.sectionResults}</p>
             <div style={{
               display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
@@ -156,33 +198,76 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
                 );
               })}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Doc link */}
-        {media.doc && (
-          <a
-            href={media.doc}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.7rem 1.4rem",
-              borderRadius: "999px",
-              background: c.text.primary,
-              color: c.text.inverse,
-              fontSize: "0.9rem",
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            <FileText size={16} /> {t.projects.readDoc}
-          </a>
+        {/* Bottom: small demo video (left) + full doc link (right) */}
+        {(media.video || media.doc) && (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: "1.25rem",
+            alignItems: "stretch",
+          }}>
+            {media.video && (
+              <div style={boxStyle}>
+                <p style={sectionLabelStyle}>
+                  <Play size={14} color={c.accent.gold} /> {t.projects.watchDemo}
+                </p>
+                <video
+                  src={media.video}
+                  controls
+                  preload="metadata"
+                  style={{
+                    width: "100%",
+                    maxHeight: "min(32vh, 240px)",
+                    aspectRatio: "16 / 9",
+                    objectFit: "contain",
+                    borderRadius: "0.6rem",
+                    border: `1px solid ${chipBorder}`,
+                    background: dark ? "#11111b" : "#0a0a0a",
+                    display: "block",
+                  }}
+                />
+              </div>
+            )}
+
+            {media.doc && (
+              <div style={{
+                ...boxStyle,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.75rem",
+              }}>
+                <p style={{ ...sectionLabelStyle, marginBottom: 0 }}>
+                  <FileText size={14} color={c.accent.gold} /> {t.projects.techDoc}
+                </p>
+                <a
+                  href={media.doc}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    padding: "0.7rem 1.4rem",
+                    borderRadius: "999px",
+                    background: c.text.primary,
+                    color: c.text.inverse,
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  <FileText size={16} /> {t.projects.readDoc}
+                </a>
+              </div>
+            )}
+          </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
