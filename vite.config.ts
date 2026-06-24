@@ -9,5 +9,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/test/setup.ts",
     globals: true,
+    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    exclude: ["everything-claude-code/**", "node_modules/**", "dist/**"],
   },
 });
