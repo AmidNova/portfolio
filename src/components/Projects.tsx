@@ -49,7 +49,10 @@ function Projects() {
   const navButtonBorder = dark ? "rgba(255,255,255,0.1)" : "rgba(26,26,46,0.1)";
   const tagBg = dark ? "rgba(255,255,255,0.05)" : "rgba(26,26,46,0.06)";
   const tagBorder = dark ? "rgba(255,255,255,0.08)" : "rgba(26,26,46,0.1)";
-  const statusBg = dark ? "rgba(245,197,24,0.12)" : "rgba(245,197,24,0.15)";
+  const statusBg = dark ? c.accent.goldSoft : c.accent.goldSoft;
+  const termBorder = dark ? "#30363d" : c.border.default;
+  const cardBg = dark ? "#161b22" : "#ffffff";
+  const titleBarBg = dark ? "#0d1117" : "#f3f3f1";
 
   return (
     <section
@@ -62,12 +65,15 @@ function Projects() {
     >
       {/* Header */}
       <div style={{ marginBottom: "3rem" }}>
-        <p style={{ fontSize: "1rem", fontWeight: 600, color: c.accent.gold, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem" }}>
-          {t.projects.featured}
+        <p style={{ fontSize: "0.95rem", color: c.text.muted, marginBottom: "0.5rem" }}>
+          <span style={{ color: c.accent.gold }}>$</span> ls <span style={{ color: dark ? "#79c0ff" : "#0969da" }}>./projects</span>
         </p>
-        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: c.text.primary, lineHeight: 1 }}>
+        <h2 style={{ fontSize: isMobile ? "1.9rem" : "2.4rem", fontWeight: 800, color: c.text.primary, lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: "0.4rem" }}>
           {t.projects.title}
         </h2>
+        <p className="tnum" style={{ fontSize: "0.8rem", color: c.text.faint }}>
+          → {projects.length} results
+        </p>
       </div>
 
       {/* Layout */}
@@ -80,7 +86,7 @@ function Projects() {
         {/* Infos */}
         <div>
           {/* Counter */}
-          <p style={{ fontSize: "0.8rem", color: c.text.faint, fontWeight: 500, letterSpacing: "0.1em", marginBottom: "1.5rem" }}>
+          <p className="tnum" style={{ fontSize: "0.8rem", color: c.text.faint, fontWeight: 500, letterSpacing: "0.1em", marginBottom: "1.5rem" }}>
             {String(current + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
           </p>
 
@@ -90,17 +96,18 @@ function Projects() {
               {project.title}
             </h3>
             <span style={{
-              fontSize: "0.75rem", fontWeight: 600,
-              padding: "0.25rem 0.7rem", borderRadius: "999px",
+              fontSize: "0.72rem", fontWeight: 600,
+              padding: "0.25rem 0.65rem", borderRadius: 0,
               background: statusBg,
+              border: `1px solid ${c.accent.goldSoft}`,
               color: c.accent.goldDim,
-              letterSpacing: "0.08em", textTransform: "uppercase",
+              letterSpacing: "0.06em", textTransform: "uppercase",
             }}>
               {project.status}
             </span>
           </div>
 
-          <p style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.75, marginBottom: "2rem" }}>
+          <p className="prose" style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.8, marginBottom: "2rem" }}>
             {project.description}
           </p>
 
@@ -112,12 +119,12 @@ function Projects() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
               {project.tags.map((tag) => (
                 <span key={tag} style={{
-                  padding: "0.3rem 0.8rem",
-                  borderRadius: "999px",
+                  padding: "0.28rem 0.7rem",
+                  borderRadius: 0,
                   background: tagBg,
                   border: `1px solid ${tagBorder}`,
-                  color: dark ? "#bac2de" : "#4b5563",
-                  fontSize: "0.875rem",
+                  color: dark ? "#adbac7" : "#3a3a33",
+                  fontSize: "0.82rem",
                   fontWeight: 500,
                 }}>
                   {tag}
@@ -131,7 +138,7 @@ function Projects() {
             <button
               onClick={prev}
               style={{
-                width: "42px", height: "42px", borderRadius: "50%",
+                width: "42px", height: "42px", borderRadius: 0,
                 background: navButtonBg,
                 border: `1px solid ${navButtonBorder}`,
                 cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
@@ -145,7 +152,7 @@ function Projects() {
             <button
               onClick={next}
               style={{
-                width: "42px", height: "42px", borderRadius: "50%",
+                width: "42px", height: "42px", borderRadius: 0,
                 background: c.text.primary,
                 border: "none",
                 cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
@@ -163,10 +170,10 @@ function Projects() {
                 style={{
                   marginLeft: "0.5rem",
                   display: "inline-flex", alignItems: "center", gap: "0.4rem",
-                  padding: "0.5rem 1.1rem", borderRadius: "999px",
-                  background: c.accent.gold, border: "none",
-                  color: c.text.onAccent,
-                  fontSize: "0.9rem", fontWeight: 600, cursor: "pointer",
+                  padding: "0.5rem 1.1rem", borderRadius: 0,
+                  background: c.accent.gold, border: `1px solid ${c.accent.gold}`,
+                  color: dark ? "#0b1f17" : "#ffffff",
+                  fontSize: "0.88rem", fontWeight: 700, cursor: "pointer",
                   transition: "opacity 0.2s",
                 }}
                 onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")}
@@ -193,38 +200,57 @@ function Projects() {
           </div>
         </div>
 
-        {/* Visuel */}
+        {/* Visuel — framed window */}
         <div
           onClick={media ? () => setCaseStudyOpen(true) : undefined}
           style={{
-            borderRadius: "1.5rem",
+            border: `1px solid ${termBorder}`,
+            background: cardBg,
             overflow: "hidden",
-            background: project.gradient,
-            height: isMobile ? "260px" : "420px",
-            transition: "background 0.4s ease",
             cursor: media ? "pointer" : "default",
             position: "relative",
           }}
         >
-          {cover && (
-            <img
-              src={cover}
-              alt={project.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-            />
-          )}
+          {/* Title bar */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.55rem 0.85rem", background: titleBarBg, borderBottom: `1px solid ${termBorder}` }}>
+            <span style={{ fontSize: "0.78rem", color: c.accent.gold }}>$</span>
+            <span style={{ fontSize: "0.78rem", color: c.text.faint }}>
+              ~/projects/{project.id}
+            </span>
+          </div>
+          {/* Cover */}
+          <div style={{ background: project.gradient, height: isMobile ? "240px" : "380px", overflow: "hidden", position: "relative" }}>
+            {cover && (
+              <img
+                src={cover}
+                alt={project.title}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            )}
+            {media && (
+              <span style={{
+                position: "absolute", bottom: "0.75rem", right: "0.75rem",
+                fontSize: "0.75rem", fontWeight: 600,
+                padding: "0.25rem 0.6rem",
+                background: "rgba(13,17,23,0.8)", color: "#ededec",
+                border: "1px solid rgba(255,255,255,0.15)",
+              }}>
+                &gt; open case study
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Show All */}
       <div style={{ display: "flex", justifyContent: "center", marginTop: "3rem" }}>
         <button style={{
-          padding: "0.75rem 2rem",
-          border: `1px solid ${dark ? "#45475a" : c.border.default}`,
-          borderRadius: "999px",
+          padding: "0.7rem 1.8rem",
+          border: `1px solid ${dark ? "#3d444d" : c.border.default}`,
+          borderRadius: 0,
           background: "transparent",
-          color: dark ? "#7f849c" : c.text.muted,
-          fontSize: "0.95rem",
+          color: dark ? "#6e7681" : c.text.muted,
+          fontSize: "0.9rem",
           fontWeight: 500,
           cursor: "pointer",
           transition: "border-color 0.2s, color 0.2s",
@@ -234,8 +260,8 @@ function Projects() {
             (e.currentTarget as HTMLButtonElement).style.color = c.text.primary;
           }}
           onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = dark ? "#45475a" : c.border.default;
-            (e.currentTarget as HTMLButtonElement).style.color = dark ? "#7f849c" : c.text.muted;
+            (e.currentTarget as HTMLButtonElement).style.borderColor = dark ? "#3d444d" : c.border.default;
+            (e.currentTarget as HTMLButtonElement).style.color = dark ? "#6e7681" : c.text.muted;
           }}
         >
           {t.projects.showAll}

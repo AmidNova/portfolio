@@ -1,31 +1,44 @@
 import { useLang } from "./context/LangContext";
 
 const palette = {
-  crust: "#11111b",
-  mantle: "#181825",
-  base: "#1e1e2e",
-  surface0: "#313244",
-  surface1: "#45475a",
-  overlay0: "#6c7086",
-  overlay1: "#7f849c",
-  subtext0: "#a6adc8",
-  subtext1: "#bac2de",
-  ctpText: "#cdd6f4",
+  // Terminal dark (GitHub-dark inspired, neutral — no lavender tint)
+  crust: "#0d1117",
+  mantle: "#161b22",
+  base: "#21262d",
+  surface0: "#30363d",
+  surface1: "#3d444d",
+  overlay0: "#6e7681",
+  overlay1: "#8b949e",
+  subtext0: "#8b949e",
+  subtext1: "#adbac7",
+  ctpText: "#e6edf3",
 
-  neutralLight: "#f5f5f5",
-  neutralSubtle: "#f3f4f6",
-  neutralMuted: "#e2e2e8",
-  neutralBorder: "#e5e7eb",
-  neutralBorderSoft: "#cdd6f4",
-  gray400: "#9ca3af",
-  gray500: "#6b7280",
-  gray600: "#4b5563",
+  // Light — cool neutral (Tailwind zinc/slate, 2026 tech standard)
+  neutralLight: "#fafafa",   // zinc-50
+  neutralSubtle: "#f4f4f5",  // zinc-100
+  neutralMuted: "#e4e4e7",   // zinc-200
+  neutralBorder: "#e4e4e7",  // zinc-200
+  neutralBorderSoft: "#f4f4f5",
+  gray400: "#a1a1aa",        // zinc-400 (faint)
+  gray500: "#52525b",        // zinc-600 (muted)
+  gray600: "#3f3f46",        // zinc-700 (secondary)
 
-  ink: "#1a1a2e",
+  ink: "#18181b",            // zinc-900
   white: "#ffffff",
-  gold: "#f5c518",
-  goldDim: "#c9a43a",
-  goldSoft: "rgba(245,197,24,0.1)",
+
+  // Accent green (GitHub Primer success) — primary
+  gold: "#1a7f37",          // light-mode accent
+  goldDim: "#176b2f",       // light-mode dimmed
+  goldSoft: "rgba(26,127,55,0.1)",
+  greenBright: "#3fb950",   // dark-mode accent (Primer success.fg)
+  greenBrightDim: "#2ea043",
+  greenSoftDark: "rgba(63,185,80,0.12)",
+
+  // Amber (GitHub Primer attention) — secondary accent, used sparingly
+  amber: "#9a6700",          // light-mode secondary
+  amberDark: "#d29922",      // dark-mode secondary
+  amberSoft: "rgba(154,103,0,0.1)",
+  amberSoftDark: "rgba(210,153,34,0.14)",
 
   linkedin: "#0077b5",
 } as const;
@@ -53,6 +66,8 @@ export interface ThemeColors {
     gold: string;
     goldSoft: string;
     goldDim: string;
+    secondary: string;
+    secondarySoft: string;
   };
   brand: {
     ink: string;
@@ -87,9 +102,11 @@ export const getColors = (dark: boolean): ThemeColors => ({
     subtle: dark ? palette.base : palette.neutralSubtle,
   },
   accent: {
-    gold: palette.gold,
-    goldSoft: palette.goldSoft,
-    goldDim: palette.goldDim,
+    gold: dark ? palette.greenBright : palette.gold,
+    goldSoft: dark ? palette.greenSoftDark : palette.goldSoft,
+    goldDim: dark ? palette.greenBrightDim : palette.goldDim,
+    secondary: dark ? palette.amberDark : palette.amber,
+    secondarySoft: dark ? palette.amberSoftDark : palette.amberSoft,
   },
   brand: {
     ink: palette.ink,

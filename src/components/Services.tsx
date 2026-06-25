@@ -15,29 +15,35 @@ function Services() {
   const c = useThemeColors();
   const cols = isMobile ? 1 : isTablet ? 1 : 3;
 
+  const termBorder = dark ? "#30363d" : c.border.default;
+  const cardBg = dark ? "#161b22" : "#ffffff";
+
   return (
     <section
       style={{
-        padding: isMobile ? "5rem 1.25rem 4rem" : "5rem 5rem 6rem",
+        padding: isMobile ? "5rem 1.25rem 4rem" : "5rem 2.5rem 6rem",
         maxWidth: "72rem",
         margin: "0 auto",
       }}
     >
       {/* Header */}
       <div style={{ marginBottom: "2.5rem" }}>
-        <p style={{ fontSize: "1rem", fontWeight: 600, color: c.accent.gold, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.4rem" }}>
-          {t.services.label}
+        <p style={{ fontSize: "0.95rem", color: c.text.muted, marginBottom: "0.5rem" }}>
+          <span style={{ color: c.accent.gold }}>$</span> ls <span style={{ color: dark ? "#79c0ff" : "#0969da" }}>./services</span>
         </p>
-        <h2 style={{ fontSize: isMobile ? "2rem" : "2.5rem", fontWeight: 800, color: c.text.primary, lineHeight: 1 }}>
+        <h2 style={{ fontSize: isMobile ? "1.9rem" : "2.4rem", fontWeight: 800, color: c.text.primary, lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: "0.4rem" }}>
           {t.services.title}
         </h2>
+        <p className="tnum" style={{ fontSize: "0.8rem", color: c.text.faint }}>
+          → {t.services.cards.length} capabilities
+        </p>
       </div>
 
       <div
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gap: "1.25rem",
+          gap: "1rem",
         }}
       >
         {t.services.cards.map((card, i) => {
@@ -46,47 +52,45 @@ function Services() {
             <div
               key={i}
               style={{
+                position: "relative",
                 padding: isMobile ? "1.75rem" : "2rem",
-                borderRadius: "1.25rem",
-                background: c.bg.elevated,
-                border: `1px solid ${dark ? c.bg.muted : "rgba(0,0,0,0.06)"}`,
-                boxShadow: dark
-                  ? "0 0 0 1px rgba(255,255,255,0.03)"
-                  : "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)",
-                transition: "box-shadow 0.25s ease, transform 0.25s ease",
+                background: cardBg,
+                border: `1px solid ${termBorder}`,
+                transition: "border-color 0.2s ease, transform 0.2s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.boxShadow = dark
-                  ? "0 0 0 1px rgba(255,255,255,0.07), 0 8px 32px rgba(0,0,0,0.4)"
-                  : "0 8px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06)";
+                (e.currentTarget as HTMLDivElement).style.borderColor = c.accent.gold;
                 (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.boxShadow = dark
-                  ? "0 0 0 1px rgba(255,255,255,0.03)"
-                  : "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)";
+                (e.currentTarget as HTMLDivElement).style.borderColor = termBorder;
                 (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
               }}
             >
-              {/* Icon bubble */}
+              {/* Index */}
+              <span style={{ position: "absolute", top: "1.25rem", right: "1.25rem", fontSize: "0.8rem", fontWeight: 600, color: c.accent.secondary }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+
+              {/* Icon box */}
               <div
                 style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "0.875rem",
-                  background: dark ? c.accent.goldSoft : c.brand.ink,
+                  width: "44px",
+                  height: "44px",
+                  border: `1px solid ${c.accent.gold}`,
+                  background: c.accent.goldSoft,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   marginBottom: "1.5rem",
                 }}
               >
-                <Icon size={24} strokeWidth={1.75} color={c.accent.gold} />
+                <Icon size={22} strokeWidth={1.75} color={c.accent.gold} />
               </div>
 
               <h3
                 style={{
-                  fontSize: "1.15rem",
+                  fontSize: "1.1rem",
                   fontWeight: 700,
                   color: c.text.primary,
                   lineHeight: 1.3,
@@ -97,10 +101,11 @@ function Services() {
                 {card.title}
               </h3>
               <p
+                className="prose"
                 style={{
-                  fontSize: "0.95rem",
+                  fontSize: "0.92rem",
                   color: c.text.muted,
-                  lineHeight: 1.75,
+                  lineHeight: 1.8,
                 }}
               >
                 {card.description}

@@ -110,7 +110,7 @@ function Career() {
   };
 
   const metaIconColor = c.text.faint;
-  const statusBadgeBg = dark ? "rgba(245,197,24,0.1)" : "rgba(245,197,24,0.12)";
+  const statusBadgeBg = c.accent.goldSoft;
 
   return (
     <section
@@ -134,25 +134,17 @@ function Career() {
         }}
       >
         <div style={{ position: "relative" }}>
-          <p
-            style={{
-              fontSize: "1rem",
-              fontWeight: 600,
-              color: c.accent.gold,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              marginBottom: "0.4rem",
-            }}
-          >
-            {t.career.soFar}
+          <p style={{ fontSize: "0.95rem", color: c.text.muted, marginBottom: "0.6rem" }}>
+            <span style={{ color: c.accent.gold }}>$</span> cat <span style={{ color: dark ? "#79c0ff" : "#0969da" }}>career.log</span>
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <h2
               style={{
-                fontSize: isMobile ? "2rem" : "2.5rem",
+                fontSize: isMobile ? "1.9rem" : "2.4rem",
                 fontWeight: 800,
                 color: c.text.primary,
-                lineHeight: 1,
+                lineHeight: 1.1,
+                letterSpacing: "-0.02em",
               }}
             >
               {t.career.title}
@@ -163,44 +155,21 @@ function Career() {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.6rem",
-                  padding: "0.5rem 1rem 0.5rem 0.5rem",
-                  border: "1px solid rgba(232,160,160,0.35)",
-                  borderRadius: "9999px",
-                  background: "rgba(232,160,160,0.07)",
+                  gap: "0.5rem",
+                  padding: "0.45rem 0.85rem",
+                  border: `1px solid ${c.accent.goldSoft}`,
+                  borderRadius: 0,
+                  background: c.accent.goldSoft,
                   cursor: "pointer",
-                  transition: "background 0.2s, border-color 0.2s",
+                  fontFamily: "inherit",
+                  transition: "border-color 0.2s",
                 }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(232,160,160,0.14)";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(232,160,160,0.6)";
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(232,160,160,0.07)";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(232,160,160,0.35)";
-                }}
+                onMouseEnter={e => ((e.currentTarget as HTMLButtonElement).style.borderColor = c.accent.gold)}
+                onMouseLeave={e => ((e.currentTarget as HTMLButtonElement).style.borderColor = c.accent.goldSoft)}
               >
-                {/* Video bubble */}
-                <span style={{
-                  width: "28px",
-                  height: "28px",
-                  borderRadius: "50%",
-                  background: c.accent.goldDim,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}>
-                  <Video size={13} color="white" strokeWidth={2} />
-                </span>
-                <span style={{
-                  fontSize: "0.88rem",
-                  color: c.accent.goldDim,
-                  fontStyle: "italic",
-                  fontFamily: "Georgia, serif",
-                  whiteSpace: "nowrap",
-                }}>
-                  {t.career.hearMe}
+                <Video size={14} color={c.accent.goldDim} strokeWidth={2} />
+                <span style={{ fontSize: "0.82rem", color: c.accent.goldDim, whiteSpace: "nowrap" }}>
+                  ./{t.career.hearMe}
                 </span>
               </button>
             )}
@@ -213,40 +182,22 @@ function Career() {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "0.6rem",
-            padding: "0.6rem 1.1rem 0.6rem 0.7rem",
-            borderRadius: "9999px",
-            background: c.brand.ink,
-            color: c.brand.inkContrast,
-            fontSize: "0.9rem",
-            fontWeight: 600,
-            textDecoration: "none",
-            letterSpacing: "0.01em",
-            boxShadow: "0 2px 12px rgba(26,26,46,0.18)",
-            transition: "transform 0.2s, box-shadow 0.2s",
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-1px)";
-            (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 20px rgba(26,26,46,0.28)";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
-            (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 2px 12px rgba(26,26,46,0.18)";
-          }}
-        >
-          <span style={{
-            width: "26px",
-            height: "26px",
-            borderRadius: "50%",
+            gap: "0.5rem",
+            padding: "0.6rem 1.2rem",
+            borderRadius: 0,
             background: c.accent.gold,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}>
-            <ArrowDownToLine size={13} color={c.text.onAccent} strokeWidth={2.5} />
-          </span>
-          {t.career.resume}
+            color: dark ? "#0b1f17" : "#ffffff",
+            fontSize: "0.88rem",
+            fontWeight: 700,
+            textDecoration: "none",
+            border: `1px solid ${c.accent.gold}`,
+            transition: "opacity 0.2s",
+          }}
+          onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.opacity = "0.85")}
+          onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.opacity = "1")}
+        >
+          <ArrowDownToLine size={15} strokeWidth={2.5} />
+          &gt; {t.career.resume}
         </a>
       </div>
 
@@ -275,7 +226,7 @@ function Career() {
               style={{
                 textAlign: "left",
                 padding: isMobile ? "0.5rem 0.85rem" : "0.75rem 1rem",
-                borderRadius: "0.5rem",
+                borderRadius: 0,
                 border: "none",
                 cursor: "pointer",
                 fontWeight: active === exp.id ? 700 : 400,
@@ -302,7 +253,7 @@ function Career() {
         {/* Détail */}
         <div style={{
           padding: isMobile ? "1.5rem" : "2rem",
-          borderRadius: "1.25rem",
+          borderRadius: 0,
           background: c.bg.elevated,
           border: `1px solid ${dark ? c.bg.muted : "rgba(0,0,0,0.06)"}`,
           boxShadow: dark ? "none" : "0 4px 24px rgba(0,0,0,0.05)",
@@ -314,14 +265,14 @@ function Career() {
                 <img
                   src={current.logo}
                   alt={current.company}
-                  style={{ width: "52px", height: "52px", objectFit: "contain", borderRadius: "0.75rem", border: `1px solid ${dark ? c.border.default : "#cdd6f4"}`, padding: "6px", background: "#fff", flexShrink: 0 }}
+                  style={{ width: "52px", height: "52px", objectFit: "contain", borderRadius: 0, border: `1px solid ${dark ? c.border.default : "#cdd6f4"}`, padding: "6px", background: "#fff", flexShrink: 0 }}
                 />
               )}
               <div>
                 <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: c.text.primary, marginBottom: "0.2rem" }}>
                   {current.company}
                 </h3>
-                <p style={{ fontSize: "0.9rem", color: c.text.muted }}>
+                <p className="prose" style={{ fontSize: "0.9rem", color: c.text.muted }}>
                   {current.subtitle}
                 </p>
               </div>
@@ -329,7 +280,7 @@ function Career() {
 
             <span style={{
               fontSize: "0.72rem", fontWeight: 600, flexShrink: 0,
-              padding: "0.25rem 0.65rem", borderRadius: "999px",
+              padding: "0.25rem 0.65rem", borderRadius: 0,
               background: statusBadgeBg,
               color: c.accent.goldDim, letterSpacing: "0.08em", textTransform: "uppercase",
             }}>
@@ -380,7 +331,7 @@ function Career() {
                   padding: "0.4rem 0.6rem",
                   background: dark ? "rgba(255,255,255,0.04)" : "#f9fafb",
                   border: `1px solid ${dark ? "rgba(255,255,255,0.06)" : "#cdd6f4"}`,
-                  borderRadius: "0.5rem",
+                  borderRadius: 0,
                 }}>
                   {tool.icon}
                 </div>
@@ -394,7 +345,7 @@ function Career() {
               {current.bullets.map((bullet, i) => (
                 <div key={i} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
                   <span style={{ color: c.accent.gold, fontWeight: 700, marginTop: "0.2rem", flexShrink: 0, fontSize: "0.75rem" }}>▸</span>
-                  <p style={{ fontSize: "0.9rem", color: dark ? c.text.muted : "#4b5563", lineHeight: 1.7 }}>{bullet}</p>
+                  <p className="prose" style={{ fontSize: "0.9rem", color: dark ? c.text.muted : "#3a3a33", lineHeight: 1.75 }}>{bullet}</p>
                 </div>
               ))}
             </div>

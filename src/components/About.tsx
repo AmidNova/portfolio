@@ -124,6 +124,7 @@ function About() {
   };
 
   const body: CSSProperties = {
+    fontFamily: "var(--font-sans)",
     fontSize: "1rem",
     color: c.text.muted,
     lineHeight: 2.05,
@@ -312,7 +313,7 @@ function About() {
               display: "inline-flex", alignItems: "center", gap: "0.75rem",
               padding: "0.6rem 1.25rem",
               border: "1px solid rgba(245,197,24,0.3)",
-              borderRadius: "9999px", alignSelf: "flex-start",
+              borderRadius: 0, alignSelf: "flex-start",
             }}>
               <span>🏆</span>
               <span style={{ fontSize: "0.82rem", fontWeight: 700, color: c.accent.goldDim, letterSpacing: "0.03em" }}>
@@ -379,9 +380,9 @@ function About() {
               style={{
                 display: "inline-flex", alignItems: "center",
                 padding: "1rem 2.5rem",
-                background: c.accent.gold, color: c.text.onAccent,
+                background: c.accent.gold, color: dark ? "#0b1f17" : "#ffffff",
                 fontWeight: 700, fontSize: "1rem",
-                textDecoration: "none", borderRadius: "9999px",
+                textDecoration: "none", borderRadius: 0,
                 transition: "transform .25s ease",
               }}
               onMouseEnter={liftOnHover}
@@ -397,7 +398,7 @@ function About() {
                 border: `1px solid ${dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)"}`,
                 color: dark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)",
                 fontWeight: 600, fontSize: "1rem",
-                textDecoration: "none", borderRadius: "9999px",
+                textDecoration: "none", borderRadius: 0,
                 transition: "transform .25s ease",
               }}
               onMouseEnter={liftOnHover}

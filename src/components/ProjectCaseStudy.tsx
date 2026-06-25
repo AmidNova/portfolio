@@ -37,7 +37,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
   const mediaContent = t.projects.media?.[projectId as keyof typeof t.projects.media];
   const shots = mediaContent?.shots ?? {};
   const architecture = (mediaContent as { architecture?: string } | undefined)?.architecture;
-  const cardBg = dark ? "#1e1e2e" : "#ffffff";
+  const cardBg = dark ? "#21262d" : "#ffffff";
   const chipBg = dark ? "rgba(255,255,255,0.05)" : "rgba(26,26,46,0.06)";
   const chipBorder = dark ? "rgba(255,255,255,0.08)" : "rgba(26,26,46,0.1)";
 
@@ -55,7 +55,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
   const boxStyle = {
     background: chipBg,
     border: `1px solid ${chipBorder}`,
-    borderRadius: "0.9rem",
+    borderRadius: 0,
     padding: "1.25rem",
     display: "flex",
     flexDirection: "column" as const,
@@ -84,7 +84,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
         onClick={(e) => e.stopPropagation()}
         style={{
           background: cardBg,
-          borderRadius: "1.25rem",
+          borderRadius: 0,
           maxWidth: "60rem",
           width: "100%",
           padding: isMobile ? "1.5rem" : "2.5rem",
@@ -103,7 +103,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
               flexShrink: 0,
               width: "40px",
               height: "40px",
-              borderRadius: "50%",
+              borderRadius: 0,
               border: `1px solid ${chipBorder}`,
               background: chipBg,
               cursor: "pointer",
@@ -121,10 +121,10 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
           {tags.map((tag) => (
             <span key={tag} style={{
               padding: "0.3rem 0.8rem",
-              borderRadius: "999px",
+              borderRadius: 0,
               background: chipBg,
               border: `1px solid ${chipBorder}`,
-              color: dark ? "#bac2de" : "#4b5563",
+              color: dark ? "#adbac7" : "#4b5563",
               fontSize: "0.85rem",
               fontWeight: 500,
             }}>
@@ -136,7 +136,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
         {/* Overview */}
         <section style={{ marginBottom: "2rem" }}>
           <p style={sectionLabelStyle}>{t.projects.sectionOverview}</p>
-          <p style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.75 }}>
+          <p className="prose" style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.8 }}>
             {description}
           </p>
         </section>
@@ -146,7 +146,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
           <section style={{ marginBottom: "2rem" }}>
             <p style={sectionLabelStyle}>{t.projects.sectionArchitecture}</p>
             {architecture && (
-              <p style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.75, marginBottom: media.architectureImage ? "1.25rem" : 0 }}>
+              <p className="prose" style={{ fontSize: "1rem", color: c.text.muted, lineHeight: 1.8, marginBottom: media.architectureImage ? "1.25rem" : 0 }}>
                 {architecture}
               </p>
             )}
@@ -159,9 +159,9 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
                   width: "100%",
                   maxHeight: "min(70vh, 560px)",
                   objectFit: "contain",
-                  borderRadius: "0.75rem",
+                  borderRadius: 0,
                   border: `1px solid ${chipBorder}`,
-                  background: dark ? "#181825" : "#f8f8fb",
+                  background: dark ? "#161b22" : "#f8f8fb",
                   padding: "1rem",
                   display: "block",
                 }}
@@ -187,7 +187,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
                       src={shot.src}
                       alt={caption || title}
                       loading="lazy"
-                      style={{ width: "100%", borderRadius: "0.6rem", border: `1px solid ${chipBorder}`, display: "block" }}
+                      style={{ width: "100%", borderRadius: 0, border: `1px solid ${chipBorder}`, display: "block" }}
                     />
                     {caption && (
                       <figcaption style={{ fontSize: "0.8rem", color: c.text.faint, marginTop: "0.4rem" }}>
@@ -223,9 +223,9 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
                     maxHeight: "min(32vh, 240px)",
                     aspectRatio: "16 / 9",
                     objectFit: "contain",
-                    borderRadius: "0.6rem",
+                    borderRadius: 0,
                     border: `1px solid ${chipBorder}`,
-                    background: dark ? "#11111b" : "#0a0a0a",
+                    background: dark ? "#0d1117" : "#0a0a0a",
                     display: "block",
                   }}
                 />
@@ -251,7 +251,7 @@ function ProjectCaseStudy({ projectId, title, description, tags, media, onClose 
                     alignItems: "center",
                     gap: "0.5rem",
                     padding: "0.7rem 1.4rem",
-                    borderRadius: "999px",
+                    borderRadius: 0,
                     background: c.text.primary,
                     color: c.text.inverse,
                     fontSize: "0.9rem",

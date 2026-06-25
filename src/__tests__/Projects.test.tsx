@@ -24,7 +24,7 @@ describe("Projects", () => {
   it("affiche le titre de section", () => {
     renderProjects();
     expect(screen.getByText("Projects")).toBeInTheDocument();
-    expect(screen.getByText("Featured")).toBeInTheDocument();
+    expect(screen.getByText("./projects")).toBeInTheDocument();
   });
 
   it("affiche le premier projet (Wikipedia Pulse) au démarrage", () => {

@@ -1,13 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="22" fill="#f0f0f0"/>
-  <text
-    x="50"
-    y="73"
-    font-family="Georgia, 'Times New Roman', serif"
-    font-size="68"
-    font-weight="700"
-    fill="#1a1a2e"
-    text-anchor="middle"
-    font-style="italic"
-  >A</text>
+  <rect width="100" height="100" fill="#0d1117"/>
+  <rect x="3" y="3" width="94" height="94" fill="none" stroke="#30363d" stroke-width="2"/>
+  <g fill="none" stroke="#3fb950" stroke-width="9" stroke-linecap="square" stroke-linejoin="miter">
+    <polyline points="24,34 44,50 24,66"/>
+    <line x1="52" y1="68" x2="78" y2="68"/>
+  </g>
 </svg>

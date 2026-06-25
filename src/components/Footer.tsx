@@ -9,51 +9,57 @@ function Footer() {
   const { isMobile } = useResponsive();
   const c = useThemeColors();
 
+  const termBorder = dark ? "#30363d" : c.border.default;
+
   return (
     <footer
       style={{
-        borderTop: `1px solid ${dark ? c.border.default : c.border.subtle}`,
+        borderTop: `1px solid ${termBorder}`,
         background: dark ? c.bg.page : "transparent",
-        padding: isMobile ? "2.5rem 1.25rem" : "3rem 5rem",
+        padding: isMobile ? "2.5rem 1.25rem" : "2.5rem 2.5rem",
         maxWidth: "72rem",
         margin: "0 auto",
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: isMobile ? "2rem" : "0",
+        gap: isMobile ? "1.75rem" : "0",
         textAlign: isMobile ? "center" : "left",
       }}
     >
-      {/* Left */}
+      {/* Left — prompt identity */}
       <div>
-        <p style={{ fontWeight: 800, fontSize: "1rem", color: c.text.primary, marginBottom: "0.25rem" }}>
-          SA <span style={{ color: c.accent.gold }}>·</span> Soro Amidou
+        <p style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "0.3rem" }}>
+          <span style={{ color: c.accent.gold }}>soro</span>
+          <span style={{ color: c.text.faint }}>@portfolio</span>
+          <span style={{ color: c.text.muted }}>:~$</span>
         </p>
-        <p style={{ fontSize: "0.95rem", color: c.text.faint }}>{t.footer.built}</p>
+        <p style={{ fontSize: "0.82rem", color: c.text.faint }}>
+          <span style={{ color: c.text.muted }}>#</span> {t.footer.built}
+        </p>
       </div>
 
       {/* Center — CTA */}
       <div style={{ textAlign: "center" }}>
-        <p style={{ fontSize: "0.95rem", color: c.text.muted, marginBottom: "0.75rem" }}>
+        <p style={{ fontSize: "0.9rem", color: c.text.muted, marginBottom: "0.75rem" }}>
           {t.footer.cta}
         </p>
         <a
           href="mailto:amidousorox23@gmail.com"
           style={{
-            padding: "0.6rem 1.5rem",
-            background: c.text.primary,
-            color: c.text.inverse,
-            fontWeight: 600,
-            fontSize: "0.95rem",
-            borderRadius: "9999px",
+            padding: "0.6rem 1.4rem",
+            background: c.accent.gold,
+            color: dark ? "#0b1f17" : "#ffffff",
+            fontWeight: 700,
+            fontSize: "0.9rem",
+            border: `1px solid ${c.accent.gold}`,
             textDecoration: "none",
             transition: "opacity 0.2s",
           }}
           onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"}
           onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.opacity = "1"}
         >
-          {t.footer.sendMessage}
+          &gt; {t.footer.sendMessage}
         </a>
       </div>
 
@@ -71,7 +77,7 @@ function Footer() {
             rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
             aria-label={label}
             style={{ color: c.icon.default, display: "flex", transition: "color 0.2s" }}
-            onMouseEnter={e => (e.currentTarget.style.color = c.icon.hover)}
+            onMouseEnter={e => (e.currentTarget.style.color = c.accent.gold)}
             onMouseLeave={e => (e.currentTarget.style.color = c.icon.default)}
           >
             <Icon size={20} />

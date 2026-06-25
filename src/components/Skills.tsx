@@ -33,6 +33,7 @@ import imgTs         from "../assets/icons/typescript.svg";
 import imgVue        from "../assets/icons/vuejs.svg";
 import { useLang }       from "../context/LangContext";
 import { useResponsive } from "../hooks/useResponsive";
+import Pipeline from "./Pipeline";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -107,9 +108,9 @@ interface SkillBadgeProps {
 }
 
 function SkillBadge({ skill, dark }: SkillBadgeProps) {
-  const txt     = dark ? "#cdd6f4" : "#1a1a2e";
-  const badgeBg = dark ? "#181825" : "#fff";
-  const border  = dark ? "rgba(205,214,244,0.12)" : "rgba(0,0,0,0.15)";
+  const txt     = dark ? "#e6edf3" : "#18181b";
+  const badgeBg = dark ? "#161b22" : "#fff";
+  const border  = dark ? "rgba(173,186,199,0.14)" : "rgba(0,0,0,0.15)";
   const shadow  = dark ? "0 2px 8px rgba(0,0,0,0.4)" : "0 2px 8px rgba(0,0,0,0.06)";
 
   return (
@@ -120,8 +121,8 @@ function SkillBadge({ skill, dark }: SkillBadgeProps) {
         gap: "0.55rem",
         padding: "0.55rem 1.1rem",
         background: badgeBg,
-        border: `1px dashed ${border}`,
-        borderRadius: "0.625rem",
+        border: `1px solid ${border}`,
+        borderRadius: 0,
         boxShadow: shadow,
         fontSize: "0.9rem",
         fontWeight: 600,
@@ -151,35 +152,31 @@ function Skills() {
   const { t, dark } = useLang();
   const { isMobile } = useResponsive();
 
-  const bg    = dark ? "#11111b" : "#f5f5f0";
-  const txt   = dark ? "#cdd6f4" : "#1a1a2e";
-  const muted = dark ? "#a6adc8" : "#4b5563";
-  const divider = dark ? "rgba(205,214,244,0.08)" : "rgba(0,0,0,0.08)";
+  const bg    = dark ? "#0d1117" : "#fafafa";
+  const txt   = dark ? "#e6edf3" : "#18181b";
+  const muted = dark ? "#8b949e" : "#4b5563";
+  const divider = dark ? "rgba(173,186,199,0.1)" : "rgba(0,0,0,0.08)";
 
   return (
     <section style={{ background: bg, padding: isMobile ? "5rem 1.5rem" : "8rem 5rem" }}>
       <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
 
         {/* Header */}
-        <p style={{
-          fontSize: "0.72rem",
-          fontWeight: 700,
-          letterSpacing: "0.25em",
-          textTransform: "uppercase",
-          color: "#f5c518",
-          marginBottom: "0.65rem",
-        }}>
-          {t.skills.label}
+        <p style={{ fontSize: "0.95rem", color: muted, marginBottom: "0.5rem" }}>
+          <span style={{ color: dark ? "#3fb950" : "#1a7f37" }}>$</span> cat <span style={{ color: dark ? "#79c0ff" : "#0969da" }}>skills.json</span>
         </p>
         <h2 style={{
-          fontSize: isMobile ? "2rem" : "clamp(2rem, 3vw, 2.75rem)",
+          fontSize: isMobile ? "1.9rem" : "clamp(1.9rem, 3vw, 2.5rem)",
           fontWeight: 800,
           color: txt,
-          letterSpacing: "-0.025em",
-          marginBottom: "3.5rem",
+          letterSpacing: "-0.02em",
+          marginBottom: "0.4rem",
         }}>
           {t.skills.title}
         </h2>
+        <p className="tnum" style={{ fontSize: "0.8rem", color: dark ? "#8b949e" : "#a1a1aa", marginBottom: "3.5rem" }}>
+          → {GROUPS.reduce((n, g) => n + g.items.length, 0)} entries · {GROUPS.length} domains
+        </p>
 
         {/* Grouped by role */}
         <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
@@ -202,15 +199,20 @@ function Skills() {
                 }}>
                   {g.title}
                 </h3>
-                <p style={{
+                <p className="prose" style={{
                   fontSize: "1rem",
                   color: muted,
-                  lineHeight: 1.7,
+                  lineHeight: 1.75,
                   maxWidth: "46rem",
                   marginBottom: "1.5rem",
                 }}>
                   {g.blurb}
                 </p>
+                {group.key === "data" && (
+                  <div style={{ marginBottom: "1.75rem", maxWidth: "46rem" }}>
+                    <Pipeline steps={["SSE", "Kafka", "Airflow", "Spark", "Elasticsearch", "Kibana"]} dark={dark} />
+                  </div>
+                )}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
                   {group.items.map((skill) => (
                     <SkillBadge key={skill.label} skill={skill} dark={dark} />

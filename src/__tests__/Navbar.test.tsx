@@ -22,16 +22,16 @@ beforeEach(() => {
 });
 
 describe("Navbar", () => {
-  it("affiche le logo avec le nom", () => {
+  it("affiche le logo prompt avec le nom", () => {
     renderNavbar();
-    expect(screen.getByText("SA")).toBeInTheDocument();
-    expect(screen.getByText("Soro Amidou")).toBeInTheDocument();
+    expect(screen.getByText("soro")).toBeInTheDocument();
+    expect(screen.getByText("@portfolio")).toBeInTheDocument();
   });
 
   it("affiche les liens de navigation Home et About", () => {
     renderNavbar();
-    expect(screen.getByText("Home")).toBeInTheDocument();
-    expect(screen.getByText("About")).toBeInTheDocument();
+    expect(screen.getByText(/home/i)).toBeInTheDocument();
+    expect(screen.getByText(/about/i)).toBeInTheDocument();
   });
 
   it("affiche les liens sociaux (GitHub, LinkedIn, email)", () => {
