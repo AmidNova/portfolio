@@ -1,7 +1,7 @@
 import { ArrowLeft, Code2, Github, Lock, PlayCircle, RotateCcw, Star } from "lucide-react";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { PROJECTS, type ProjectMeta } from "../data/profile";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { filterByTech, parseTechParam, techOptions } from "../lib/projectFilter";

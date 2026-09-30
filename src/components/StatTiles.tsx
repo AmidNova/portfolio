@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import type { IconType } from "react-icons";
 import { PiBriefcaseFill, PiBuildingsFill, PiSealCheckFill } from "react-icons/pi";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { CERTIFICATIONS, EXPERIENCE, LINKS, PROJECT_COUNT } from "../data/profile";
 
 interface Stat {

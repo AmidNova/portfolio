@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 
 export interface LightboxImage {
   src: string;

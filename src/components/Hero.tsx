@@ -1,6 +1,6 @@
 import { BadgeCheck, FileText, Github, GraduationCap, Languages, Linkedin, Mail, MapPin } from "lucide-react";
 import Portrait from "../assets/images/Confident professional in office attire.webp";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { LINKS } from "../data/profile";
 
 /** Identity tile: who, what, where, and the ways to reach me — all above the fold. */

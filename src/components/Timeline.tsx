@@ -1,7 +1,7 @@
 import { Globe, Linkedin } from "lucide-react";
 import type { ComponentType } from "react";
 import { SiX } from "react-icons/si";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import type { OrgLinks, TimelineEntry } from "../data/profile";
 import { formatPeriod } from "../lib/format";
 

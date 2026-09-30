@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LangProvider, useLang } from "../context/LangContext";
+import { LangProvider } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 
 function LangDisplay() {
   const { lang, setLang, t, dark, toggleDark } = useLang();

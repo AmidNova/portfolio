@@ -1,6 +1,6 @@
 import { Check, Copy, Github, Linkedin, Mail, MessagesSquare } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { EMAIL, LINKS } from "../data/profile";
 
 const FEEDBACK_MS = 2000;
