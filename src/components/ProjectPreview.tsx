@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { FolderGit2 } from "lucide-react";
+import { useId, type ReactNode } from "react";
 import { useLang } from "../context/LangContext";
 import type { ProjectMeta } from "../data/profile";
 import ArchitectureDiagram from "./ArchitectureDiagram";
@@ -158,17 +159,47 @@ function StarSchema() {
   );
 }
 
-/** The one picture that explains each project: its architecture, flow or model. */
-function ProjectVisual({ id, compact = false }: { id: ProjectMeta["id"]; compact?: boolean }) {
-  switch (id) {
-    case "wikipedia-pulse":
-      // Full size keeps its labels legible by scrolling; a thumbnail zooms in on the middle, cropped like a screenshot.
-      return <ArchitectureDiagram className={compact ? "w-[165%]! max-w-none shrink-0" : "min-w-[560px]"} />;
-    case "retail-pipeline":
-      return <RetailFlow />;
-    case "healthcare-bi":
-      return <StarSchema />;
-  }
+type VisualId = ProjectMeta["id"];
+
+/**
+ * The one picture that explains each project: its architecture, flow or model.
+ * A project without an entry falls back to a plain frame, so new projects can ship before their diagram.
+ */
+const VISUALS: Partial<Record<VisualId, (compact: boolean) => ReactNode>> = {
+  // Full size keeps its labels legible by scrolling; compact zooms in on the middle, cropped like a screenshot.
+  "wikipedia-pulse": (compact) => (
+    <ArchitectureDiagram className={compact ? "w-[165%]! max-w-none shrink-0" : "min-w-[560px]"} />
+  ),
+  "retail-pipeline": () => <RetailFlow />,
+  "healthcare-bi": () => <StarSchema />,
+};
+
+interface ProjectPreviewProps {
+  project: ProjectMeta;
+  /** Show the title in the frame's corner (thumbnails that have no heading of their own). */
+  captioned?: boolean;
+  className?: string;
 }
 
-export default ProjectVisual;
+/** A project's visual in a screenshot-like 16:9 frame — shared by the home thumbnails and the projects page. */
+function ProjectPreview({ project, captioned = false, className = "" }: ProjectPreviewProps) {
+  const visual = VISUALS[project.id]?.(true);
+  return (
+    <figure
+      aria-label={project.title}
+      className={`relative flex aspect-video items-center justify-center overflow-hidden bg-bg px-3 pt-8 pb-3 ${className}`}
+    >
+      {captioned && (
+        <figcaption className="absolute top-3 left-4 z-10 text-xs font-medium text-subtle">{project.title}</figcaption>
+      )}
+      {visual ?? (
+        <span aria-hidden="true" className="flex flex-col items-center gap-2 text-subtle">
+          <FolderGit2 size={32} className="text-accent" />
+          <span className="text-sm font-medium">{project.title}</span>
+        </span>
+      )}
+    </figure>
+  );
+}
+
+export default ProjectPreview;

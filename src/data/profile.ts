@@ -84,7 +84,7 @@ export const TOOLBOX: { name: string; proof?: ToolProof }[] = [
   { name: "Spark", proof: "wikipedia-pulse" },
   { name: "AWS", proof: "certifications" },
   { name: "SQL", proof: "retail-pipeline" },
-  { name: "Docker" },
+  { name: "Docker", proof: "retail-pipeline" },
   { name: "Airflow", proof: "wikipedia-pulse" },
   { name: "Databricks", proof: "certifications" },
   { name: "DuckDB", proof: "healthcare-bi" },
@@ -93,14 +93,22 @@ export const TOOLBOX: { name: string; proof?: ToolProof }[] = [
   { name: "Elasticsearch", proof: "wikipedia-pulse" },
   { name: "Azure" },
   { name: "Terraform" },
-  { name: "dbt" },
+  { name: "dbt", proof: "retail-pipeline" },
   { name: "Kibana", proof: "wikipedia-pulse" },
 ];
 
+/**
+ * One entry per project. Adding a project = an entry here + its copy in src/locales
+ * (t.projects.items); the projects page, its filters and counters follow on their own.
+ */
 export interface ProjectMeta {
   id: "wikipedia-pulse" | "retail-pipeline" | "healthcare-bi";
   title: string;
   tags: string[];
+  /** Public source repository; no repo, no "Code" button. */
+  repo?: string;
+  /** Pinned first and badged on the projects page. */
+  featured?: boolean;
 }
 
 export const PROJECTS: ProjectMeta[] = [
@@ -108,11 +116,14 @@ export const PROJECTS: ProjectMeta[] = [
     id: "wikipedia-pulse",
     title: "Wikipedia Pulse",
     tags: ["Kafka", "PySpark", "Airflow", "scikit-learn", "Elasticsearch", "Kibana"],
+    repo: "https://github.com/AmidNova/wikipedia-pulse",
+    featured: true,
   },
   {
     id: "retail-pipeline",
     title: "Retail Data Pipeline",
-    tags: ["GCP", "GCS", "BigQuery", "BigQuery ML", "SQL"],
+    tags: ["GCP", "GCS", "BigQuery", "Airflow", "dbt", "Soda", "BigQuery ML", "Metabase", "Docker"],
+    repo: "https://github.com/AmidNova/retail-gcp-pipeline",
   },
   {
     id: "healthcare-bi",

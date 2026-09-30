@@ -5,7 +5,7 @@ import { PROJECTS, type ProjectMeta } from "../data/profile";
 import AboutSection from "./AboutSection";
 import { Card, CardHeader } from "./Card";
 import Marquee from "./Marquee";
-import ProjectVisual from "./ProjectVisuals";
+import ProjectPreview from "./ProjectPreview";
 import Toolbox from "./Toolbox";
 
 /** Thin tiles that wrap existing sections in the bento card shell. */
@@ -54,16 +54,10 @@ export function ServicesCard() {
   );
 }
 
-/** A project's architecture diagram, framed like a screenshot; opens the project's detail. */
+/** A project's thumbnail; opens the project's card on the projects page. */
 const projectThumb = (project: ProjectMeta) => (
   <Link to={`/projects#project-${project.id}`} aria-label={project.title} className="tile-link block rounded-xl">
-    <figure
-      aria-label={project.title}
-      className="relative flex aspect-video w-96 items-center justify-center overflow-hidden rounded-xl border border-line bg-bg px-3 pt-8 pb-3"
-    >
-      <figcaption className="absolute top-3 left-4 z-10 text-xs font-medium text-subtle">{project.title}</figcaption>
-      <ProjectVisual id={project.id} compact />
-    </figure>
+    <ProjectPreview project={project} captioned className="w-96 rounded-xl border border-line" />
   </Link>
 );
 
