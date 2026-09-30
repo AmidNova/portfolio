@@ -8,15 +8,23 @@ const en = {
   },
   cards: {
     about: { subtitle: "How I came to data engineering" },
-    projects: { subtitle: "Pipelines, warehouses and BI — each shown by its architecture" },
+    projects: { subtitle: "Pipelines, warehouses and BI — each shown by its architecture", viewAll: "View all projects" },
     journey: { title: "Journey", subtitle: "Where I've worked and studied" },
     credentials: { title: "Certifications & languages", subtitle: "Verified skills and the languages I work in" },
-    live: { title: "Live", subtitle: "Wikipedia edits, streamed right now" },
+    services: {
+      title: "Services",
+      subtitle: "What I bring to a data team",
+      rows: [
+        ["ETL / ELT pipelines", "Real-time streaming", "Data warehousing", "Airflow orchestration"],
+        ["Dimensional modelling", "Data quality", "BI dashboards", "Cloud infra as code"],
+      ],
+    },
     contact: { title: "Let's talk about your internship" },
     stats: {
       projects: "Projects",
       projectsLink: "on GitHub",
       certifications: "Certifications",
+      experience: "Experiences",
     },
   },
   nav: {
@@ -38,10 +46,6 @@ const en = {
     status: "Looking for a Data Engineering internship",
     available: "From January 2027",
     location: "Paris, France",
-    pulse: {
-      label: "Wikipedia edits/min",
-      title: "Live from the public Wikimedia stream — the same source as Wikipedia Pulse",
-    },
     // The only résumé is in French — say so rather than surprise an English reader.
     badge: "Available from January 2027",
     chips: {

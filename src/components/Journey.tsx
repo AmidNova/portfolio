@@ -18,7 +18,7 @@ function Journey() {
   ];
 
   return (
-    <Card id="experience" labelledBy="journey-title">
+    <Card id="experience" labelledBy="journey-title" className="flex-1">
       <CardHeader id="journey-title" icon={Route} title={t.cards.journey.title} subtitle={t.cards.journey.subtitle} />
       <div role="tablist" aria-label={t.cards.journey.title} className="mb-6 grid grid-cols-2 gap-1 rounded-lg bg-bg p-1">
         {tabs.map(({ key, label }) => (

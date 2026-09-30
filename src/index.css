@@ -43,6 +43,12 @@
 }
 
 /* Toolbox tiles fall in, overshoot a little and settle. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @keyframes drop {
   from {
     opacity: 0;
@@ -285,6 +291,46 @@
     .toolbox[data-dropped] .toolbox-tile {
       opacity: 1;
       animation: none;
+    }
+  }
+
+  /* Services marquee: two copies slide by half the track for a seamless loop. */
+  .marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 32s linear infinite;
+  }
+  .marquee-slow .marquee-track {
+    animation-duration: 45s;
+  }
+  .marquee[data-reverse] .marquee-track {
+    animation-direction: reverse;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  .marquee-copy {
+    display: flex;
+    gap: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      mask-image: none;
+    }
+    .marquee-track {
+      width: auto;
+      animation: none;
+    }
+    .marquee-copy {
+      flex-wrap: wrap;
+    }
+    .marquee-copy[aria-hidden] {
+      display: none;
     }
   }
 

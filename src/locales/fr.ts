@@ -8,15 +8,23 @@ const fr = {
   },
   cards: {
     about: { subtitle: "Comment je suis venu à la donnée" },
-    projects: { subtitle: "Pipelines, entrepôts et BI — chacun montré par son architecture" },
+    projects: { subtitle: "Pipelines, entrepôts et BI — chacun montré par son architecture", viewAll: "Voir tous les projets" },
     journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
     credentials: { title: "Certifications & langues", subtitle: "Compétences vérifiées et langues de travail" },
-    live: { title: "En direct", subtitle: "Les éditions Wikipédia, en ce moment" },
+    services: {
+      title: "Services",
+      subtitle: "Ce que j'apporte à une équipe data",
+      rows: [
+        ["Pipelines ETL / ELT", "Streaming temps réel", "Entrepôts de données", "Orchestration Airflow"],
+        ["Modélisation dimensionnelle", "Qualité des données", "Tableaux de bord BI", "Infra cloud as code"],
+      ],
+    },
     contact: { title: "Parlons de votre stage" },
     stats: {
       projects: "Projets",
       projectsLink: "sur GitHub",
       certifications: "Certifications",
+      experience: "Expériences",
     },
   },
   nav: {
@@ -38,10 +46,6 @@ const fr = {
     status: "Recherche un stage en Data Engineering",
     available: "Dès janvier 2027",
     location: "Paris, France",
-    pulse: {
-      label: "éditions Wikipédia/min",
-      title: "En direct du flux public Wikimedia — la même source que Wikipedia Pulse",
-    },
     badge: "Disponible dès janvier 2027",
     chips: {
       languages: "Français & anglais",

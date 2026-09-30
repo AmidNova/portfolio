@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react";
 import type { IconType } from "react-icons";
-import { PiBriefcaseFill, PiSealCheckFill } from "react-icons/pi";
+import { PiBriefcaseFill, PiBuildingsFill, PiSealCheckFill } from "react-icons/pi";
 import { useLang } from "../context/LangContext";
-import { CERTIFICATIONS, LINKS, PROJECT_COUNT } from "../data/profile";
+import { CERTIFICATIONS, EXPERIENCE, LINKS, PROJECT_COUNT } from "../data/profile";
 
 interface Stat {
   value: number;
@@ -33,8 +33,9 @@ function StatTile({ value, isFloor, label, context, icon: Icon, href, external }
           </span>
           {isFloor && <Plus strokeWidth={4.5} className="size-9 text-accent sm:size-11" />}
         </span>
-        <span aria-hidden="true" className="inline-flex items-center gap-2 rounded-xl bg-raised px-3 py-2 text-sm font-medium text-subtle transition-colors group-hover:text-fg sm:text-base">
-          <Icon className="size-5 shrink-0 text-accent" />
+        <span aria-hidden="true" className="inline-flex max-w-full items-center gap-2 rounded-xl bg-raised px-2 py-1.5 text-xs font-medium text-subtle transition-colors group-hover:text-fg sm:px-3 sm:py-2 sm:text-base">
+          {/* Three tiles share a phone's width: the label keeps the room, the icon waits for sm. */}
+          <Icon className="hidden size-5 shrink-0 text-accent sm:block" />
           {label}
         </span>
       </a>
@@ -42,7 +43,7 @@ function StatTile({ value, isFloor, label, context, icon: Icon, href, external }
   );
 }
 
-/** Profile-level numbers in kkmihai's tile shape; the third slot waits for its figure. */
+/** Profile-level numbers in kkmihai's tile shape, each counted from the data it links to. */
 function StatTiles() {
   const { t } = useLang();
   const stats: Stat[] = [
@@ -61,6 +62,12 @@ function StatTiles() {
       icon: PiSealCheckFill,
       href: "#credentials",
     },
+    {
+      value: EXPERIENCE.length,
+      label: t.cards.stats.experience,
+      icon: PiBuildingsFill,
+      href: "#experience",
+    },
   ];
 
   return (
@@ -68,7 +75,6 @@ function StatTiles() {
       {stats.map((stat) => (
         <StatTile key={stat.label} {...stat} />
       ))}
-      <li role="presentation" aria-hidden="true" className="card min-h-40" />
     </ul>
   );
 }

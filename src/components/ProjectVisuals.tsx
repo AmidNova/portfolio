@@ -159,10 +159,11 @@ function StarSchema() {
 }
 
 /** The one picture that explains each project: its architecture, flow or model. */
-function ProjectVisual({ id }: { id: ProjectMeta["id"] }) {
+function ProjectVisual({ id, compact = false }: { id: ProjectMeta["id"]; compact?: boolean }) {
   switch (id) {
     case "wikipedia-pulse":
-      return <ArchitectureDiagram className="min-w-[560px]" />;
+      // Full size keeps its labels legible by scrolling; a thumbnail just shrinks to fit.
+      return <ArchitectureDiagram className={compact ? "" : "min-w-[560px]"} />;
     case "retail-pipeline":
       return <RetailFlow />;
     case "healthcare-bi":

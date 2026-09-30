@@ -7,12 +7,13 @@ import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import {
   AboutCard,
-  LiveCard,
   ProjectsCard,
+  ServicesCard,
   StackCard,
 } from "./components/HomeCards";
 import Journey from "./components/Journey";
 import Navbar from "./components/Navbar";
+import Projects from "./components/Projects";
 import StatTiles from "./components/StatTiles";
 import { LangProvider, useLang } from "./context/LangContext";
 import { useDocumentMeta } from "./hooks/useDocumentMeta";
@@ -23,21 +24,24 @@ function Home() {
   useDocumentMeta(t.meta.homeTitle, t.meta.homeDescription);
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 px-4 pt-6 sm:px-6">
+      {/* Two balanced rows of two columns; min-w-0 stops marquees from widening a column. */}
       <div className="grid gap-4 lg:grid-cols-[5fr_6fr]">
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <Hero />
           <AboutCard />
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <StackCard />
           <StatTiles />
-          <LiveCard />
+          <ServicesCard />
         </div>
       </div>
-      <ProjectsCard />
-      <div className="grid gap-4 lg:grid-cols-[6fr_5fr]">
-        <Journey />
-        <div className="flex flex-col gap-4">
+      <div className="grid gap-4 lg:grid-cols-[5fr_6fr]">
+        <div className="flex min-w-0 flex-col gap-4">
+          <ProjectsCard />
+          <Journey />
+        </div>
+        <div className="flex min-w-0 flex-col gap-4">
           <Credentials />
           <Contact />
         </div>
@@ -72,6 +76,15 @@ function AppShell() {
       <main id="main">
         <Routes>
           <Route path="/" element={<Home />} />
+          {/* Full project detail — to be redesigned; the home card only summarizes. */}
+          <Route
+            path="/projects"
+            element={
+              <div className="mx-auto max-w-[1100px] px-4 pt-6 sm:px-6">
+                <Projects />
+              </div>
+            }
+          />
           <Route
             path="/about"
             element={

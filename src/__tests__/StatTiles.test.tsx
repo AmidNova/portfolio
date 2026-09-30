@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import StatTiles from "../components/StatTiles";
 import { LangProvider } from "../context/LangContext";
-import { CERTIFICATIONS, LINKS } from "../data/profile";
+import { CERTIFICATIONS, EXPERIENCE, LINKS } from "../data/profile";
 
 beforeEach(() => {
   localStorage.clear();
@@ -31,9 +31,10 @@ describe("StatTiles", () => {
     expect(CERTIFICATIONS.map((c) => c.issuer)).toContain("Scrimba");
   });
 
-  it("garde une troisième tuile vide, invisible pour les lecteurs d'écran", () => {
+  it("compte les expériences professionnelles et renvoie au parcours", () => {
     renderTiles();
-    expect(screen.getAllByRole("listitem")).toHaveLength(2);
-    expect(screen.getAllByRole("link")).toHaveLength(2);
+    const link = screen.getByRole("link", { name: new RegExp(`^${EXPERIENCE.length} expériences$`, "i") });
+    expect(link).toHaveAttribute("href", "#experience");
+    expect(screen.getAllByRole("link")).toHaveLength(3);
   });
 });

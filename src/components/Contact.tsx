@@ -10,7 +10,7 @@ function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="card flex flex-col items-center justify-center px-6 py-10 text-center"
+      className="card flex flex-1 flex-col items-center justify-center px-6 py-10 text-center"
     >
       <span className="flex size-20 items-center justify-center rounded-full border border-line bg-bg">
         <MessagesSquare size={34} aria-hidden="true" className="text-accent" />
