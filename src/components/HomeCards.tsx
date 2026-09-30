@@ -74,8 +74,8 @@ export function ProjectsCard() {
       />
       <Marquee items={PROJECTS} keyOf={(p) => p.id} renderItem={projectThumb} className="marquee-slow" />
       <div className="relative z-10 -mt-12 flex justify-center">
-        <Link to="/projects" className="glass btn h-12 px-6 text-base shadow-lg shadow-black/30">
-          <Boxes size={20} aria-hidden="true" className="text-accent" />
+        <Link to="/projects" className="btn btn-primary h-12 px-6 text-base shadow-lg shadow-black/40">
+          <Boxes size={20} aria-hidden="true" />
           {t.cards.projects.viewAll}
         </Link>
       </div>
