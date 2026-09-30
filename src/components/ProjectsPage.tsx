@@ -35,7 +35,7 @@ function ProjectTile({ project, onOpenCaseStudy }: ProjectTileProps) {
             {project.title}
           </h2>
           {project.featured && (
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent/15 px-2.5 py-1 text-xs font-semibold text-accent">
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent">
               <Star size={12} aria-hidden="true" className="fill-current" />
               {t.projects.page.featured}
             </span>

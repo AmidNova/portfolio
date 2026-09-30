@@ -17,6 +17,8 @@
   --color-subtle: #6b6b74;
   --color-accent: #6d5bd0;
   --color-accent-ink: #ffffff;
+  /* Tinted fill for badges and active states: the accent at low strength, per theme. */
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 12%, transparent);
   --color-ok: #16a34a;
 
   --animate-enter: enter 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -80,15 +82,15 @@
 }
 
 @layer base {
-  /* Near-black page, cards a shade lighter, hairline borders, one lavender accent. */
+  /* Near-black page, cards a visible step lighter, hairline borders, one lavender accent. */
   .dark {
-    --color-bg: #0d0c0d;
-    --color-card: #0f0f10;
-    --color-raised: #1e1e1f;
-    --color-line: #1e1e1f;
+    --color-bg: #0b0b0c;
+    --color-card: #121214;
+    --color-raised: #1c1c1f;
+    --color-line: #232327;
     --color-fg: #fafafa;
-    --color-muted: #a1a1aa;
-    --color-subtle: #8e8e97;
+    --color-muted: #a3a3ad;
+    --color-subtle: #8a8a96;
     --color-accent: #b2a7fb;
     --color-accent-ink: #050505;
     --color-ok: #22c55e;
@@ -111,6 +113,13 @@
   h2,
   h3 {
     text-wrap: balance;
+    letter-spacing: -0.022em;
+  }
+  /* Dates, counts and figures line up in columns. */
+  time,
+  dd,
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
   p,
   li,
@@ -157,11 +166,31 @@
     color: transparent;
   }
 
+  /* Cards: hairline border plus a faint top light edge, so they read as lit from above. */
   .card {
     border: 1px solid var(--color-line);
-    border-radius: 11px;
+    border-radius: 12px;
     background: var(--color-card);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      0 1px 2px rgb(0 0 0 / 0.04);
+  }
+  .dark .card {
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.018), transparent 120px), var(--color-card);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.05),
+      0 1px 2px rgb(0 0 0 / 0.4);
+  }
+
+  /* Frosted glass, used sparingly: sticky nav, overlay buttons, modal backdrops. */
+  .glass {
+    background: color-mix(in srgb, var(--color-card) 62%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    backdrop-filter: blur(14px) saturate(150%);
+    border: 1px solid rgb(255 255 255 / 0.5);
+  }
+  .dark .glass {
+    border-color: rgb(255 255 255 / 0.08);
   }
 
   .btn {

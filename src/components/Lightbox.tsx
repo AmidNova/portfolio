@@ -55,7 +55,7 @@ function Lightbox({ images, index, onIndexChange, onClose }: LightboxProps) {
       role="dialog"
       aria-modal="true"
       aria-label={current.caption}
-      className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/90 p-4 sm:p-12"
+      className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/85 p-4 backdrop-blur-md sm:p-12"
       onClick={onClose}
     >
       <button

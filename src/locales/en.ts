@@ -1,21 +1,21 @@
 const en = {
   meta: {
-    homeTitle: "Soro Amidou — Data Engineer",
+    homeTitle: "Soro Amidou · Data Engineer",
     homeDescription:
       "Engineering student at ISEP Paris, AWS and Databricks certified. Real-time pipelines (Kafka, Spark, Airflow), BigQuery warehouses and BI. Looking for a Data Engineering internship from January 2027.",
-    projectsTitle: "Projects — Soro Amidou",
+    projectsTitle: "Projects · Soro Amidou",
     projectsDescription: "Real-time pipelines, BigQuery warehouses and BI: Soro Amidou's data projects, with architecture, figures and code.",
-    aboutTitle: "About — Soro Amidou",
+    aboutTitle: "About · Soro Amidou",
     aboutDescription: "The longer story: from equations to data engineering, by Soro Amidou.",
   },
   cards: {
-    about: { subtitle: "How I came to data engineering" },
-    projects: { subtitle: "Pipelines, warehouses and BI — each shown by its architecture", viewAll: "View all projects" },
+    about: { subtitle: "From equations to pipelines." },
+    projects: { subtitle: "Pipelines, warehouses and BI, each explained by its diagram.", viewAll: "View all projects" },
     journey: { title: "Journey", subtitle: "Where I've worked and studied" },
     credentials: { title: "Certifications & languages", subtitle: "Verified skills and the languages I work in" },
     services: {
       title: "Services",
-      subtitle: "What I bring to a data team",
+      subtitle: "Where I can help a data team.",
       rows: [
         ["ETL / ELT pipelines", "Real-time streaming", "Data warehousing", "Airflow orchestration"],
         ["Dimensional modelling", "Data quality", "BI dashboards", "Cloud infra as code"],
@@ -53,7 +53,6 @@ const en = {
     chips: {
       languages: "French & English",
       school: "ISEP Paris",
-      certs: "AWS · Databricks",
     },
     resume: "Résumé (FR)",
   },
@@ -61,7 +60,7 @@ const en = {
     title: "About",
     body: [
       "I got into engineering through data: taking a raw, messy stream and turning it into something people can trust and act on. Today I work mostly with Kafka, Airflow and Spark, and I deploy on AWS with a Solutions Architect mindset.",
-      "I care about systems that keep working after the first demo — clear data contracts, orchestration you can reason about, and infrastructure you can rebuild from code.",
+      "I care about systems that keep working after the first demo: clear data contracts, orchestration you can reason about, and infrastructure you can rebuild from code.",
     ],
     more: "The longer story",
   },
@@ -75,7 +74,7 @@ const en = {
     },
     entries: {
       bozarts: {
-        role: "Full-stack developer — team project",
+        role: "Full-stack developer, team project",
         bullets: [
           "Built an artisan marketplace: user profiles, product listings, cart and real-time messaging.",
           "Designed the normalized MySQL schema and handled access control and database administration.",
@@ -89,14 +88,14 @@ const en = {
         ],
       },
       isep: {
-        role: "Engineering degree — Information Systems Architecture",
+        role: "Engineering degree, Information Systems Architecture",
         bullets: [
           "Specialisation in databases, Big Data and enterprise systems.",
           "Core courses in networks, systems architecture and cloud security.",
         ],
       },
       estm: {
-        role: "Preparatory classes MPSI/MP — Mathematics, Physics, Engineering",
+        role: "Preparatory classes MPSI/MP: mathematics, physics, engineering",
         bullets: [],
       },
     },
@@ -106,7 +105,7 @@ const en = {
   },
   skills: {
     title: "Toolbox",
-    subtitle: "The data tools I work with",
+    subtitle: "My toolbox",
     hint: "› hover a tool",
     count: "tools",
     certification: "Certification",
@@ -115,7 +114,7 @@ const en = {
     title: "Projects",
     page: {
       title: "My projects",
-      subtitle: "Pipelines, warehouses and BI — each shown by its architecture. Filter by tech, open a case study or read the code.",
+      subtitle: "Pipelines, warehouses and BI, each explained by its diagram. Filter by tech, open a case study or read the code.",
       back: "Back to home",
       filter: "Technologies",
       shown: { one: "project shown", other: "projects shown" },
@@ -187,7 +186,7 @@ const en = {
       "retail-pipeline": {
         status: "2026",
         summary:
-          "Millions of raw retail transactions turned into a reliable BigQuery warehouse, with a quality gate at every stage — then 30-day sales forecasting and customer segmentation.",
+          "Millions of raw retail transactions turned into a reliable BigQuery warehouse, with a quality gate at every stage, then 30-day sales forecasting and customer segmentation.",
         metrics: [
           { value: "30 days", label: "forecast horizon" },
           { value: "2", label: "BigQuery ML models" },
@@ -208,12 +207,12 @@ const en = {
     media: {
       "wikipedia-pulse": {
         architecture:
-          "Two sources feed the pipeline: Wikimedia's real-time SSE stream (lead indicator) and the Wikimedia API in batch (lag indicator, D+1). Kafka buffers the stream; a 6-task Airflow DAG orchestrates the flow. Spark computes raw usage and an Isolation Forest model flags anomalies — results are indexed in Elasticsearch and visualised in Kibana.",
+          "Two sources feed the pipeline: Wikimedia's real-time SSE stream (lead indicator) and the Wikimedia API in batch (lag indicator, D+1). Kafka buffers the stream; a 6-task Airflow DAG orchestrates the flow. Spark computes raw usage and an Isolation Forest model flags anomalies. Results are indexed in Elasticsearch and visualised in Kibana.",
         shots: {
           metric: "Real-time KPIs on the live edit stream",
-          trending1: "Trending articles — surfacing spikes",
+          trending1: "Trending articles: surfacing spikes",
           trending2: "Trending breakdown by topic",
-          scoop: "Scoop detection — early edit bursts",
+          scoop: "Scoop detection: early edit bursts",
           country: "Edit activity by country",
           tempo: "Edit tempo histogram over time",
           velocity: "Editorial velocity per article",
@@ -229,12 +228,12 @@ const en = {
     title: "Languages",
     items: [
       { label: "French", value: "Native" },
-      { label: "English", value: "B2 — professional" },
+      { label: "English", value: "B2, professional use" },
     ],
   },
   contact: {
     title: "Contact",
-    body: "I'm looking for a Data Engineering internship starting January 2027. Email is the fastest way to reach me — I reply within a day or two.",
+    body: "I'm looking for a Data Engineering internship starting January 2027. Leave a message and I'll get back to you promptly.",
     cta: "Send an email",
     copy: "Copy",
     copied: "Copied",
@@ -257,7 +256,7 @@ const en = {
         title: "The day equations came alive",
         body: [
           "Then I discovered code, and something clicked. I could give body to equations, represent the real world inside a machine, and turn logic into something someone could feel.",
-          "For the first time, I understood — this was my medium.",
+          "For the first time, I understood: this was my medium.",
         ],
         caption: "Paris",
       },
@@ -267,13 +266,13 @@ const en = {
           "I believe the best engineers are also storytellers: an idea that can't be communicated doesn't exist.",
           "So when I won the eloquence championship at ISEP, it felt like both sides finally clicked together.",
         ],
-        caption: "Eloquence championship — ISEP",
+        caption: "Eloquence championship, ISEP",
       },
     ],
     offClock: {
       title: "Off the clock",
       items: [
-        { title: "Reading", desc: "History, philosophy, novels — the older the better." },
+        { title: "Reading", desc: "History, philosophy, novels: the older the better." },
         { title: "Chess", desc: "A love for systems and strategy. Every game is a problem to solve." },
         { title: "Running", desc: "The only time I stop thinking about code. Almost." },
       ],
