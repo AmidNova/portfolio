@@ -61,7 +61,7 @@ function Timeline({ entries }: TimelineProps) {
               width={40}
               height={40}
               loading="lazy"
-              className="relative size-10 shrink-0 rounded-full border border-line bg-white object-contain p-1.5 dark:border-white/10 dark:bg-zinc-200"
+              className="relative size-10 shrink-0 rounded-full border border-line bg-white object-contain p-1.5 dark:border-white/10 dark:bg-stone-200"
             />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-baseline justify-between gap-x-4">
