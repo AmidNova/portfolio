@@ -1,6 +1,6 @@
 import { Boxes, FolderGit2, PencilRuler, UserRound, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { PROJECTS, type ProjectMeta } from "../data/profile";
 import AboutSection from "./AboutSection";
 import { Card, CardHeader } from "./Card";

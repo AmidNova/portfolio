@@ -1,7 +1,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 
 const LANGS = ["fr", "en"] as const;
 

@@ -15,7 +15,8 @@ import Journey from "./components/Journey";
 import Navbar from "./components/Navbar";
 import ProjectsPage from "./components/ProjectsPage";
 import StatTiles from "./components/StatTiles";
-import { LangProvider, useLang } from "./context/LangContext";
+import { LangProvider } from "./context/LangContext";
+import { useLang } from "./hooks/useLang";
 import { useDocumentMeta } from "./hooks/useDocumentMeta";
 
 /** Bento home: identity + story on the left, tools and numbers on the right, work below. */

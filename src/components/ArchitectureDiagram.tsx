@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 
 type NodeKey = "sse" | "api" | "kafka" | "airflow" | "spark" | "iforest" | "es" | "kibana";
 

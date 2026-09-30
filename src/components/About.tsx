@@ -5,7 +5,7 @@ import PhotoLouvre from "../assets/images/MoiAuLouvre.webp";
 import PhotoLit from "../assets/images/MoiQuiLit.webp";
 import PhotoSeul from "../assets/images/MoiSeul.webp";
 import PhotoTrophee from "../assets/images/MoiEtTrophéEloquence.webp";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 // One photo per chapter, in the same order as t.story.chapters.

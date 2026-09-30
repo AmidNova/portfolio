@@ -1,5 +1,5 @@
 import { Award } from "lucide-react";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { CERTIFICATIONS } from "../data/profile";
 import { Card, CardHeader } from "./Card";
 

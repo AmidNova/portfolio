@@ -1,6 +1,6 @@
 import { FolderGit2 } from "lucide-react";
 import { useId, type ReactNode } from "react";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import type { ProjectMeta } from "../data/profile";
 import ArchitectureDiagram from "./ArchitectureDiagram";
 

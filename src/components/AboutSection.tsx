@@ -1,6 +1,6 @@
 import { ArrowRight, BookOpen, Crown, Footprints } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 
 // Same order as t.story.offClock.items: reading, chess, running.
 const OFF_CLOCK_ICONS = [BookOpen, Crown, Footprints];

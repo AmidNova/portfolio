@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { PROJECTS, TOOLBOX, type ToolProof } from "../data/profile";
 import { SKILL_ICONS } from "../data/skillIcons";
 

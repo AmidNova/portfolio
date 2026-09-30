@@ -1,7 +1,7 @@
 import { FileText, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import type { ProjectMeta } from "../data/profile";
 import ArchitectureDiagram from "./ArchitectureDiagram";
 import Lightbox, { type LightboxImage } from "./Lightbox";

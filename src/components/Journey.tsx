@@ -1,6 +1,6 @@
 import { Route } from "lucide-react";
 import { useId, useState } from "react";
-import { useLang } from "../context/LangContext";
+import { useLang } from "../hooks/useLang";
 import { EDUCATION, EXPERIENCE } from "../data/profile";
 import { Card, CardHeader } from "./Card";
 import Timeline from "./Timeline";
