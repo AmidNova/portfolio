@@ -6,6 +6,20 @@ const en = {
     aboutTitle: "About — Soro Amidou",
     aboutDescription: "The longer story: from equations to data engineering, by Soro Amidou.",
   },
+  cards: {
+    about: { subtitle: "How I came to data engineering" },
+    stack: { subtitle: "The tools I build with, grouped like my résumé" },
+    projects: { subtitle: "Pipelines, warehouses and BI — each shown by its architecture" },
+    journey: { title: "Journey", subtitle: "Where I've worked and studied" },
+    credentials: { title: "Certifications & languages", subtitle: "Verified skills and the languages I work in" },
+    live: { title: "Live", subtitle: "Wikipedia edits, streamed right now" },
+    contact: { title: "Let's talk about your internship" },
+    stats: [
+      { value: "365", label: "pre-viral events" },
+      { value: "55,500", label: "admissions modelled" },
+      { value: "2", label: "certifications" },
+    ],
+  },
   nav: {
     home: "Home",
     projects: "Projects",
@@ -30,6 +44,12 @@ const en = {
       title: "Live from the public Wikimedia stream — the same source as Wikipedia Pulse",
     },
     // The only résumé is in French — say so rather than surprise an English reader.
+    badge: "Available from January 2027",
+    chips: {
+      languages: "French & English",
+      school: "ISEP Paris",
+      certs: "AWS · Databricks",
+    },
     resume: "Résumé (FR)",
   },
   about: {

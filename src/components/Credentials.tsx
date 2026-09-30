@@ -1,40 +1,45 @@
+import { Award } from "lucide-react";
 import { useLang } from "../context/LangContext";
 import { CERTIFICATIONS } from "../data/profile";
+import { Card, CardHeader } from "./Card";
 
-/** Certifications and spoken languages, side by side. */
+/** Certifications and spoken languages, side by side in one tile. */
 function Credentials() {
   const { t } = useLang();
 
   return (
-    <div className="mt-24 grid gap-10 sm:mt-32 sm:grid-cols-2">
-      <section aria-labelledby="certs-title">
-        <h2 id="certs-title" className="mb-5 text-xl font-semibold tracking-tight">
-          {t.certifications.title}
-        </h2>
-        <ul className="space-y-3">
-          {CERTIFICATIONS.map((c) => (
-            <li key={c.name}>
-              <p className="text-sm font-medium">{c.name}</p>
-              <p className="text-sm text-subtle">{c.issuer}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="langs-title">
-        <h2 id="langs-title" className="mb-5 text-xl font-semibold tracking-tight">
-          {t.languages.title}
-        </h2>
-        <dl className="space-y-3">
-          {t.languages.items.map((l) => (
-            <div key={l.label}>
-              <dt className="text-sm font-medium">{l.label}</dt>
-              <dd className="text-sm text-subtle">{l.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-    </div>
+    <Card labelledBy="credentials-title">
+      <CardHeader
+        id="credentials-title"
+        icon={Award}
+        title={t.cards.credentials.title}
+        subtitle={t.cards.credentials.subtitle}
+      />
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div>
+          <h3 className="mb-3 text-sm font-medium text-subtle">{t.certifications.title}</h3>
+          <ul className="space-y-2">
+            {CERTIFICATIONS.map((c) => (
+              <li key={c.name} className="rounded-lg bg-bg px-4 py-3">
+                <p className="text-sm font-medium">{c.name}</p>
+                <p className="text-xs text-subtle">{c.issuer}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 className="mb-3 text-sm font-medium text-subtle">{t.languages.title}</h3>
+          <dl className="space-y-2">
+            {t.languages.items.map((l) => (
+              <div key={l.label} className="rounded-lg bg-bg px-4 py-3">
+                <dt className="text-sm font-medium">{l.label}</dt>
+                <dd className="text-xs text-subtle">{l.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </Card>
   );
 }
 

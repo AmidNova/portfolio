@@ -33,7 +33,8 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
   });
 
   const [dark, setDark] = useState(() => {
-    return localStorage.getItem("dark") === "true";
+    // Dark is the default look; only an explicit choice of light turns it off.
+    return localStorage.getItem("dark") !== "false";
   });
 
   // Apply dark class on mount

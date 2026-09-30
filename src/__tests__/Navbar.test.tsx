@@ -43,11 +43,11 @@ describe("Navbar", () => {
     expect(screen.getByRole("link", { name: "Projects" })).toBeInTheDocument();
   });
 
-  it("bascule le mode sombre", async () => {
+  it("part du mode sombre et bascule en clair", async () => {
     const user = userEvent.setup();
     renderNavbar();
-    await user.click(screen.getByLabelText("Passer en mode sombre"));
-    expect(document.body.classList.contains("dark")).toBe(true);
-    expect(screen.getByLabelText("Passer en mode clair")).toBeInTheDocument();
+    await user.click(screen.getByLabelText("Passer en mode clair"));
+    expect(document.body.classList.contains("dark")).toBe(false);
+    expect(screen.getByLabelText("Passer en mode sombre")).toBeInTheDocument();
   });
 });

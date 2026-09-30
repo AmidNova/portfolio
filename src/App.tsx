@@ -1,46 +1,48 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import About from "./components/About";
-import AboutSection from "./components/AboutSection";
 import Contact from "./components/Contact";
 import Credentials from "./components/Credentials";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
+import {
+  AboutCard,
+  LiveCard,
+  ProjectsCard,
+  StackCard,
+} from "./components/HomeCards";
+import Journey from "./components/Journey";
 import Navbar from "./components/Navbar";
-import Projects from "./components/Projects";
-import Section from "./components/Section";
-import Skills from "./components/Skills";
-import Timeline from "./components/Timeline";
+import StatTiles from "./components/StatTiles";
 import { LangProvider, useLang } from "./context/LangContext";
-import { EDUCATION, EXPERIENCE } from "./data/profile";
 import { useDocumentMeta } from "./hooks/useDocumentMeta";
 
+/** Bento home: identity + story on the left, tools and numbers on the right, work below. */
 function Home() {
   const { t } = useLang();
   useDocumentMeta(t.meta.homeTitle, t.meta.homeDescription);
   return (
-    <>
-      <Hero />
-      <Section id="about" title={t.about.title}>
-        <AboutSection />
-      </Section>
-      <Section id="projects" title={t.projects.title} wide>
-        <Projects />
-      </Section>
-      <Section id="experience" title={t.experience.title}>
-        <Timeline entries={EXPERIENCE} />
-      </Section>
-      <Section id="education" title={t.education.title}>
-        <Timeline entries={EDUCATION} />
-      </Section>
-      <Section id="skills" title={t.skills.title}>
-        <Skills />
-      </Section>
-      <Credentials />
-      <Section id="contact" title={t.contact.title}>
-        <Contact />
-      </Section>
-    </>
+    <div className="mx-auto flex max-w-[1100px] flex-col gap-4 px-4 pt-6 sm:px-6">
+      <div className="grid gap-4 lg:grid-cols-[5fr_6fr]">
+        <div className="flex flex-col gap-4">
+          <Hero />
+          <AboutCard />
+        </div>
+        <div className="flex flex-col gap-4">
+          <StackCard />
+          <StatTiles />
+          <LiveCard />
+        </div>
+      </div>
+      <ProjectsCard />
+      <div className="grid gap-4 lg:grid-cols-[6fr_5fr]">
+        <Journey />
+        <div className="flex flex-col gap-4">
+          <Credentials />
+          <Contact />
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -67,10 +69,17 @@ function AppShell() {
         {t.a11y.skipToContent}
       </a>
       <Navbar />
-      <main id="main" className="mx-auto max-w-2xl px-6">
+      <main id="main">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route
+            path="/about"
+            element={
+              <div className="mx-auto max-w-2xl px-6">
+                <About />
+              </div>
+            }
+          />
         </Routes>
       </main>
       <Footer />

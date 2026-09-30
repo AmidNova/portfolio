@@ -35,7 +35,7 @@ function useShouldStream(ref: React.RefObject<HTMLElement | null>): boolean {
 }
 
 /** The site's signature: Wikipedia's live edit rate, drawn as it happens. */
-function LivePulse() {
+function LivePulse({ width = WIDTH, height = HEIGHT }: { width?: number; height?: number }) {
   const { t, lang } = useLang();
   const ref = useRef<HTMLDivElement>(null);
   const { status, series, perMinute } = useWikiPulse(useShouldStream(ref));
@@ -44,7 +44,7 @@ function LivePulse() {
   if (status === "error") return null;
 
   const live = status === "live";
-  const points = sparklinePoints(series, WIDTH, HEIGHT);
+  const points = sparklinePoints(series, width, height);
   const head = points.at(-1);
   const rate = new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-US").format(perMinute);
 
@@ -62,7 +62,7 @@ function LivePulse() {
         </span>
       )}
       {/* After the figure, so the line grows into empty space during its first minute. */}
-      <svg width={WIDTH} height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`} aria-hidden="true" className="overflow-visible text-ok">
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true" className="overflow-visible text-ok">
         <path d={sparklinePath(points)} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
         {live && head && <circle cx={head[0]} cy={head[1]} r="2" fill="currentColor" />}
       </svg>

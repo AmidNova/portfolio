@@ -6,6 +6,20 @@ const fr = {
     aboutTitle: "À propos — Soro Amidou",
     aboutDescription: "L'histoire complète : des équations au Data Engineering, par Soro Amidou.",
   },
+  cards: {
+    about: { subtitle: "Comment je suis venu à la donnée" },
+    stack: { subtitle: "Mes outils, regroupés comme sur mon CV" },
+    projects: { subtitle: "Pipelines, entrepôts et BI — chacun montré par son architecture" },
+    journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
+    credentials: { title: "Certifications & langues", subtitle: "Compétences vérifiées et langues de travail" },
+    live: { title: "En direct", subtitle: "Les éditions Wikipédia, en ce moment" },
+    contact: { title: "Parlons de votre stage" },
+    stats: [
+      { value: "365", label: "événements pré-viraux" },
+      { value: "55\u202F500", label: "admissions modélisées" },
+      { value: "2", label: "certifications" },
+    ],
+  },
   nav: {
     home: "Accueil",
     projects: "Projets",
@@ -28,6 +42,12 @@ const fr = {
     pulse: {
       label: "éditions Wikipédia/min",
       title: "En direct du flux public Wikimedia — la même source que Wikipedia Pulse",
+    },
+    badge: "Disponible dès janvier 2027",
+    chips: {
+      languages: "Français & anglais",
+      school: "ISEP Paris",
+      certs: "AWS · Databricks",
     },
     resume: "CV",
   },

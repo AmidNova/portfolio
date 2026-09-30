@@ -62,27 +62,28 @@ describe("LangContext", () => {
     expect(localStorage.getItem("lang")).toBe("fr");
   });
 
-  it("le mode sombre démarre à false par défaut", () => {
+  it("démarre en mode sombre par défaut", () => {
+    renderWithProvider();
+    expect(screen.getByTestId("dark").textContent).toBe("true");
+    expect(document.body.classList.contains("dark")).toBe(true);
+  });
+
+  it("restaure le mode clair depuis localStorage", () => {
+    localStorage.setItem("dark", "false");
     renderWithProvider();
     expect(screen.getByTestId("dark").textContent).toBe("false");
     expect(document.body.classList.contains("dark")).toBe(false);
-  });
-
-  it("restaure le mode sombre depuis localStorage", () => {
-    localStorage.setItem("dark", "true");
-    renderWithProvider();
-    expect(screen.getByTestId("dark").textContent).toBe("true");
   });
 
   it("toggleDark bascule le mode sombre et persiste", async () => {
     const user = userEvent.setup();
     renderWithProvider();
     await user.click(screen.getByText("toggle dark"));
-    expect(screen.getByTestId("dark").textContent).toBe("true");
-    expect(document.body.classList.contains("dark")).toBe(true);
-    expect(localStorage.getItem("dark")).toBe("true");
-    await user.click(screen.getByText("toggle dark"));
     expect(screen.getByTestId("dark").textContent).toBe("false");
     expect(document.body.classList.contains("dark")).toBe(false);
+    expect(localStorage.getItem("dark")).toBe("false");
+    await user.click(screen.getByText("toggle dark"));
+    expect(screen.getByTestId("dark").textContent).toBe("true");
+    expect(document.body.classList.contains("dark")).toBe(true);
   });
 });
