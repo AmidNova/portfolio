@@ -1,10 +1,10 @@
-import { Activity, FolderGit2, Layers, UserRound } from "lucide-react";
+import { Activity, FolderGit2, UserRound, Wrench } from "lucide-react";
 import { useLang } from "../context/LangContext";
 import AboutSection from "./AboutSection";
 import { Card, CardHeader } from "./Card";
 import LivePulse from "./LivePulse";
 import Projects from "./Projects";
-import Skills from "./Skills";
+import Toolbox from "./Toolbox";
 
 /** Thin tiles that wrap existing sections in the bento card shell. */
 export function AboutCard() {
@@ -21,8 +21,8 @@ export function StackCard() {
   const { t } = useLang();
   return (
     <Card id="skills" labelledBy="skills-title">
-      <CardHeader id="skills-title" icon={Layers} title={t.skills.title} subtitle={t.cards.stack.subtitle} />
-      <Skills />
+      <CardHeader id="skills-title" icon={Wrench} title={t.skills.title} subtitle={t.skills.subtitle} />
+      <Toolbox />
     </Card>
   );
 }

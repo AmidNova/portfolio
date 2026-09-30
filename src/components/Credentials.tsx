@@ -8,7 +8,7 @@ function Credentials() {
   const { t } = useLang();
 
   return (
-    <Card labelledBy="credentials-title">
+    <Card id="credentials" labelledBy="credentials-title">
       <CardHeader
         id="credentials-title"
         icon={Award}

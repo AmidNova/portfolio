@@ -69,14 +69,32 @@ export const EDUCATION: TimelineEntry[] = [
   },
 ];
 
-export type SkillGroup = "data" | "cloud" | "bi" | "lang";
+/** Where a tool was proven: a project on this page, or a certification. */
+export type ToolProof = ProjectMeta["id"] | "certifications";
 
-/** Same four groups as the résumé, so the site and the PDF tell one story. */
-export const SKILLS: { group: SkillGroup; items: string[] }[] = [
-  { group: "data", items: ["Apache Kafka", "Spark", "Airflow", "dbt", "Elasticsearch"] },
-  { group: "cloud", items: ["GCP", "BigQuery", "AWS", "Databricks", "Docker", "Kubernetes", "Terraform"] },
-  { group: "bi", items: ["Power BI", "DAX", "Power Query", "DuckDB"] },
-  { group: "lang", items: ["Python", "SQL", "Bash", "TypeScript", "Git", "Linux"] },
+/**
+ * Every data tool, thrown in the toolbox. Order is deliberately mixed so the pile looks tipped out, not sorted.
+ * `proof` links a tool to where it was used; tools without one are listed but not linked.
+ */
+export const TOOLBOX: { name: string; proof?: ToolProof }[] = [
+  { name: "Kafka", proof: "wikipedia-pulse" },
+  { name: "Python", proof: "wikipedia-pulse" },
+  { name: "BigQuery", proof: "retail-pipeline" },
+  { name: "Power BI", proof: "healthcare-bi" },
+  { name: "Spark", proof: "wikipedia-pulse" },
+  { name: "AWS", proof: "certifications" },
+  { name: "SQL", proof: "retail-pipeline" },
+  { name: "Docker" },
+  { name: "Airflow", proof: "wikipedia-pulse" },
+  { name: "Databricks", proof: "certifications" },
+  { name: "DuckDB", proof: "healthcare-bi" },
+  { name: "Kubernetes" },
+  { name: "GCP", proof: "retail-pipeline" },
+  { name: "Elasticsearch", proof: "wikipedia-pulse" },
+  { name: "Azure" },
+  { name: "Terraform" },
+  { name: "dbt" },
+  { name: "Kibana", proof: "wikipedia-pulse" },
 ];
 
 export interface ProjectMeta {

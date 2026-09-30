@@ -8,7 +8,6 @@ const fr = {
   },
   cards: {
     about: { subtitle: "Comment je suis venu à la donnée" },
-    stack: { subtitle: "Mes outils, regroupés comme sur mon CV" },
     projects: { subtitle: "Pipelines, entrepôts et BI — chacun montré par son architecture" },
     journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
     credentials: { title: "Certifications & langues", subtitle: "Compétences vérifiées et langues de travail" },
@@ -99,13 +98,11 @@ const fr = {
     title: "Formation",
   },
   skills: {
-    title: "Stack",
-    groups: {
-      data: "Data Engineering",
-      cloud: "Cloud & Infra",
-      bi: "Analytics & BI",
-      lang: "Langages & outils",
-    },
+    title: "Boîte à outils",
+    subtitle: "Les outils data avec lesquels je travaille",
+    hint: "› survolez un outil",
+    count: "outils",
+    certification: "Certification",
   },
   projects: {
     title: "Projets",

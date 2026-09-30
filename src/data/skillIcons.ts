@@ -1,4 +1,5 @@
-import type { IconType } from "react-icons";
+import { createElement } from "react";
+import type { IconBaseProps, IconType } from "react-icons";
 import { FaAws } from "react-icons/fa";
 import {
   SiApacheairflow,
@@ -9,43 +10,49 @@ import {
   SiDocker,
   SiDuckdb,
   SiElasticsearch,
-  SiGit,
-  SiGnubash,
   SiGooglebigquery,
   SiGooglecloud,
+  SiKibana,
   SiKubernetes,
-  SiLinux,
   SiPython,
   SiTerraform,
-  SiTypescript,
 } from "react-icons/si";
-import { TbChartBar, TbSql } from "react-icons/tb";
+import { TbSql } from "react-icons/tb";
+import { VscAzure } from "react-icons/vsc";
+
+/** Power BI's three rising bars — simple-icons no longer ships Microsoft marks. */
+const PowerBiIcon: IconType = ({ size = "1em", ...props }: IconBaseProps) =>
+  createElement(
+    "svg",
+    { viewBox: "0 0 24 24", width: size, height: size, fill: "currentColor", ...props },
+    createElement("rect", { x: 3, y: 12, width: 5, height: 10, rx: 1.5, opacity: 0.55 }),
+    createElement("rect", { x: 9.5, y: 7, width: 5, height: 15, rx: 1.5, opacity: 0.8 }),
+    createElement("rect", { x: 16, y: 2, width: 5, height: 20, rx: 1.5 }),
+  );
 
 export interface SkillIcon {
   Icon: IconType;
-  /** Brand colour revealed on hover; omitted for near-black marks so they stay legible in dark mode. */
+  /** Brand colour, lifted where the official one disappears on a near-black card; omitted for black marks. */
   brand?: string;
 }
 
 export const SKILL_ICONS: Record<string, SkillIcon> = {
-  Python: { Icon: SiPython, brand: "#3776AB" },
-  SQL: { Icon: TbSql },
-  "Apache Kafka": { Icon: SiApachekafka },
-  Airflow: { Icon: SiApacheairflow, brand: "#017CEE" },
+  Kafka: { Icon: SiApachekafka },
+  Python: { Icon: SiPython, brand: "#5A9FD4" },
+  BigQuery: { Icon: SiGooglebigquery, brand: "#669DF6" },
+  "Power BI": { Icon: PowerBiIcon, brand: "#F2C811" },
   Spark: { Icon: SiApachespark, brand: "#E25A1C" },
-  dbt: { Icon: SiDbt, brand: "#FF694B" },
-  "Power BI": { Icon: TbChartBar, brand: "#F2C811" },
+  AWS: { Icon: FaAws, brand: "#FF9900" },
+  SQL: { Icon: TbSql },
+  Airflow: { Icon: SiApacheairflow, brand: "#4DA3FF" },
+  Databricks: { Icon: SiDatabricks, brand: "#FF3621" },
   DuckDB: { Icon: SiDuckdb, brand: "#FFC700" },
   GCP: { Icon: SiGooglecloud, brand: "#4285F4" },
-  BigQuery: { Icon: SiGooglebigquery, brand: "#669DF6" },
-  Databricks: { Icon: SiDatabricks, brand: "#FF3621" },
   Elasticsearch: { Icon: SiElasticsearch, brand: "#00BFB3" },
-  AWS: { Icon: FaAws, brand: "#FF9900" },
+  Azure: { Icon: VscAzure, brand: "#2F9BFF" },
+  dbt: { Icon: SiDbt, brand: "#FF694B" },
+  Kibana: { Icon: SiKibana, brand: "#F04E98" },
   Docker: { Icon: SiDocker, brand: "#2496ED" },
-  Kubernetes: { Icon: SiKubernetes, brand: "#326CE5" },
-  Terraform: { Icon: SiTerraform, brand: "#844FBA" },
-  Git: { Icon: SiGit, brand: "#F05032" },
-  Linux: { Icon: SiLinux },
-  Bash: { Icon: SiGnubash, brand: "#4EAA25" },
-  TypeScript: { Icon: SiTypescript, brand: "#3178C6" },
+  Kubernetes: { Icon: SiKubernetes, brand: "#5B8DEF" },
+  Terraform: { Icon: SiTerraform, brand: "#A67FE0" },
 };

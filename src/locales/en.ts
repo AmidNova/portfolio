@@ -8,7 +8,6 @@ const en = {
   },
   cards: {
     about: { subtitle: "How I came to data engineering" },
-    stack: { subtitle: "The tools I build with, grouped like my résumé" },
     projects: { subtitle: "Pipelines, warehouses and BI — each shown by its architecture" },
     journey: { title: "Journey", subtitle: "Where I've worked and studied" },
     credentials: { title: "Certifications & languages", subtitle: "Verified skills and the languages I work in" },
@@ -100,13 +99,11 @@ const en = {
     title: "Education",
   },
   skills: {
-    title: "Stack",
-    groups: {
-      data: "Data Engineering",
-      cloud: "Cloud & Infra",
-      bi: "Analytics & BI",
-      lang: "Languages & tools",
-    },
+    title: "Toolbox",
+    subtitle: "The data tools I work with",
+    hint: "› hover a tool",
+    count: "tools",
+    certification: "Certification",
   },
   projects: {
     title: "Projects",
