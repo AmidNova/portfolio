@@ -1,3 +1,6 @@
+import awsSaaBadge from "../assets/certs/aws-solutions-architect-associate.svg";
+import databricksDeBadge from "../assets/certs/databricks-data-engineer-associate.png";
+import scrimbaBadge from "../assets/certs/scrimba-full-stack-developer.webp";
 import logoArtci from "../assets/logo/logoartci.png";
 import logoBozarts from "../assets/logo/logoBozarts.png";
 import logoEstm from "../assets/logo/logoEtsm.jpg";
@@ -132,10 +135,34 @@ export const PROJECTS: ProjectMeta[] = [
   },
 ];
 
-export const CERTIFICATIONS = [
-  { name: "AWS Certified Solutions Architect – Associate", issuer: "Amazon Web Services" },
-  { name: "Databricks Certified Data Engineer – Associate", issuer: "Databricks" },
-  { name: "Full-Stack Developer", issuer: "Scrimba" },
+export interface Certification {
+  /** Official title, used as the badge's accessible name. */
+  name: string;
+  /** Short caption under the badge. */
+  short: string;
+  issuer: string;
+  level?: string;
+  /** Official badge image; without one, the issuer's icon from SKILL_ICONS stands in. */
+  badge?: string;
+  icon?: string;
+}
+
+export const CERTIFICATIONS: Certification[] = [
+  {
+    name: "AWS Certified Solutions Architect – Associate",
+    short: "Solutions Architect",
+    issuer: "AWS",
+    level: "Associate",
+    badge: awsSaaBadge,
+  },
+  {
+    name: "Databricks Certified Data Engineer – Associate",
+    short: "Data Engineer",
+    issuer: "Databricks",
+    level: "Associate",
+    badge: databricksDeBadge,
+  },
+  { name: "Scrimba Full-Stack Developer", short: "Full-Stack Developer", issuer: "Scrimba", badge: scrimbaBadge },
 ];
 
 /** Public GitHub repositories (12 on 2026-09-30); shown as a floor, hence the "+". */
