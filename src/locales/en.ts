@@ -13,11 +13,11 @@ const en = {
     credentials: { title: "Certifications & languages", subtitle: "Verified skills and the languages I work in" },
     live: { title: "Live", subtitle: "Wikipedia edits, streamed right now" },
     contact: { title: "Let's talk about your internship" },
-    stats: [
-      { value: "365", label: "pre-viral events" },
-      { value: "55,500", label: "admissions modelled" },
-      { value: "2", label: "certifications" },
-    ],
+    stats: {
+      projects: "Projects",
+      projectsLink: "on GitHub",
+      certifications: "Certifications",
+    },
   },
   nav: {
     home: "Home",

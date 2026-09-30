@@ -13,11 +13,11 @@ const fr = {
     credentials: { title: "Certifications & langues", subtitle: "Compétences vérifiées et langues de travail" },
     live: { title: "En direct", subtitle: "Les éditions Wikipédia, en ce moment" },
     contact: { title: "Parlons de votre stage" },
-    stats: [
-      { value: "365", label: "événements pré-viraux" },
-      { value: "55\u202F500", label: "admissions modélisées" },
-      { value: "2", label: "certifications" },
-    ],
+    stats: {
+      projects: "Projets",
+      projectsLink: "sur GitHub",
+      certifications: "Certifications",
+    },
   },
   nav: {
     home: "Accueil",

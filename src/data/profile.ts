@@ -124,4 +124,8 @@ export const PROJECTS: ProjectMeta[] = [
 export const CERTIFICATIONS = [
   { name: "AWS Certified Solutions Architect — Associate", issuer: "Amazon Web Services" },
   { name: "Databricks Certified Data Engineer — Associate", issuer: "Databricks" },
+  { name: "Full-Stack Developer", issuer: "Scrimba" },
 ];
+
+/** Public GitHub repositories (12 on 2026-09-30); shown as a floor, hence the "+". */
+export const PROJECT_COUNT = 12;

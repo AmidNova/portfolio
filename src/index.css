@@ -143,6 +143,14 @@
 }
 
 @layer components {
+  /* Metal-gradient figure used by the stat tiles. */
+  .stat-figure {
+    background: linear-gradient(to bottom, var(--color-fg) 20%, var(--color-subtle));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .card {
     border: 1px solid var(--color-line);
     border-radius: 11px;
