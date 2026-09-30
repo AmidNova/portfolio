@@ -41,6 +41,12 @@ const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
   },
+  notFound: {
+    metaTitle: "Page not found · Soro Amidou",
+    title: "Page not found",
+    body: "This address leads nowhere. The link may be old, or a letter is missing.",
+    projects: "See the projects",
+  },
   a11y: {
     skipToContent: "Skip to main content",
   },

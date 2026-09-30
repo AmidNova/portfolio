@@ -13,6 +13,7 @@ import {
 } from "./components/HomeCards";
 import Journey from "./components/Journey";
 import Navbar from "./components/Navbar";
+import NotFound from "./components/NotFound";
 import ProjectsPage from "./components/ProjectsPage";
 import StatTiles from "./components/StatTiles";
 import { LangProvider } from "./context/LangContext";
@@ -86,6 +87,7 @@ function AppShell() {
               </div>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />

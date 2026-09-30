@@ -41,6 +41,12 @@ const fr = {
     openMenu: "Ouvrir le menu",
     closeMenu: "Fermer le menu",
   },
+  notFound: {
+    metaTitle: "Page introuvable · Soro Amidou",
+    title: "Page introuvable",
+    body: "Cette adresse ne mène nulle part. Le lien est peut-être ancien, ou il manque une lettre.",
+    projects: "Voir les projets",
+  },
   a11y: {
     skipToContent: "Aller au contenu principal",
   },
