@@ -1,5 +1,6 @@
 import awsSaaBadge from "../assets/certs/aws-solutions-architect-associate.svg";
 import databricksDeBadge from "../assets/certs/databricks-data-engineer-associate.png";
+import scrimbaBadge from "../assets/certs/scrimba-full-stack-developer.webp";
 import logoArtci from "../assets/logo/logoartci.png";
 import logoBozarts from "../assets/logo/logoBozarts.png";
 import logoEstm from "../assets/logo/logoEtsm.jpg";
@@ -161,7 +162,7 @@ export const CERTIFICATIONS: Certification[] = [
     level: "Associate",
     badge: databricksDeBadge,
   },
-  { name: "Scrimba Full-Stack Developer", short: "Full-Stack Developer", issuer: "Scrimba", icon: "Scrimba" },
+  { name: "Scrimba Full-Stack Developer", short: "Full-Stack Developer", issuer: "Scrimba", badge: scrimbaBadge },
 ];
 
 /** Public GitHub repositories (12 on 2026-09-30); shown as a floor, hence the "+". */
