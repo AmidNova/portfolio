@@ -37,6 +37,9 @@ const fr = {
     toDark: "Passer en mode sombre",
     toLight: "Passer en mode clair",
     language: "Langue",
+    menu: "Menu",
+    openMenu: "Ouvrir le menu",
+    closeMenu: "Fermer le menu",
   },
   a11y: {
     skipToContent: "Aller au contenu principal",

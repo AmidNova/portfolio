@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -49,5 +49,22 @@ describe("Navbar", () => {
     await user.click(screen.getByLabelText("Passer en mode clair"));
     expect(document.body.classList.contains("dark")).toBe(false);
     expect(screen.getByLabelText("Passer en mode sombre")).toBeInTheDocument();
+  });
+  it("ouvre un menu mobile avec les liens, et le referme au choix d'un lien ou avec Échap", async () => {
+    const user = userEvent.setup();
+    renderNavbar();
+    const toggle = screen.getByRole("button", { name: "Ouvrir le menu" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+    await user.click(toggle);
+    const menu = screen.getByRole("navigation", { name: "Menu" });
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await user.click(within(menu).getByRole("link", { name: "Parcours" }));
+    expect(screen.queryByRole("navigation", { name: "Menu" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Ouvrir le menu" }));
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("navigation", { name: "Menu" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ouvrir le menu" })).toHaveFocus();
   });
 });

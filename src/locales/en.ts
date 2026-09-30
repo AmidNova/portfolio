@@ -37,6 +37,9 @@ const en = {
     toDark: "Switch to dark mode",
     toLight: "Switch to light mode",
     language: "Language",
+    menu: "Menu",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
   },
   a11y: {
     skipToContent: "Skip to main content",
