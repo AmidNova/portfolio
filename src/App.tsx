@@ -13,7 +13,7 @@ import {
 } from "./components/HomeCards";
 import Journey from "./components/Journey";
 import Navbar from "./components/Navbar";
-import Projects from "./components/Projects";
+import ProjectsPage from "./components/ProjectsPage";
 import StatTiles from "./components/StatTiles";
 import { LangProvider, useLang } from "./context/LangContext";
 import { useDocumentMeta } from "./hooks/useDocumentMeta";
@@ -76,15 +76,7 @@ function AppShell() {
       <main id="main">
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Full project detail — to be redesigned; the home card only summarizes. */}
-          <Route
-            path="/projects"
-            element={
-              <div className="mx-auto max-w-[1100px] px-4 pt-6 sm:px-6">
-                <Projects />
-              </div>
-            }
-          />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route
             path="/about"
             element={

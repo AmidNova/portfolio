@@ -3,6 +3,8 @@ const en = {
     homeTitle: "Soro Amidou — Data Engineer",
     homeDescription:
       "Engineering student at ISEP Paris, AWS and Databricks certified. Real-time pipelines (Kafka, Spark, Airflow), BigQuery warehouses and BI. Looking for a Data Engineering internship from January 2027.",
+    projectsTitle: "Projects — Soro Amidou",
+    projectsDescription: "Real-time pipelines, BigQuery warehouses and BI: Soro Amidou's data projects, with architecture, figures and code.",
     aboutTitle: "About — Soro Amidou",
     aboutDescription: "The longer story: from equations to data engineering, by Soro Amidou.",
   },
@@ -111,6 +113,18 @@ const en = {
   },
   projects: {
     title: "Projects",
+    page: {
+      title: "My projects",
+      subtitle: "Pipelines, warehouses and BI — each shown by its architecture. Filter by tech, open a case study or read the code.",
+      back: "Back to home",
+      filter: "Technologies",
+      shown: { one: "project shown", other: "projects shown" },
+      reset: "Reset",
+      empty: "No project combines all these technologies. Remove a filter or reset.",
+      featured: "Featured",
+      code: "Code",
+      codePrivate: "Code not public",
+    },
     caseStudy: "Case study",
     close: "Close",
     watchDemo: "Demo video",
