@@ -2,7 +2,7 @@ import { LINKS } from "../data/profile";
 
 function Footer() {
   return (
-    <footer className="mx-auto mt-24 flex max-w-[1100px] flex-wrap items-center justify-between gap-4 border-t border-line px-6 py-8 text-sm text-subtle">
+    <footer className="mx-auto mt-16 flex max-w-[1100px] flex-wrap items-center justify-between gap-4 border-t border-line px-6 py-8 text-sm text-subtle">
       <p>© 2026 Soro Amidou</p>
       <ul className="flex gap-5">
         <li>

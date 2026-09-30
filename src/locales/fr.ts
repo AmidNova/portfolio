@@ -1,21 +1,21 @@
 const fr = {
   meta: {
-    homeTitle: "Soro Amidou — Data Engineer",
+    homeTitle: "Soro Amidou · Data Engineer",
     homeDescription:
       "Étudiant ingénieur à l'ISEP Paris, certifié AWS et Databricks. Pipelines temps réel (Kafka, Spark, Airflow), entrepôts BigQuery et BI. Recherche un stage en Data Engineering dès janvier 2027.",
-    projectsTitle: "Projets — Soro Amidou",
+    projectsTitle: "Projets · Soro Amidou",
     projectsDescription: "Pipelines temps réel, entrepôts BigQuery et BI : les projets data de Soro Amidou, avec architecture, chiffres et code.",
-    aboutTitle: "À propos — Soro Amidou",
+    aboutTitle: "À propos · Soro Amidou",
     aboutDescription: "L'histoire complète : des équations au Data Engineering, par Soro Amidou.",
   },
   cards: {
-    about: { subtitle: "Comment je suis venu à la donnée" },
-    projects: { subtitle: "Pipelines, entrepôts et BI — chacun montré par son architecture", viewAll: "Voir tous les projets" },
+    about: { subtitle: "Des équations aux pipelines." },
+    projects: { subtitle: "Pipelines, entrepôts et BI, chacun expliqué par son schéma.", viewAll: "Voir tous les projets" },
     journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
     credentials: { title: "Certifications & langues", subtitle: "Compétences vérifiées et langues de travail" },
     services: {
       title: "Services",
-      subtitle: "Ce que j'apporte à une équipe data",
+      subtitle: "Là où je peux aider une équipe data.",
       rows: [
         ["Pipelines ETL / ELT", "Streaming temps réel", "Entrepôts de données", "Orchestration Airflow"],
         ["Modélisation dimensionnelle", "Qualité des données", "Tableaux de bord BI", "Infra cloud as code"],
@@ -52,7 +52,6 @@ const fr = {
     chips: {
       languages: "Français & anglais",
       school: "ISEP Paris",
-      certs: "AWS · Databricks",
     },
     resume: "CV",
   },
@@ -74,7 +73,7 @@ const fr = {
     },
     entries: {
       bozarts: {
-        role: "Développeur full-stack — projet d'équipe",
+        role: "Développeur full-stack, projet d'équipe",
         bullets: [
           "Marketplace pour artisans : profils, annonces, panier et messagerie temps réel.",
           "Conception du schéma MySQL normalisé, gestion des droits d'accès et administration de la base.",
@@ -88,14 +87,14 @@ const fr = {
         ],
       },
       isep: {
-        role: "Diplôme d'ingénieur — Architecture des Systèmes d'Information",
+        role: "Diplôme d'ingénieur, Architecture des systèmes d'information",
         bullets: [
           "Spécialisation bases de données, Big Data et systèmes d'entreprise.",
           "Tronc commun réseaux, architecture des systèmes et sécurité cloud.",
         ],
       },
       estm: {
-        role: "Classes préparatoires MPSI/MP — Mathématiques, Physique, Sciences de l'ingénieur",
+        role: "Classes préparatoires MPSI/MP : mathématiques, physique, sciences de l'ingénieur",
         bullets: [],
       },
     },
@@ -105,7 +104,7 @@ const fr = {
   },
   skills: {
     title: "Boîte à outils",
-    subtitle: "Les outils data avec lesquels je travaille",
+    subtitle: "Ma boîte à outils",
     hint: "› survolez un outil",
     count: "outils",
     certification: "Certification",
@@ -114,7 +113,7 @@ const fr = {
     title: "Projets",
     page: {
       title: "Mes projets",
-      subtitle: "Pipelines, entrepôts et BI — chacun montré par son architecture. Filtre par techno, ouvre une étude de cas ou lis le code.",
+      subtitle: "Pipelines, entrepôts et BI, chacun expliqué par son schéma. Filtre par techno, ouvre une étude de cas ou lis le code.",
       back: "Retour à l'accueil",
       filter: "Technologies",
       shown: { one: "projet affiché", other: "projets affichés" },
@@ -186,7 +185,7 @@ const fr = {
       "retail-pipeline": {
         status: "2026",
         summary:
-          "Des millions de transactions brutes transformées en entrepôt BigQuery fiable, avec un contrôle qualité à chaque étape — puis prévision des ventes à 30 jours et segmentation client.",
+          "Des millions de transactions brutes transformées en entrepôt BigQuery fiable, avec un contrôle qualité à chaque étape, puis prévision des ventes à 30 jours et segmentation client.",
         metrics: [
           { value: "30 j", label: "horizon de prévision" },
           { value: "2", label: "modèles BigQuery ML" },
@@ -207,12 +206,12 @@ const fr = {
     media: {
       "wikipedia-pulse": {
         architecture:
-          "Deux sources alimentent le pipeline : le flux SSE temps réel de Wikimedia (indicateur avancé) et l'API Wikimedia en batch (indicateur retardé, J+1). Kafka encaisse le flux ; un DAG Airflow de 6 tâches orchestre le tout. Spark calcule les usages bruts et un modèle Isolation Forest détecte les anomalies — les résultats sont indexés dans Elasticsearch puis visualisés dans Kibana.",
+          "Deux sources alimentent le pipeline : le flux SSE temps réel de Wikimedia (indicateur avancé) et l'API Wikimedia en batch (indicateur retardé, J+1). Kafka encaisse le flux ; un DAG Airflow de 6 tâches orchestre le tout. Spark calcule les usages bruts et un modèle Isolation Forest détecte les anomalies. Les résultats sont indexés dans Elasticsearch puis visualisés dans Kibana.",
         shots: {
           metric: "KPIs en temps réel sur le flux d'éditions",
-          trending1: "Articles tendance — détection des pics",
+          trending1: "Articles tendance : détection des pics",
           trending2: "Tendances par thématique",
-          scoop: "Détection de scoops — rafales d'éditions précoces",
+          scoop: "Détection de scoops : rafales d'éditions précoces",
           country: "Activité d'édition par pays",
           tempo: "Histogramme du tempo des éditions",
           velocity: "Vélocité éditoriale par article",
@@ -228,12 +227,12 @@ const fr = {
     title: "Langues",
     items: [
       { label: "Français", value: "Langue maternelle" },
-      { label: "Anglais", value: "B2 — professionnel" },
+      { label: "Anglais", value: "B2, usage professionnel" },
     ],
   },
   contact: {
     title: "Contact",
-    body: "Je recherche un stage en Data Engineering à partir de janvier 2027. Le plus simple est de m'écrire par email — je réponds sous un à deux jours.",
+    body: "Je cherche un stage en Data Engineering à partir de janvier 2027. Laissez un message et je vous réponds promptement.",
     cta: "Envoyer un email",
     copy: "Copier",
     copied: "Copié",
@@ -266,13 +265,13 @@ const fr = {
           "Je crois que les meilleurs ingénieurs savent aussi raconter : une idée qu'on ne sait pas transmettre n'existe pas.",
           "Alors quand j'ai remporté le concours d'éloquence de l'ISEP, j'ai eu l'impression que les deux faces s'emboîtaient enfin.",
         ],
-        caption: "Concours d'éloquence — ISEP",
+        caption: "Concours d'éloquence, ISEP",
       },
     ],
     offClock: {
       title: "En dehors du travail",
       items: [
-        { title: "Lecture", desc: "Histoire, philosophie, romans — plus c'est ancien, mieux c'est." },
+        { title: "Lecture", desc: "Histoire, philosophie, romans : plus c'est ancien, mieux c'est." },
         { title: "Échecs", desc: "Le goût des systèmes et de la stratégie. Chaque partie est un problème à résoudre." },
         { title: "Course à pied", desc: "Le seul moment où j'arrête de penser au code. Presque." },
       ],

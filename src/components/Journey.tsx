@@ -30,7 +30,7 @@ function Journey() {
             aria-selected={tab === key}
             aria-controls={`${uid}-${key}-panel`}
             onClick={() => setTab(key)}
-            className="h-9 rounded-md text-sm font-medium text-subtle transition-colors hover:text-fg aria-selected:bg-raised aria-selected:text-fg"
+            className="h-9 rounded-md text-sm font-medium text-subtle transition-colors hover:text-fg aria-selected:bg-card aria-selected:text-fg aria-selected:shadow-sm aria-selected:ring-1 aria-selected:ring-line"
           >
             {label}
           </button>

@@ -39,7 +39,7 @@ describe("Timeline", () => {
     const items = screen.getAllByRole("listitem").filter((li) => li.querySelector("h3"));
     const artci = items.find((li) => within(li).queryByText("ARTCI"))!;
     expect(within(artci).getByText("Stagiaire développeur web")).toBeInTheDocument();
-    expect(within(artci).getByText("juin 2023 — sept 2023")).toBeInTheDocument();
+    expect(within(artci).getByText("juin 2023 – sept 2023")).toBeInTheDocument();
   });
 
   it("donne le site officiel, LinkedIn et X de chaque organisation quand ils existent", () => {

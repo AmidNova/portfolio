@@ -25,7 +25,7 @@ function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b bg-bg/85 backdrop-blur-sm transition-colors ${
+      className={`sticky top-0 z-40 border-b bg-bg/70 backdrop-blur-md backdrop-saturate-150 transition-colors ${
         scrolled ? "border-line" : "border-transparent"
       }`}
     >

@@ -1,5 +1,6 @@
-import { Check, Copy, Github, Linkedin, Mail, MessagesSquare } from "lucide-react";
+import { Check, Copy, Github, Linkedin, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
+import { PiHandshakeFill } from "react-icons/pi";
 import { useLang } from "../hooks/useLang";
 import { EMAIL, LINKS } from "../data/profile";
 
@@ -45,9 +46,10 @@ function CopyEmail() {
   );
 }
 
-/** Closing tile: one clear action (email) plus the two profiles. */
+/** Closing tile in kkmihai's shape: icon badge, title, one line, square icon buttons, then the raw address. */
 function Contact() {
   const { t } = useLang();
+  const iconButton = "btn size-12 border border-line bg-bg px-0 hover:border-subtle";
 
   return (
     <section
@@ -55,29 +57,22 @@ function Contact() {
       aria-labelledby="contact-title"
       className="card flex flex-1 flex-col items-center justify-center px-6 py-10 text-center"
     >
-      <span className="flex size-20 items-center justify-center rounded-full border border-line bg-bg">
-        <MessagesSquare size={34} aria-hidden="true" className="text-accent" />
+      <span className="flex size-24 items-center justify-center rounded-full border border-line bg-bg">
+        <PiHandshakeFill aria-hidden="true" className="size-12 text-accent" />
       </span>
-      <h2 id="contact-title" className="mt-6 text-2xl font-semibold tracking-[-0.025em]">
+      <h2 id="contact-title" className="mt-6 text-2xl font-bold sm:text-[1.75rem]">
         {t.cards.contact.title}
       </h2>
-      <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">{t.contact.body}</p>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-        <a href={LINKS.email} className="btn btn-primary">
-          <Mail size={16} aria-hidden="true" />
-          {t.contact.cta}
+      <p className="mt-2 max-w-sm font-medium leading-relaxed text-subtle">{t.contact.body}</p>
+      <div className="mt-6 flex items-center justify-center gap-3">
+        <a href={LINKS.email} aria-label={t.contact.cta} className={iconButton}>
+          <Mail size={19} aria-hidden="true" />
         </a>
-        <a
-          href={LINKS.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="LinkedIn"
-          className="btn w-11 px-0"
-        >
-          <Linkedin size={17} aria-hidden="true" />
+        <a href={LINKS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className={iconButton}>
+          <Linkedin size={19} aria-hidden="true" />
         </a>
-        <a href={LINKS.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="btn w-11 px-0">
-          <Github size={17} aria-hidden="true" />
+        <a href={LINKS.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className={iconButton}>
+          <Github size={19} aria-hidden="true" />
         </a>
       </div>
       <CopyEmail />

@@ -45,7 +45,7 @@ function ProjectCaseStudy({ project, media, onClose }: ProjectCaseStudyProps) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 sm:p-10"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/45 p-4 backdrop-blur-sm sm:p-10"
       onClick={onClose}
     >
       <div

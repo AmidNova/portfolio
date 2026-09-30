@@ -96,7 +96,7 @@ describe("ProjectsPage", () => {
     expect(screen.getByText("1 / 8")).toBeInTheDocument();
 
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("dialog", { name: "Trending articles — surfacing spikes" })).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Trending articles: surfacing spikes" })).toBeInTheDocument();
 
     await user.keyboard("{ArrowLeft}{ArrowLeft}");
     expect(screen.getByText("8 / 8")).toBeInTheDocument();

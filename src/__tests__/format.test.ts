@@ -11,8 +11,8 @@ describe("format", () => {
   });
 
   it("formate une période, en cours comprise", () => {
-    expect(formatPeriod({ start: "2021", end: "2024" }, "fr", "Aujourd'hui")).toBe("2021 — 2024");
-    expect(formatPeriod({ start: "2024-09", end: null }, "en", "Present")).toBe("Sep 2024 — Present");
+    expect(formatPeriod({ start: "2021", end: "2024" }, "fr", "Aujourd'hui")).toBe("2021 – 2024");
+    expect(formatPeriod({ start: "2024-09", end: null }, "en", "Present")).toBe("Sep 2024 – Present");
   });
 
   it("ne répète pas une période d'un seul point", () => {

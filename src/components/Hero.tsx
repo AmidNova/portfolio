@@ -1,4 +1,4 @@
-import { BadgeCheck, FileText, Github, GraduationCap, Languages, Linkedin, Mail, MapPin } from "lucide-react";
+import { FileText, Github, GraduationCap, Languages, Linkedin, Mail, MapPin } from "lucide-react";
 import Portrait from "../assets/images/Confident professional in office attire.webp";
 import { useLang } from "../hooks/useLang";
 import { LINKS } from "../data/profile";
@@ -10,7 +10,6 @@ function Hero() {
     { icon: MapPin, label: t.hero.location },
     { icon: Languages, label: t.hero.chips.languages },
     { icon: GraduationCap, label: t.hero.chips.school },
-    { icon: BadgeCheck, label: t.hero.chips.certs },
   ];
 
   return (

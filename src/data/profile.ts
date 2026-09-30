@@ -35,7 +35,7 @@ export interface TimelineEntry {
 }
 
 export const EXPERIENCE: TimelineEntry[] = [
-  { id: "bozarts", org: "Bozarts — ISEP", logo: logoBozarts, links: {}, period: { start: "2024", end: "2025" } },
+  { id: "bozarts", org: "Bozarts (ISEP)", logo: logoBozarts, links: {}, period: { start: "2024", end: "2025" } },
   {
     id: "artci",
     org: "ARTCI",
@@ -133,8 +133,8 @@ export const PROJECTS: ProjectMeta[] = [
 ];
 
 export const CERTIFICATIONS = [
-  { name: "AWS Certified Solutions Architect — Associate", issuer: "Amazon Web Services" },
-  { name: "Databricks Certified Data Engineer — Associate", issuer: "Databricks" },
+  { name: "AWS Certified Solutions Architect – Associate", issuer: "Amazon Web Services" },
+  { name: "Databricks Certified Data Engineer – Associate", issuer: "Databricks" },
   { name: "Full-Stack Developer", issuer: "Scrimba" },
 ];
 
