@@ -109,6 +109,7 @@ const fr = {
     title: "Boîte à outils",
     subtitle: "Ma boîte à outils",
     hint: "› survolez un outil",
+    hintTouch: "› touchez un outil pour voir où je l'utilise",
     count: "outils",
     certification: "Certification",
   },

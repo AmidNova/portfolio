@@ -110,6 +110,7 @@ const en = {
     title: "Toolbox",
     subtitle: "My toolbox",
     hint: "› hover a tool",
+    hintTouch: "› tap a tool to see where I use it",
     count: "tools",
     certification: "Certification",
   },
