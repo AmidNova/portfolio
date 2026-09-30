@@ -221,6 +221,9 @@ const fr = {
     title: "Contact",
     body: "Je recherche un stage en Data Engineering à partir de janvier 2027. Le plus simple est de m'écrire par email — je réponds sous un à deux jours.",
     cta: "Envoyer un email",
+    copy: "Copier",
+    copied: "Copié",
+    copyFailed: "Copie impossible",
   },
   story: {
     back: "Retour",

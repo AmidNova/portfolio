@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { Link } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 import { PROJECTS, TOOLBOX, type ToolProof } from "../data/profile";
 import { SKILL_ICONS } from "../data/skillIcons";
@@ -38,8 +39,8 @@ function Toolbox() {
 
   const proofOf = (proof: ToolProof) =>
     proof === "certifications"
-      ? { href: "#credentials", label: t.skills.certification }
-      : { href: `#project-${proof}`, label: PROJECTS.find((p) => p.id === proof)?.title ?? "" };
+      ? { href: "/#credentials", label: t.skills.certification }
+      : { href: `/projects#project-${proof}`, label: PROJECTS.find((p) => p.id === proof)?.title ?? "" };
 
   return (
     <div ref={boxRef} data-dropped={dropped || undefined} className="toolbox relative rounded-xl border border-line px-4 pt-6 pb-9 sm:px-6">
@@ -66,8 +67,8 @@ function Toolbox() {
               style={{ "--i": i, "--r": `${TILTS[i % TILTS.length]}deg`, "--y": `${NUDGES[i % NUDGES.length]}px` } as CSSProperties}
             >
               {proof ? (
-                <a
-                  href={proof.href}
+                <Link
+                  to={proof.href}
                   aria-label={`${tool.name} — ${proof.label}`}
                   className={chipClass}
                   onMouseEnter={show}
@@ -76,7 +77,7 @@ function Toolbox() {
                   onBlur={hide}
                 >
                   {chip}
-                </a>
+                </Link>
               ) : (
                 <span className={chipClass} onMouseEnter={show} onMouseLeave={hide}>
                   {chip}

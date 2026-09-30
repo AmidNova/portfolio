@@ -162,8 +162,8 @@ function StarSchema() {
 function ProjectVisual({ id, compact = false }: { id: ProjectMeta["id"]; compact?: boolean }) {
   switch (id) {
     case "wikipedia-pulse":
-      // Full size keeps its labels legible by scrolling; a thumbnail just shrinks to fit.
-      return <ArchitectureDiagram className={compact ? "" : "min-w-[560px]"} />;
+      // Full size keeps its labels legible by scrolling; a thumbnail zooms in on the middle, cropped like a screenshot.
+      return <ArchitectureDiagram className={compact ? "w-[165%]! max-w-none shrink-0" : "min-w-[560px]"} />;
     case "retail-pipeline":
       return <RetailFlow />;
     case "healthcare-bi":

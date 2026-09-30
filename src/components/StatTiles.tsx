@@ -25,7 +25,7 @@ function StatTile({ value, isFloor, label, context, icon: Icon, href, external }
         href={href}
         aria-label={name}
         {...(external && { target: "_blank", rel: "noopener noreferrer" })}
-        className="card group flex flex-1 flex-col items-center justify-center gap-2 px-2 py-8 text-center transition-colors hover:border-subtle/40"
+        className="card tile-link group flex flex-1 flex-col items-center justify-center gap-2 px-2 py-8 text-center"
       >
         <span aria-hidden="true" className="flex items-center gap-1">
           <span className="stat-figure font-mono text-5xl font-bold tracking-tighter tabular-nums sm:text-6xl">

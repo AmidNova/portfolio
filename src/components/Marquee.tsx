@@ -11,11 +11,12 @@ interface MarqueeProps<T> {
 
 /**
  * Endless row of items. The list is rendered twice and the track slides by half its
- * width, so the loop is seamless; the copy is hidden from assistive tech.
+ * width, so the loop is seamless; the copy is inert and hidden from assistive tech.
  */
 function Marquee<T>({ items, keyOf, renderItem, reverse = false, className = "" }: MarqueeProps<T>) {
   const copy = (hidden: boolean) => (
-    <ul className="marquee-copy" aria-hidden={hidden || undefined}>
+    // inert: the copy's links must not be reached twice by keyboard or assistive tech.
+    <ul className="marquee-copy" aria-hidden={hidden || undefined} inert={hidden || undefined}>
       {items.map((item) => (
         <li key={keyOf(item)} className="shrink-0">
           {renderItem(item)}

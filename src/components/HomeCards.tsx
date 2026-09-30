@@ -12,7 +12,7 @@ import Toolbox from "./Toolbox";
 export function AboutCard() {
   const { t } = useLang();
   return (
-    <Card id="about" labelledBy="about-title" className="flex-1">
+    <Card id="about" labelledBy="about-title" className="flex flex-1 flex-col">
       <CardHeader id="about-title" icon={UserRound} title={t.about.title} subtitle={t.cards.about.subtitle} />
       <AboutSection />
     </Card>
@@ -30,7 +30,7 @@ export function StackCard() {
 }
 
 const servicePill = (service: string) => (
-  <span className="block whitespace-nowrap rounded-2xl bg-bg px-7 py-4 text-xl font-bold tracking-tight text-accent">
+  <span className="block whitespace-nowrap rounded-xl bg-bg px-5 py-2.5 text-base font-bold tracking-tight text-accent">
     {service}
   </span>
 );
@@ -54,15 +54,17 @@ export function ServicesCard() {
   );
 }
 
-/** A project's architecture diagram, framed like a screenshot. */
+/** A project's architecture diagram, framed like a screenshot; opens the project's detail. */
 const projectThumb = (project: ProjectMeta) => (
-  <figure
-    aria-label={project.title}
-    className="relative flex aspect-video w-80 items-center rounded-xl border border-line bg-bg px-4 pt-8 pb-4"
-  >
-    <figcaption className="absolute top-3 left-4 text-xs font-medium text-subtle">{project.title}</figcaption>
-    <ProjectVisual id={project.id} compact />
-  </figure>
+  <Link to={`/projects#project-${project.id}`} aria-label={project.title} className="tile-link block rounded-xl">
+    <figure
+      aria-label={project.title}
+      className="relative flex aspect-video w-96 items-center justify-center overflow-hidden rounded-xl border border-line bg-bg px-3 pt-8 pb-3"
+    >
+      <figcaption className="absolute top-3 left-4 z-10 text-xs font-medium text-subtle">{project.title}</figcaption>
+      <ProjectVisual id={project.id} compact />
+    </figure>
+  </Link>
 );
 
 /** Summary only: the projects scroll by, the detail lives behind "View all projects". */

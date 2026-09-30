@@ -222,6 +222,9 @@ const en = {
     title: "Contact",
     body: "I'm looking for a Data Engineering internship starting January 2027. Email is the fastest way to reach me — I reply within a day or two.",
     cta: "Send an email",
+    copy: "Copy",
+    copied: "Copied",
+    copyFailed: "Couldn't copy",
   },
   story: {
     back: "Back",

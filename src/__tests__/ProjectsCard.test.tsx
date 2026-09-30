@@ -29,6 +29,15 @@ describe("ProjectsCard", () => {
     }
   });
 
+  it("mène chaque vignette au projet détaillé, sans doublon au clavier", () => {
+    renderCard();
+    for (const p of PROJECTS) {
+      expect(screen.getByRole("link", { name: p.title })).toHaveAttribute("href", `/projects#project-${p.id}`);
+    }
+    const hiddenCopy = document.querySelector(".marquee-copy[aria-hidden]");
+    expect(hiddenCopy).toHaveAttribute("inert");
+  });
+
   it("résume seulement : le détail est derrière « Voir tous les projets »", () => {
     renderCard();
     expect(screen.getByRole("link", { name: "Voir tous les projets" })).toHaveAttribute("href", "/projects");

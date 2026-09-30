@@ -294,15 +294,36 @@
     }
   }
 
+  /* One hover/focus language for every clickable tile: accent edge, slight lift. */
+  .tile-link {
+    transition:
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 200ms ease;
+  }
+  .tile-link:hover,
+  .tile-link:focus-visible {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+  .tile-link:hover > figure,
+  .tile-link:focus-visible > figure {
+    border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+
   /* Services marquee: two copies slide by half the track for a seamless loop. */
   .marquee {
     overflow: hidden;
+    /* Room for hovered items to lift without being clipped. */
+    padding-block: 4px;
     mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
   }
   .marquee-track {
     display: flex;
     width: max-content;
     animation: marquee 32s linear infinite;
+  }
+  .marquee-slow {
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
   }
   .marquee-slow .marquee-track {
     animation-duration: 45s;

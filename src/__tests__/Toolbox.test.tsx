@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import Toolbox from "../components/Toolbox";
 import { LangProvider } from "../context/LangContext";
 import { TOOLBOX } from "../data/profile";
@@ -10,9 +11,11 @@ beforeEach(() => {
 
 function renderToolbox() {
   return render(
-    <LangProvider>
-      <Toolbox />
-    </LangProvider>
+    <MemoryRouter>
+      <LangProvider>
+        <Toolbox />
+      </LangProvider>
+    </MemoryRouter>
   );
 }
 
@@ -30,9 +33,9 @@ describe("Toolbox", () => {
     renderToolbox();
     expect(screen.getByRole("link", { name: "Kafka — Wikipedia Pulse" })).toHaveAttribute(
       "href",
-      "#project-wikipedia-pulse",
+      "/projects#project-wikipedia-pulse",
     );
-    expect(screen.getByRole("link", { name: "Databricks — Certification" })).toHaveAttribute("href", "#credentials");
+    expect(screen.getByRole("link", { name: "Databricks — Certification" })).toHaveAttribute("href", "/#credentials");
     expect(screen.queryByRole("link", { name: /Azure/ })).not.toBeInTheDocument();
   });
 });

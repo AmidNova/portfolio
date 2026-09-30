@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Hero from "../components/Hero";
+import { AboutCard } from "../components/HomeCards";
 import Timeline from "../components/Timeline";
 import { LangProvider } from "../context/LangContext";
 import { EDUCATION, EXPERIENCE } from "../data/profile";
@@ -50,5 +51,17 @@ describe("Timeline", () => {
     );
     expect(screen.getByRole("link", { name: "ISEP Paris — X (Twitter)" })).toHaveAttribute("target", "_blank");
     expect(screen.queryByRole("link", { name: "ESTM Casablanca — X (Twitter)" })).not.toBeInTheDocument();
+  });
+});
+
+describe("AboutCard", () => {
+  it("résume l'histoire, montre la personne et mène à la version longue", () => {
+    renderWith(<AboutCard />);
+    const card = screen.getByRole("region", { name: "À propos" });
+    expect(within(card).getByRole("heading", { name: "En dehors du travail" })).toBeInTheDocument();
+    for (const hobby of ["Lecture", "Échecs", "Course à pied"]) {
+      expect(within(card).getByText(hobby)).toBeInTheDocument();
+    }
+    expect(within(card).getByRole("link", { name: /L'histoire complète/ })).toHaveAttribute("href", "/about");
   });
 });

@@ -1,6 +1,49 @@
-import { Github, Linkedin, Mail, MessagesSquare } from "lucide-react";
+import { Check, Copy, Github, Linkedin, Mail, MessagesSquare } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useLang } from "../context/LangContext";
 import { EMAIL, LINKS } from "../data/profile";
+
+const FEEDBACK_MS = 2000;
+
+type CopyState = "idle" | "copied" | "failed";
+
+/** The address itself, one click from the clipboard — for readers without a mail client. */
+function CopyEmail() {
+  const { t } = useLang();
+  const [state, setState] = useState<CopyState>("idle");
+
+  useEffect(() => {
+    if (state === "idle") return;
+    const id = setTimeout(() => setState("idle"), FEEDBACK_MS);
+    return () => clearTimeout(id);
+  }, [state]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setState("copied");
+    } catch {
+      setState("failed");
+    }
+  };
+
+  const Icon = state === "copied" ? Check : Copy;
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      aria-label={`${t.contact.copy} ${EMAIL}`}
+      className="group mt-4 inline-flex items-center gap-2 rounded-md px-2 py-1 font-mono text-xs text-subtle transition-colors hover:text-fg"
+    >
+      {EMAIL}
+      <Icon size={13} aria-hidden="true" className={state === "copied" ? "text-ok" : ""} />
+      <span role="status" className="font-sans">
+        {state === "copied" && t.contact.copied}
+        {state === "failed" && t.contact.copyFailed}
+      </span>
+    </button>
+  );
+}
 
 /** Closing tile: one clear action (email) plus the two profiles. */
 function Contact() {
@@ -37,7 +80,7 @@ function Contact() {
           <Github size={17} aria-hidden="true" />
         </a>
       </div>
-      <p className="mt-4 font-mono text-xs text-subtle">{EMAIL}</p>
+      <CopyEmail />
     </section>
   );
 }
