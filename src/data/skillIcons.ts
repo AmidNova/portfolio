@@ -15,6 +15,7 @@ import {
   SiKibana,
   SiKubernetes,
   SiPython,
+  SiScrimba,
   SiTerraform,
 } from "react-icons/si";
 import { TbSql } from "react-icons/tb";
@@ -55,4 +56,6 @@ export const SKILL_ICONS: Record<string, SkillIcon> = {
   Docker: { Icon: SiDocker, brand: "#2496ED" },
   Kubernetes: { Icon: SiKubernetes, brand: "#5B8DEF" },
   Terraform: { Icon: SiTerraform, brand: "#A67FE0" },
+  // Not a tool: stands in for the Scrimba certificate, which has no badge image.
+  Scrimba: { Icon: SiScrimba },
 };
