@@ -1,99 +1,78 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
 import Projects from "../components/Projects";
 import { LangProvider } from "../context/LangContext";
 
-function renderProjects() {
+function renderProjects(lang = "fr") {
+  localStorage.setItem("lang", lang);
   return render(
-    <MemoryRouter>
-      <LangProvider>
-        <Projects />
-      </LangProvider>
-    </MemoryRouter>
+    <LangProvider>
+      <Projects />
+    </LangProvider>
   );
 }
 
-beforeEach(() => {
-  localStorage.clear();
-  Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1280 });
-  window.dispatchEvent(new Event("resize"));
-});
+beforeEach(() => localStorage.clear());
 
 describe("Projects", () => {
-  it("affiche le titre de section", () => {
+  it("affiche les trois projets", () => {
     renderProjects();
-    expect(screen.getByText("Projects")).toBeInTheDocument();
-    expect(screen.getByText("./projects")).toBeInTheDocument();
+    const titles = screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent);
+    expect(titles).toEqual(["Wikipedia Pulse", "Retail Data Pipeline", "Healthcare BI"]);
   });
 
-  it("affiche le premier projet (Wikipedia Pulse) au démarrage", () => {
+  it("illustre chaque projet par son schéma et chiffre le projet phare", () => {
     renderProjects();
-    expect(screen.getByText("Wikipedia Pulse")).toBeInTheDocument();
-    expect(screen.getByText("01 / 03")).toBeInTheDocument();
+    const pulse = screen.getByRole("article", { name: "Wikipedia Pulse" });
+    expect(within(pulse).getByRole("img", { name: /Architecture de Wikipedia Pulse/ })).toBeInTheDocument();
+    expect(within(pulse).getByText("événements pré-viraux")).toBeInTheDocument();
+    const retail = screen.getByRole("article", { name: "Retail Data Pipeline" });
+    expect(within(retail).getByRole("img", { name: /Flux du Retail Data Pipeline/ })).toBeInTheDocument();
+    const bi = screen.getByRole("article", { name: "Healthcare BI" });
+    expect(within(bi).getByRole("img", { name: /Schéma en étoile/ })).toBeInTheDocument();
   });
 
-  it("navigue vers le projet suivant avec la flèche droite", async () => {
+  it("chiffre aussi le projet BI", () => {
+    renderProjects("en");
+    const bi = screen.getByRole("article", { name: "Healthcare BI" });
+    expect(within(bi).getByText("$25.6M")).toBeInTheDocument();
+    expect(within(bi).getByText("hospitals")).toBeInTheDocument();
+  });
+
+  it("n'offre l'étude de cas qu'aux projets documentés", () => {
+    renderProjects();
+    const retail = screen.getByRole("article", { name: "Retail Data Pipeline" });
+    expect(within(retail).queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("ouvre et ferme l'étude de cas au clavier", async () => {
     const user = userEvent.setup();
-    renderProjects();
-    const arrowButtons = screen.getAllByRole("button").slice(0, 2);
-    await user.click(arrowButtons[1]);
-    expect(screen.getByText("Kairos")).toBeInTheDocument();
-    expect(screen.getByText("02 / 03")).toBeInTheDocument();
+    renderProjects("en");
+    await user.click(screen.getByRole("button", { name: /^Case study$/ }));
+    const dialog = screen.getByRole("dialog", { name: "Wikipedia Pulse" });
+    expect(within(dialog).getByText("Technical documentation (PDF)")).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: "Close" })).toHaveFocus();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("boucle sur tous les projets puis revient au premier", async () => {
+  it("agrandit une capture, navigue aux flèches et Échap ne ferme que la lightbox", async () => {
     const user = userEvent.setup();
-    renderProjects();
+    renderProjects("en");
+    await user.click(screen.getByRole("button", { name: /^Case study$/ }));
+    await user.click(screen.getByRole("button", { name: /^Enlarge image — Real-time KPIs/ }));
 
-    const arrowButtons = screen.getAllByRole("button").slice(0, 2); // prev et next
+    expect(screen.getByRole("dialog", { name: "Real-time KPIs on the live edit stream" })).toBeInTheDocument();
+    expect(screen.getByText("1 / 8")).toBeInTheDocument();
 
-    await user.click(arrowButtons[1]); // → Kairos
-    expect(screen.getByText("Kairos")).toBeInTheDocument();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("dialog", { name: "Trending articles — surfacing spikes" })).toBeInTheDocument();
 
-    await user.click(arrowButtons[1]); // → Bozarts
-    expect(screen.getByText("Bozarts")).toBeInTheDocument();
+    await user.keyboard("{ArrowLeft}{ArrowLeft}");
+    expect(screen.getByText("8 / 8")).toBeInTheDocument();
 
-    await user.click(arrowButtons[1]); // → revient à Wikipedia Pulse
-    expect(screen.getByText("Wikipedia Pulse")).toBeInTheDocument();
-  });
-
-  it("navigue vers le projet précédent avec la flèche gauche", async () => {
-    const user = userEvent.setup();
-    renderProjects();
-
-    const arrowButtons = screen.getAllByRole("button").slice(0, 2);
-    const prevBtn = arrowButtons[0];
-    const nextBtn = arrowButtons[1];
-
-    await user.click(nextBtn); // → Kairos
-    expect(screen.getByText("Kairos")).toBeInTheDocument();
-
-    await user.click(prevBtn); // ← revient à Wikipedia Pulse
-    expect(screen.getByText("Wikipedia Pulse")).toBeInTheDocument();
-  });
-
-  it("affiche les tags tech du projet courant", () => {
-    renderProjects();
-    expect(screen.getByText("Apache Kafka")).toBeInTheDocument();
-    expect(screen.getByText("Airflow")).toBeInTheDocument();
-  });
-
-  it("ouvre l'étude de cas du projet média", async () => {
-    const user = userEvent.setup();
-    renderProjects();
-    await user.click(screen.getByText("Case study"));
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByText("Full documentation (PDF)")).toBeInTheDocument();
-  });
-
-  it("affiche le bouton Show All Projects", () => {
-    renderProjects();
-    expect(screen.getByText("Show All Projects")).toBeInTheDocument();
-  });
-
-  it("affiche le statut du projet", () => {
-    renderProjects();
-    expect(screen.getByText("Personal Project")).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByText("8 / 8")).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Wikipedia Pulse" })).toBeInTheDocument();
   });
 });

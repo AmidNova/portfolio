@@ -16,64 +16,38 @@ function renderNavbar(initialPath = "/") {
 
 beforeEach(() => {
   localStorage.clear();
+  localStorage.setItem("lang", "fr");
   document.body.classList.remove("dark");
-  Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1280 });
-  window.dispatchEvent(new Event("resize"));
 });
 
 describe("Navbar", () => {
-  it("affiche le logo prompt avec le nom", () => {
+  it("affiche le nom et les liens de navigation", () => {
     renderNavbar();
-    expect(screen.getByText("soro")).toBeInTheDocument();
-    expect(screen.getByText("@portfolio")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Soro Amidou" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Projets" })).toHaveAttribute("href", "/#projects");
+    expect(screen.getByRole("link", { name: "Parcours" })).toHaveAttribute("href", "/#experience");
+    expect(screen.getByRole("link", { name: "À propos" })).toHaveAttribute("href", "/about");
   });
 
-  it("affiche les liens de navigation Home et About", () => {
-    renderNavbar();
-    expect(screen.getByText(/home/i)).toBeInTheDocument();
-    expect(screen.getByText(/about/i)).toBeInTheDocument();
+  it("marque la page courante", () => {
+    renderNavbar("/about");
+    expect(screen.getByRole("link", { name: "À propos" })).toHaveAttribute("aria-current", "page");
   });
 
-  it("affiche les liens sociaux (GitHub, LinkedIn, email)", () => {
+  it("bascule FR → EN et traduit les liens", async () => {
+    const user = userEvent.setup();
     renderNavbar();
-    expect(screen.getByLabelText("GitHub")).toBeInTheDocument();
-    expect(screen.getByLabelText("LinkedIn")).toBeInTheDocument();
-    expect(screen.getByLabelText("Envoyer un email")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "fr" })).toHaveAttribute("aria-pressed", "true");
+    await user.click(screen.getByRole("button", { name: "en" }));
+    expect(localStorage.getItem("lang")).toBe("en");
+    expect(screen.getByRole("link", { name: "Projects" })).toBeInTheDocument();
   });
 
-  it("le bouton dark mode est présent", () => {
+  it("part du mode sombre et bascule en clair", async () => {
+    const user = userEvent.setup();
     renderNavbar();
+    await user.click(screen.getByLabelText("Passer en mode clair"));
+    expect(document.body.classList.contains("dark")).toBe(false);
     expect(screen.getByLabelText("Passer en mode sombre")).toBeInTheDocument();
-  });
-
-  it("bascule en mode sombre au clic sur le toggle", async () => {
-    const user = userEvent.setup();
-    renderNavbar();
-    const toggle = screen.getByLabelText("Passer en mode sombre");
-    await user.click(toggle);
-    expect(document.body.classList.contains("dark")).toBe(true);
-    expect(screen.getByLabelText("Passer en mode clair")).toBeInTheDocument();
-  });
-
-  it("le dropdown de langue affiche EN par défaut", () => {
-    renderNavbar();
-    expect(screen.getByText("EN")).toBeInTheDocument();
-  });
-
-  it("ouvre le dropdown et permet de choisir FR", async () => {
-    const user = userEvent.setup();
-    renderNavbar();
-    await user.click(screen.getByText("EN"));
-    const frButtons = screen.getAllByText("FR");
-    expect(frButtons.length).toBeGreaterThan(0);
-    await user.click(frButtons[frButtons.length - 1]);
-    expect(localStorage.getItem("lang")).toBe("fr");
-  });
-
-  it("affiche le menu hamburger sur mobile", () => {
-    Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 375 });
-    window.dispatchEvent(new Event("resize"));
-    renderNavbar();
-    expect(screen.getByLabelText("Ouvrir le menu")).toBeInTheDocument();
   });
 });

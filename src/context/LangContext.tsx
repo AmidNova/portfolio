@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { frenchSpacing, mapStrings } from "../lib/typography";
 import en from "../locales/en";
 import fr from "../locales/fr";
 
 type Lang = "en" | "fr";
 
-const translations = { en, fr };
+// French copy gets its no-break spaces once, at load, so the locale file stays readable.
+const translations = { en, fr: mapStrings(fr, frenchSpacing) };
 
 type Translations = typeof en;
 
@@ -25,11 +27,14 @@ const LangContext = createContext<{
 export function LangProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
     const saved = localStorage.getItem("lang");
-    return saved === "en" || saved === "fr" ? saved : "en";
+    if (saved === "en" || saved === "fr") return saved;
+    // First visit: English browsers get English, everyone else French.
+    return navigator.language?.toLowerCase().startsWith("en") ? "en" : "fr";
   });
 
   const [dark, setDark] = useState(() => {
-    return localStorage.getItem("dark") === "true";
+    // Dark is the default look; only an explicit choice of light turns it off.
+    return localStorage.getItem("dark") !== "false";
   });
 
   // Apply dark class on mount

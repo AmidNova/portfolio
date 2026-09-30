@@ -1,139 +1,373 @@
 @import "tailwindcss";
 
-/* ── Palette ──────────────────────────────────────────────────────────────── */
-/* Light: neutral (Geist-clean)  ·  Dark: GitHub Primer dark default            */
-/* Accent green #1a7f37 / #3fb950  ·  Secondary amber #9a6700 / #d29922         */
+/* Dark mode follows the `dark` class that LangContext toggles on <body> (dark by default). */
+@custom-variant dark (&:where(.dark, .dark *));
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@theme {
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-:root {
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-sans: "Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  /* Light theme (opt-in). The dark theme below is the default look. */
+  --color-bg: #f4f4f5;
+  --color-card: #ffffff;
+  --color-raised: #f0f0f2;
+  --color-line: #e4e4e7;
+  --color-fg: #09090b;
+  --color-muted: #52525b;
+  --color-subtle: #6b6b74;
+  --color-accent: #6d5bd0;
+  --color-accent-ink: #ffffff;
+  --color-ok: #16a34a;
 
-  /* Type scale — base 16px, Major Third (1.25) */
-  --text-xs:   0.75rem;   /* 12 */
-  --text-sm:   0.875rem;  /* 14 */
-  --text-base: 1rem;      /* 16 */
-  --text-lg:   1.125rem;  /* 18 */
-  --text-xl:   1.25rem;   /* 20 */
-  --text-2xl:  1.5rem;    /* 24 */
-  --text-3xl:  1.953rem;  /* 31 */
-  --text-4xl:  2.441rem;  /* 39 */
-  --text-5xl:  3.052rem;  /* 49 */
-
-  --leading-tight: 1.15;
-  --leading-body: 1.65;
+  --animate-enter: enter 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* A single ping once the page has settled — a signal, not a loop. */
+  --animate-ping-once: ping-once 1.4s cubic-bezier(0, 0, 0.2, 1) 700ms both;
 }
 
-body {
-  background-color: #fafafa;
-  font-family: var(--font-mono);
-  color: #18181b;
-  overflow-x: hidden;
-  font-size: 16px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 
-body.dark {
-  background-color: #0d1117;
+@keyframes ping-once {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
 }
 
-/* Long-form body copy switches to a clean sans for readability */
-.prose {
-  font-family: var(--font-sans);
-  line-height: var(--leading-body);
-  letter-spacing: 0.005em;
+/* Toolbox tiles fall in, overshoot a little and settle. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
-/* Terminal blinking caret */
-@keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-.term-cursor {
-  display: inline-block;
-  width: 0.55ch;
-  height: 1em;
-  vertical-align: text-bottom;
-  background: currentColor;
-  margin-left: 0.15ch;
-  animation: blink 1.1s steps(1) infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .term-cursor { animation: none; }
-}
-
-#root {
-  position: relative;
-  z-index: 1;
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-120px);
+  }
+  45% {
+    opacity: 1;
+  }
+  65% {
+    transform: translateY(6px);
+  }
+  82% {
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Underline-grow link interaction */
-.link-grow {
-  position: relative;
-  text-decoration: none;
+/* Cross-page transitions (react-router `viewTransition` links): quick fade, portrait morphs. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
 }
-.link-grow::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.22s ease;
-}
-.link-grow:hover::after { transform: scaleX(1); }
-
-.tnum { font-variant-numeric: tabular-nums; }
-
-/* Travelling dot for the data pipeline */
-@keyframes flow-dot {
-  0%   { left: 0; opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { left: 100%; opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .flow-dot { animation: none !important; display: none; }
+::view-transition-group(portrait) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-:focus-visible {
-  outline: 2px solid #1a7f37;
-  outline-offset: 3px;
-  border-radius: 0;
+@layer base {
+  /* Near-black page, cards a shade lighter, hairline borders, one lavender accent. */
+  .dark {
+    --color-bg: #0d0c0d;
+    --color-card: #0f0f10;
+    --color-raised: #1e1e1f;
+    --color-line: #1e1e1f;
+    --color-fg: #fafafa;
+    --color-muted: #a1a1aa;
+    --color-subtle: #8e8e97;
+    --color-accent: #b2a7fb;
+    --color-accent-ink: #050505;
+    --color-ok: #22c55e;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 4.5rem;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p,
+  li,
+  dd,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      transition-duration: 1ms !important;
+    }
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
 }
 
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 1rem;
-  padding: 0.65rem 1rem;
-  background-color: #1a7f37;
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 0;
-  text-decoration: none;
-  z-index: 10000;
-  transition: top 0.15s ease;
-}
+@layer components {
+  /* Metal-gradient figure used by the stat tiles. */
+  .stat-figure {
+    background: linear-gradient(to bottom, var(--color-fg) 20%, var(--color-subtle));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 
-.skip-link:focus-visible {
-  top: 1rem;
-}
+  .card {
+    border: 1px solid var(--color-line);
+    border-radius: 11px;
+    background: var(--color-card);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  }
 
-.hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    padding: 0 1rem;
+    border: 0;
+    border-radius: 9px;
+    background: var(--color-raised);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-fg);
+    text-decoration: none;
+    transition:
+      filter 150ms ease,
+      background-color 150ms ease;
+  }
+  .btn:hover {
+    filter: brightness(1.2);
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.08);
+  }
+
+  /* Quick-fact pill with an icon (location, languages, school…). */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 8px;
+    background: var(--color-raised);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    border-radius: 6px;
+    background: var(--color-raised);
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    color: var(--color-muted);
+  }
+
+  /* Portrait mounted like a print: thin mat, hairline edge, soft two-layer shadow. */
+  .portrait {
+    box-shadow:
+      0 0 0 3px var(--color-card),
+      0 0 0 4px var(--color-line),
+      0 2px 4px rgb(0 0 0 / 0.06),
+      0 14px 30px -10px rgb(0 0 0 / 0.28);
+  }
+  .dark .portrait {
+    box-shadow:
+      0 0 0 3px var(--color-card),
+      0 0 0 4px rgb(255 255 255 / 0.14),
+      0 2px 4px rgb(0 0 0 / 0.5),
+      0 14px 30px -10px rgb(0 0 0 / 0.9);
+  }
+
+  /* Underline that slides in from the left on hover. */
+  .link {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    padding-bottom: 1px;
+    text-decoration: none;
+    transition:
+      background-size 250ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 150ms ease;
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Toolbox: a dotted tray; tools rest tilted where they fell, hover or focus picks one up. */
+  .toolbox {
+    background-color: var(--color-bg);
+    background-image: radial-gradient(var(--color-line) 1px, transparent 1px);
+    background-size: 14px 14px;
+    box-shadow: inset 0 2px 10px rgb(0 0 0 / 0.08);
+  }
+  .dark .toolbox {
+    background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+    box-shadow: inset 0 3px 16px rgb(0 0 0 / 0.7);
+  }
+  .toolbox-tile {
+    opacity: 0;
+  }
+  .toolbox[data-dropped] .toolbox-tile {
+    animation: drop 700ms cubic-bezier(0.3, 0.7, 0.4, 1) both;
+    animation-delay: calc(var(--i) * 45ms);
+  }
+  .toolbox-chip {
+    transform: translateY(var(--y)) rotate(var(--r));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.04),
+      0 8px 16px -8px rgb(0 0 0 / 0.55);
+    transition:
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+  a.toolbox-chip:hover,
+  a.toolbox-chip:focus-visible {
+    transform: translateY(-5px) rotate(0) scale(1.06);
+    border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 16px 26px -10px rgb(0 0 0 / 0.7);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .toolbox-tile,
+    .toolbox[data-dropped] .toolbox-tile {
+      opacity: 1;
+      animation: none;
+    }
+  }
+
+  /* One hover/focus language for every clickable tile: accent edge, slight lift. */
+  .tile-link {
+    transition:
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 200ms ease;
+  }
+  .tile-link:hover,
+  .tile-link:focus-visible {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+  .tile-link:hover > figure,
+  .tile-link:focus-visible > figure {
+    border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+
+  /* Services marquee: two copies slide by half the track for a seamless loop. */
+  .marquee {
+    overflow: hidden;
+    /* Room for hovered items to lift without being clipped. */
+    padding-block: 4px;
+    mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 32s linear infinite;
+  }
+  .marquee-slow {
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+  .marquee-slow .marquee-track {
+    animation-duration: 45s;
+  }
+  .marquee[data-reverse] .marquee-track {
+    animation-direction: reverse;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  .marquee-copy {
+    display: flex;
+    gap: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      mask-image: none;
+    }
+    .marquee-track {
+      width: auto;
+      animation: none;
+    }
+    .marquee-copy {
+      flex-wrap: wrap;
+    }
+    .marquee-copy[aria-hidden] {
+      display: none;
+    }
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -48px;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  .skip-link:focus-visible {
+    top: 1rem;
+  }
 }
