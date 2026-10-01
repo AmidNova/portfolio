@@ -77,7 +77,7 @@ function ProjectTile({ project, onOpenCaseStudy }: ProjectTileProps) {
               {t.projects.page.code}
             </a>
           ) : (
-            <span className="btn flex-1 cursor-default text-subtle opacity-60">
+            <span className="btn flex-1 cursor-default whitespace-nowrap px-3 text-subtle">
               <Lock size={14} aria-hidden="true" />
               {t.projects.page.codePrivate}
             </span>

@@ -24,7 +24,7 @@ function Hero() {
           style={{ viewTransitionName: "portrait" }}
         />
         <div className="min-w-0">
-          <p className="inline-flex items-center gap-1.5 rounded-full bg-ok/20 px-2.5 py-0.5 text-xs font-semibold text-ok">
+          <p className="inline-flex items-center gap-1.5 rounded-full bg-ok/20 px-2.5 py-0.5 text-xs font-semibold text-ok-ink">
             <span className="relative flex size-1.5" aria-hidden="true">
               <span className="absolute inset-0 animate-ping-once rounded-full bg-ok" />
               <span className="relative size-1.5 rounded-full bg-ok" />

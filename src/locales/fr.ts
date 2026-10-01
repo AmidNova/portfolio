@@ -9,6 +9,7 @@ const fr = {
     aboutDescription: "L'histoire complète : des équations au Data Engineering, par Soro Amidou.",
   },
   cards: {
+    pauseMotion: "Mettre le défilement en pause",
     about: { subtitle: "Des équations aux pipelines." },
     projects: { subtitle: "Pipelines, entrepôts et BI, chacun expliqué par son schéma.", viewAll: "Voir tous les projets" },
     journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
@@ -36,6 +37,7 @@ const fr = {
     about: "À propos",
     toDark: "Passer en mode sombre",
     toLight: "Passer en mode clair",
+    main: "Principale",
     language: "Langue",
     menu: "Menu",
     openMenu: "Ouvrir le menu",
@@ -212,7 +214,7 @@ const fr = {
         metrics: [
           { value: "55 500", label: "admissions" },
           { value: "10", label: "hôpitaux" },
-          { value: "25,6 M$", label: "d'économies (what-if)" },
+          { value: "25,6 M$", label: "d'économies (what‑if)" },
         ],
       },
     },
