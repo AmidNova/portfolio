@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 everything-claude-code/
+
+# Lighthouse CI local runs
+.lighthouseci/
