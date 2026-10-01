@@ -36,4 +36,7 @@ export const projectMediaById: Record<string, ProjectMedia> = {
       { src: imRatio, captionKey: "ratio" },
     ],
   },
+  // No screenshots yet: the case study tells the flow and the decisions.
+  "retail-pipeline": { images: [] },
+  "healthcare-bi": { images: [] },
 };

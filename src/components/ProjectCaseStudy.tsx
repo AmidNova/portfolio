@@ -1,4 +1,4 @@
-import { FileText, X } from "lucide-react";
+import { FileText, Github, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLang } from "../hooks/useLang";
@@ -6,6 +6,19 @@ import type { ProjectMeta } from "../data/profile";
 import ArchitectureDiagram from "./ArchitectureDiagram";
 import Lightbox, { type LightboxImage } from "./Lightbox";
 import type { ProjectMedia } from "./projectMedia";
+
+interface FlowStep {
+  label: string;
+  detail: string;
+}
+
+/** What a project's case study may say; each project fills only what it has. */
+interface MediaCopy {
+  architecture?: string;
+  shots?: Record<string, string>;
+  flow?: FlowStep[];
+  decisions?: string[];
+}
 
 interface ProjectCaseStudyProps {
   project: ProjectMeta;
@@ -17,8 +30,8 @@ function ProjectCaseStudy({ project, media, onClose }: ProjectCaseStudyProps) {
   const { t } = useLang();
   const closeRef = useRef<HTMLButtonElement>(null);
   const copy = t.projects.items[project.id];
-  const mediaCopy = t.projects.media[project.id as keyof typeof t.projects.media];
-  const shots: Record<string, string> = mediaCopy?.shots ?? {};
+  const mediaCopy: MediaCopy | undefined = t.projects.media[project.id as keyof typeof t.projects.media];
+  const shots = mediaCopy?.shots ?? {};
   const gallery: LightboxImage[] = media.images.map((shot) => ({
     src: shot.src,
     caption: shots[shot.captionKey] ?? project.title,
@@ -91,6 +104,21 @@ function ProjectCaseStudy({ project, media, onClose }: ProjectCaseStudyProps) {
                 <ArchitectureDiagram className="min-w-[560px]" />
               </div>
             )}
+            {mediaCopy.flow && <FlowSteps steps={mediaCopy.flow} label={t.projects.flowLabel} />}
+          </section>
+        )}
+
+        {mediaCopy?.decisions && (
+          <section className="mt-10">
+            <h3 className="mb-3 text-[15px] font-semibold">{t.projects.sectionDecisions}</h3>
+            <ul className="space-y-2.5">
+              {mediaCopy.decisions.map((decision) => (
+                <li key={decision} className="flex gap-3 text-sm leading-relaxed text-muted">
+                  <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-accent" />
+                  {decision}
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 
@@ -119,26 +147,63 @@ function ProjectCaseStudy({ project, media, onClose }: ProjectCaseStudyProps) {
           <Lightbox images={gallery} index={zoomIndex} onIndexChange={setZoomIndex} onClose={closeZoom} />
         )}
 
-        {(media.video || media.doc) && (
+        {(media.video || media.doc || project.repo) && (
           <section className="mt-10">
             <h3 className="mb-3 text-[15px] font-semibold">{t.projects.techDoc}</h3>
             {media.video && (
               <figure>
-                <video src={media.video} controls preload="metadata" className="w-full rounded-lg border border-line bg-black" />
+                <video
+                  src={media.video}
+                  controls
+                  preload="metadata"
+                  className="w-full rounded-lg border border-line bg-black"
+                />
                 <figcaption className="mt-1.5 text-xs text-subtle">{t.projects.watchDemo}</figcaption>
               </figure>
             )}
-            {media.doc && (
-              <a href={media.doc} target="_blank" rel="noopener noreferrer" className="btn mt-4">
-                <FileText size={15} aria-hidden="true" />
-                {t.projects.readDoc}
-              </a>
-            )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {media.doc && (
+                <a href={media.doc} target="_blank" rel="noopener noreferrer" className="btn">
+                  <FileText size={15} aria-hidden="true" />
+                  {t.projects.readDoc}
+                </a>
+              )}
+              {project.repo && (
+                <a href={project.repo} target="_blank" rel="noopener noreferrer" className="btn">
+                  <Github size={15} aria-hidden="true" />
+                  {t.projects.viewCode}
+                </a>
+              )}
+            </div>
           </section>
         )}
       </div>
     </div>,
     document.body,
+  );
+}
+
+/** The data flow as numbered stages, wrapping on narrow screens instead of scrolling. */
+function FlowSteps({ steps, label }: { steps: FlowStep[]; label: string }) {
+  return (
+    <ol aria-label={label} className="mt-4 flex flex-wrap items-stretch gap-2">
+      {steps.map((step, i) => (
+        <li key={step.label} className="flex items-center gap-2">
+          <div className="rounded-lg border border-line bg-card px-3 py-2">
+            <p className="flex items-baseline gap-2 text-sm font-medium">
+              <span className="font-mono text-[11px] text-accent">{String(i + 1).padStart(2, "0")}</span>
+              {step.label}
+            </p>
+            <p className="mt-0.5 text-xs text-subtle">{step.detail}</p>
+          </div>
+          {i < steps.length - 1 && (
+            <span aria-hidden="true" className="hidden text-subtle sm:inline">
+              →
+            </span>
+          )}
+        </li>
+      ))}
+    </ol>
   );
 }
 

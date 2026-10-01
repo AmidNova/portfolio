@@ -19,6 +19,11 @@ function renderPage(lang = "fr", url = "/projects") {
 const cardTitles = () =>
   screen.getAllByRole("article").map((card) => within(card).getByRole("heading", { level: 2 }).textContent?.trim());
 
+async function openCaseStudy(user: ReturnType<typeof userEvent.setup>, title: string) {
+  const card = screen.getByRole("article", { name: title });
+  await user.click(within(card).getByRole("button", { name: /^Case study$/ }));
+}
+
 beforeEach(() => localStorage.clear());
 
 describe("ProjectsPage", () => {
@@ -72,13 +77,10 @@ describe("ProjectsPage", () => {
     expect(screen.getByText(/Aucun projet ne combine/)).toBeInTheDocument();
   });
 
-  it("ouvre et ferme l'étude de cas au clavier, seulement pour les projets documentés", async () => {
+  it("ouvre et ferme l'étude de cas au clavier", async () => {
     const user = userEvent.setup();
     renderPage("en");
-    const retail = screen.getByRole("article", { name: "Retail Data Pipeline" });
-    expect(within(retail).queryByRole("button", { name: /Case study/ })).not.toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: /^Case study$/ }));
+    await openCaseStudy(user, "Wikipedia Pulse");
     const dialog = screen.getByRole("dialog", { name: "Wikipedia Pulse" });
     expect(within(dialog).getByText("Technical documentation (PDF)")).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: "Close" })).toHaveFocus();
@@ -89,7 +91,7 @@ describe("ProjectsPage", () => {
   it("agrandit une capture, navigue aux flèches et Échap ne ferme que la lightbox", async () => {
     const user = userEvent.setup();
     renderPage("en");
-    await user.click(screen.getByRole("button", { name: /^Case study$/ }));
+    await openCaseStudy(user, "Wikipedia Pulse");
     await user.click(screen.getByRole("button", { name: /^Enlarge image — Real-time KPIs/ }));
 
     expect(screen.getByRole("dialog", { name: "Real-time KPIs on the live edit stream" })).toBeInTheDocument();
@@ -104,5 +106,37 @@ describe("ProjectsPage", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByText("8 / 8")).not.toBeInTheDocument();
     expect(screen.getByRole("dialog", { name: "Wikipedia Pulse" })).toBeInTheDocument();
+  });
+
+  it("donne une étude de cas à chaque projet, même sans captures", () => {
+    renderPage("en");
+    for (const card of screen.getAllByRole("article")) {
+      expect(within(card).getByRole("button", { name: /^Case study$/ })).toBeInTheDocument();
+    }
+  });
+
+  it("raconte le pipeline Retail étape par étape, ses choix et renvoie au code", async () => {
+    const user = userEvent.setup();
+    renderPage("en");
+    await openCaseStudy(user, "Retail Data Pipeline");
+    const dialog = screen.getByRole("dialog", { name: "Retail Data Pipeline" });
+
+    const steps = within(within(dialog).getByRole("list", { name: "Pipeline" })).getAllByRole("listitem");
+    expect(steps[0]).toHaveTextContent("Raw CSV");
+    expect(steps.at(-1)).toHaveTextContent("Metabase");
+    expect(within(dialog).getByRole("heading", { name: "Key decisions" })).toBeInTheDocument();
+    expect(within(dialog).getByRole("link", { name: /View the code/ })).toHaveAttribute(
+      "href",
+      "https://github.com/AmidNova/retail-gcp-pipeline",
+    );
+  });
+
+  it("n'invente pas de lien de code pour un projet sans dépôt public", async () => {
+    const user = userEvent.setup();
+    renderPage("en");
+    await openCaseStudy(user, "Healthcare BI");
+    const dialog = screen.getByRole("dialog", { name: "Healthcare BI" });
+    expect(within(dialog).getByRole("list", { name: "Pipeline" })).toBeInTheDocument();
+    expect(within(dialog).queryByRole("link", { name: /View the code/ })).not.toBeInTheDocument();
   });
 });
