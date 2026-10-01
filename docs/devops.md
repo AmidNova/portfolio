@@ -151,6 +151,23 @@ Plan: 14 to import, 0 to add, 0 to change, 0 to destroy.
 
 Zero changes is the proof that the code describes exactly what runs. Only after that baseline do changes start, each one as its own reviewed diff.
 
+### TLS settings: declared, not inherited
+
+The import showed `always_use_https = off` and `min_tls_version = 1.0`, which looked like two holes. Testing the live behaviour showed they were not:
+
+- `http://amidousoro.me` already answered `301` to HTTPS: Pages redirects on its own;
+- an SSL Labs scan (2026-10-01) graded the site **A+** and found **only TLS 1.2 and 1.3**: Cloudflare no longer serves 1.0/1.1 here.
+
+So the site was secure *by platform default*, not by its own configuration. The settings were still changed, in their own PR with a 3-change plan, so the guarantee lives in this repo instead of depending on defaults that can change:
+
+| Setting | Before | After | Effect |
+| --- | --- | --- | --- |
+| `always_use_https` | off | on | the edge redirects to HTTPS itself, whatever the origin does |
+| `min_tls_version` | 1.0 | 1.2 | TLS 1.0/1.1 refused by configuration (RFC 8996), not by chance |
+| `ssl` | full | strict | Cloudflare now **validates** the Pages certificate on the edge-to-origin leg (the one real gain) |
+
+Lesson kept: read the setting, then **test the behaviour** before calling it a vulnerability.
+
 ### State
 
 The state file lives in a private R2 bucket, `portfolio-tfstate`, through Terraform's S3 backend (R2 speaks the S3 API). `use_lockfile = true` uses S3-native locking, so a local run and a CI run cannot write the state at the same time. Nothing about the state is committed: `infra/cloudflare/.gitignore` excludes it.
@@ -280,6 +297,6 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 
 - [x] **Level 1, CI/CD foundations** — CI, Lighthouse budgets, security headers with a guard, Dependabot, pre-commit hooks.
 - [x] **Level 2, infrastructure as code** — Terraform for Cloudflare (DNS, Pages project, TLS settings), imported with zero changes; state in R2 with locking; plan on PRs, apply on merge. See [§5](#5-infrastructure-as-code).
-- [ ] **Level 2b, hardening through Terraform** — `always_use_https` on (HTTP is not redirected today) and minimum TLS 1.2 (1.0 is allowed today), as reviewed diffs.
+- [x] **Level 2b, TLS settings declared, not inherited** — `always_use_https` on, minimum TLS 1.2, SSL mode Full (strict). See [§5](#tls-settings-declared-not-inherited).
 - [ ] **Level 3, AWS in parallel** — the same build on S3 + CloudFront at `aws.amidousoro.me`, in Terraform, deployed from GitHub Actions with OIDC (no stored AWS keys), and a written Cloudflare vs AWS comparison (cost, latency, operations).
 - [ ] **Later** — pre-rendering to fix the `/about` LCP; Cloudflare Web Analytics; uptime monitoring.
