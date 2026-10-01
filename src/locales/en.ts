@@ -9,6 +9,7 @@ const en = {
     aboutDescription: "The longer story: from equations to data engineering, by Soro Amidou.",
   },
   cards: {
+    pauseMotion: "Pause the scrolling",
     about: { subtitle: "From equations to pipelines." },
     projects: { subtitle: "Pipelines, warehouses and BI, each explained by its diagram.", viewAll: "View all projects" },
     journey: { title: "Journey", subtitle: "Where I've worked and studied" },
@@ -36,6 +37,7 @@ const en = {
     about: "About",
     toDark: "Switch to dark mode",
     toLight: "Switch to light mode",
+    main: "Main",
     language: "Language",
     menu: "Menu",
     openMenu: "Open menu",
@@ -213,7 +215,7 @@ const en = {
         metrics: [
           { value: "55,500", label: "admissions" },
           { value: "10", label: "hospitals" },
-          { value: "$25.6M", label: "savings (what-if)" },
+          { value: "$25.6M", label: "savings (what‑if)" },
         ],
       },
     },

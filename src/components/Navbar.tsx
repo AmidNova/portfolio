@@ -43,7 +43,7 @@ function Navbar() {
         scrolled ? "border-line" : "border-transparent"
       }`}
     >
-      <nav aria-label="Main" className="mx-auto flex h-14 max-w-[1100px] items-center justify-between px-6">
+      <nav aria-label={t.nav.main} className="mx-auto flex h-14 max-w-[1100px] items-center justify-between px-6">
         <Link to="/" viewTransition className="text-sm font-medium tracking-tight">
           Soro Amidou
         </Link>
