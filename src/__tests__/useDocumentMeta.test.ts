@@ -25,4 +25,17 @@ describe("useDocumentMeta", () => {
     expect(description()).toBe("Hello");
     expect(document.querySelectorAll('meta[name="description"]')).toHaveLength(1);
   });
+
+  it("points the canonical link at the current page, not always the home page", () => {
+    const link = document.createElement("link");
+    link.rel = "canonical";
+    link.href = "https://amidousoro.me/";
+    document.head.appendChild(link);
+    window.history.pushState({}, "", "/projects?tech=Kafka");
+
+    renderHook(() => useDocumentMeta("Projets", "Tous les projets"));
+
+    expect(link.getAttribute("href")).toBe("https://amidousoro.me/projects");
+    window.history.pushState({}, "", "/");
+  });
 });

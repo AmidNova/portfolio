@@ -37,6 +37,15 @@ const en = {
     toDark: "Switch to dark mode",
     toLight: "Switch to light mode",
     language: "Language",
+    menu: "Menu",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+  },
+  notFound: {
+    metaTitle: "Page not found · Soro Amidou",
+    title: "Page not found",
+    body: "This address leads nowhere. The link may be old, or a letter is missing.",
+    projects: "See the projects",
   },
   a11y: {
     skipToContent: "Skip to main content",
@@ -107,6 +116,7 @@ const en = {
     title: "Toolbox",
     subtitle: "My toolbox",
     hint: "› hover a tool",
+    hintTouch: "› tap a tool to see where I use it",
     count: "tools",
     certification: "Certification",
   },
@@ -128,6 +138,9 @@ const en = {
     close: "Close",
     watchDemo: "Demo video",
     readDoc: "Technical documentation (PDF)",
+    sectionDecisions: "Key decisions",
+    flowLabel: "Pipeline",
+    viewCode: "View the code",
     sectionArchitecture: "Architecture",
     sectionResults: "Results",
     techDoc: "Resources",
@@ -205,6 +218,42 @@ const en = {
       },
     },
     media: {
+      "retail-pipeline": {
+        architecture:
+          "One Airflow DAG drives the whole run, from the raw Online Retail II file (about 500k UK e-commerce transactions, 2009–2011) to the dashboards. The CSV lands in Cloud Storage and loads into BigQuery; dbt rebuilds it as a star schema (customer, date and product dimensions around an invoice fact table), then as report tables. Soda checks the data after each of the three layers, so a bad row stops where it appears instead of reaching a dashboard. Two dbt models feed BigQuery ML: daily revenue for a 30-day forecast, and RFM scores for customer segments.",
+        flow: [
+          { label: "Raw CSV", detail: "~500k transactions" },
+          { label: "Cloud Storage", detail: "raw landing" },
+          { label: "BigQuery", detail: "load · Soda check" },
+          { label: "dbt star schema", detail: "3 dims + fact · Soda check" },
+          { label: "dbt reports", detail: "country, product, year · Soda check" },
+          { label: "BigQuery ML", detail: "30-day forecast · RFM" },
+          { label: "Metabase", detail: "dashboards" },
+        ],
+        decisions: [
+          "A quality gate after every layer: Soda runs after the load, the transform and the reports, and a failed check stops the DAG at that layer.",
+          "dbt and Soda live in their own virtualenvs inside the Airflow image, so their dependencies never clash with Airflow's.",
+          "Moved from Astro CLI to plain Airflow 2.7 (LocalExecutor, Docker Compose): the stack starts with one command and needs no vendor tooling.",
+          "CI on every pull request: dbt compile checks the SQL without cloud access; dbt test runs against BigQuery on main.",
+        ],
+      },
+      "healthcare-bi": {
+        architecture:
+          "55,500 hospital admissions across 10 US sites, modelled as a star schema in Power BI. Four advanced DAX KPIs each carry a trigger threshold and the persona who acts on it, so the report says who should move, not just what changed. A parameter-driven what‑if scenario puts a figure on the stakes: $25.6M in potential savings.",
+        flow: [
+          { label: "Sources", detail: "55,500 admissions · 10 sites" },
+          { label: "Power Query · DuckDB", detail: "preparation" },
+          { label: "Star schema", detail: "Power BI model" },
+          { label: "DAX KPIs", detail: "4 KPIs · alert thresholds" },
+          { label: "What-if", detail: "$25.6M potential savings" },
+          { label: "Power BI report", detail: "one owner per KPI" },
+        ],
+        decisions: [
+          "Every KPI is tied to a threshold and a decision-maker: a number with no owner and no trigger doesn't make the report.",
+          "A what-if parameter rather than a fixed estimate, so the savings figure moves with the assumptions.",
+          "Governance written down end to end: source inventory, metric definitions, freshness, access control, metadata snapshot, limitations and an ethics statement.",
+        ],
+      },
       "wikipedia-pulse": {
         architecture:
           "Two sources feed the pipeline: Wikimedia's real-time SSE stream (lead indicator) and the Wikimedia API in batch (lag indicator, D+1). Kafka buffers the stream; a 6-task Airflow DAG orchestrates the flow. Spark computes raw usage and an Isolation Forest model flags anomalies. Results are indexed in Elasticsearch and visualised in Kibana.",

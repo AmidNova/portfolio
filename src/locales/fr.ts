@@ -37,6 +37,15 @@ const fr = {
     toDark: "Passer en mode sombre",
     toLight: "Passer en mode clair",
     language: "Langue",
+    menu: "Menu",
+    openMenu: "Ouvrir le menu",
+    closeMenu: "Fermer le menu",
+  },
+  notFound: {
+    metaTitle: "Page introuvable · Soro Amidou",
+    title: "Page introuvable",
+    body: "Cette adresse ne mène nulle part. Le lien est peut-être ancien, ou il manque une lettre.",
+    projects: "Voir les projets",
   },
   a11y: {
     skipToContent: "Aller au contenu principal",
@@ -106,6 +115,7 @@ const fr = {
     title: "Boîte à outils",
     subtitle: "Ma boîte à outils",
     hint: "› survolez un outil",
+    hintTouch: "› touchez un outil pour voir où je l'utilise",
     count: "outils",
     certification: "Certification",
   },
@@ -127,6 +137,9 @@ const fr = {
     close: "Fermer",
     watchDemo: "Vidéo de démo",
     readDoc: "Documentation technique (PDF)",
+    sectionDecisions: "Choix clés",
+    flowLabel: "Pipeline",
+    viewCode: "Voir le code",
     sectionArchitecture: "Architecture",
     sectionResults: "Résultats",
     techDoc: "Ressources",
@@ -204,6 +217,42 @@ const fr = {
       },
     },
     media: {
+      "retail-pipeline": {
+        architecture:
+          "Un seul DAG Airflow pilote tout, du fichier brut Online Retail II (environ 500 000 transactions e-commerce britanniques, 2009–2011) jusqu'aux dashboards. Le CSV arrive dans Cloud Storage puis dans BigQuery ; dbt le réorganise en schéma en étoile (dimensions client, date et produit autour d'une table de faits des factures), puis en tables de reporting. Soda contrôle les données après chacune des trois couches : une ligne fausse reste bloquée là où elle apparaît au lieu d'atteindre un dashboard. Deux modèles dbt alimentent BigQuery ML : le chiffre d'affaires quotidien pour une prévision à 30 jours, et des scores RFM pour segmenter les clients.",
+        flow: [
+          { label: "CSV brut", detail: "~500 000 transactions" },
+          { label: "Cloud Storage", detail: "zone brute" },
+          { label: "BigQuery", detail: "chargement · contrôle Soda" },
+          { label: "Étoile dbt", detail: "3 dimensions + faits · contrôle Soda" },
+          { label: "Rapports dbt", detail: "pays, produit, année · contrôle Soda" },
+          { label: "BigQuery ML", detail: "prévision 30 j · RFM" },
+          { label: "Metabase", detail: "dashboards" },
+        ],
+        decisions: [
+          "Un contrôle qualité après chaque couche : Soda passe après le chargement, la transformation et les rapports, et un contrôle en échec arrête le DAG à cette couche.",
+          "dbt et Soda tournent dans leurs propres virtualenvs dans l'image Airflow : leurs dépendances n'entrent jamais en conflit avec celles d'Airflow.",
+          "Migration d'Astro CLI vers Airflow 2.7 standard (LocalExecutor, Docker Compose) : la stack démarre en une commande, sans outil propriétaire.",
+          "CI à chaque pull request : dbt compile vérifie le SQL sans accès au cloud ; dbt test tourne sur BigQuery depuis main.",
+        ],
+      },
+      "healthcare-bi": {
+        architecture:
+          "55 500 admissions hospitalières sur 10 sites américains, modélisées en étoile sous Power BI. Quatre KPIs DAX avancés portent chacun un seuil de déclenchement et la persona qui agit : le rapport dit qui doit bouger, pas seulement ce qui a changé. Un scénario what‑if paramétrique chiffre l'enjeu : 25,6 M$ d'économies potentielles.",
+        flow: [
+          { label: "Sources", detail: "55 500 admissions · 10 sites" },
+          { label: "Power Query · DuckDB", detail: "préparation" },
+          { label: "Schéma en étoile", detail: "modèle Power BI" },
+          { label: "KPIs DAX", detail: "4 KPIs · seuils d'alerte" },
+          { label: "What-if", detail: "25,6 M$ d'économies potentielles" },
+          { label: "Rapport Power BI", detail: "un responsable par KPI" },
+        ],
+        decisions: [
+          "Chaque KPI est relié à un seuil et à un décideur : un chiffre sans responsable ni déclencheur n'entre pas dans le rapport.",
+          "Un paramètre what-if plutôt qu'une estimation figée : le chiffre d'économies suit les hypothèses.",
+          "Gouvernance documentée de bout en bout : inventaire des sources, définitions des métriques, fraîcheur, contrôle d'accès, metadata snapshot, limites et déclaration éthique.",
+        ],
+      },
       "wikipedia-pulse": {
         architecture:
           "Deux sources alimentent le pipeline : le flux SSE temps réel de Wikimedia (indicateur avancé) et l'API Wikimedia en batch (indicateur retardé, J+1). Kafka encaisse le flux ; un DAG Airflow de 6 tâches orchestre le tout. Spark calcule les usages bruts et un modèle Isolation Forest détecte les anomalies. Les résultats sont indexés dans Elasticsearch puis visualisés dans Kibana.",

@@ -88,7 +88,15 @@ function Toolbox() {
         })}
       </ul>
       <div aria-hidden="true" className="absolute inset-x-4 bottom-3 flex justify-between gap-4 font-mono text-[0.6875rem] text-subtle">
-        <span className={`truncate transition-colors ${active ? "text-fg" : ""}`}>{active ?? t.skills.hint}</span>
+        <span className={`truncate transition-colors ${active ? "text-fg" : ""}`}>
+          {active ?? (
+            // Touch screens cannot hover: the hint follows the pointer type, no JS needed.
+            <>
+              <span className="pointer-coarse:hidden">{t.skills.hint}</span>
+              <span className="hidden pointer-coarse:inline">{t.skills.hintTouch}</span>
+            </>
+          )}
+        </span>
         <span className="shrink-0">
           {TOOLBOX.length} {t.skills.count}
         </span>

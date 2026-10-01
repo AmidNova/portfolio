@@ -1,5 +1,5 @@
-import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLang } from "../hooks/useLang";
 
@@ -9,6 +9,20 @@ function Navbar() {
   const { t, lang, setLang, dark, toggleDark } = useLang();
   const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+
+  // Escape closes the phone menu and hands focus back to its button.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setMenuOpen(false);
+      menuButton.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -74,8 +88,41 @@ function Navbar() {
           >
             {dark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
+
+          {/* Phones: the links collapse behind a menu button. */}
+          <button
+            ref={menuButton}
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
+            className="-m-1.5 rounded-md p-1.5 text-muted transition-colors hover:text-fg sm:hidden"
+          >
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
       </nav>
+
+      {menuOpen && (
+        <nav id="mobile-menu" aria-label={t.nav.menu} className="glass mx-4 mb-3 rounded-xl p-2 sm:hidden">
+          <ul className="flex flex-col">
+            {links.map((l) => (
+              <li key={l.to}>
+                <Link
+                  to={l.to}
+                  viewTransition
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={pathname === l.to ? "page" : undefined}
+                  className="block rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-raised hover:text-fg aria-[current=page]:text-fg"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import StatTiles from "../components/StatTiles";
 import { LangProvider } from "../context/LangContext";
-import { CERTIFICATIONS, EXPERIENCE, LINKS } from "../data/profile";
+import { CERTIFICATIONS, EXPERIENCE, LINKS, PROJECT_COUNT } from "../data/profile";
 
 beforeEach(() => {
   localStorage.clear();
@@ -19,7 +19,7 @@ function renderTiles() {
 describe("StatTiles", () => {
   it("relie le nombre de projets au GitHub", () => {
     renderTiles();
-    const link = screen.getByRole("link", { name: /12\+ projets sur github/i });
+    const link = screen.getByRole("link", { name: new RegExp(`^${PROJECT_COUNT}\\+ projets sur github`, "i") });
     expect(link).toHaveAttribute("href", LINKS.github);
     expect(link).toHaveAttribute("target", "_blank");
   });

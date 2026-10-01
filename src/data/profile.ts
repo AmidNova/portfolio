@@ -6,6 +6,7 @@ import logoBozarts from "../assets/logo/logoBozarts.png";
 import logoEstm from "../assets/logo/logoEtsm.jpg";
 import logoIsep from "../assets/logo/logoIsep.png";
 import resumeData from "../assets/papers/CV_Data_Amidou.pdf";
+import { parseRepoCount } from "../lib/repoCount";
 
 /** Language-independent profile data. Translated copy lives in src/locales. */
 
@@ -165,5 +166,9 @@ export const CERTIFICATIONS: Certification[] = [
   { name: "Scrimba Full-Stack Developer", short: "Full-Stack Developer", issuer: "Scrimba", badge: scrimbaBadge },
 ];
 
-/** Public GitHub repositories (12 on 2026-09-30); shown as a floor, hence the "+". */
-export const PROJECT_COUNT = 12;
+/**
+ * Public GitHub repositories, read from the GitHub API at build time (see
+ * vite.config.ts); 11 is the count on 2026-10-01, used when the build can't
+ * reach the API. Shown as a floor, hence the "+".
+ */
+export const PROJECT_COUNT = parseRepoCount(import.meta.env.VITE_GITHUB_REPOS, 11);
