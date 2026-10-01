@@ -97,7 +97,7 @@ Defined twice, identically: `public/_headers` for Cloudflare, `vercel.json` for 
 
 | Header | Value (summary) | Protects against |
 | --- | --- | --- |
-| `Content-Security-Policy` | everything `'self'`; scripts `'self'` + one SHA-256; no `object`, no framing, `base-uri`/`form-action` locked, `upgrade-insecure-requests` | XSS and injected third-party code, clickjacking |
+| `Content-Security-Policy` | everything `'self'`, plus Umami (script from `cloud.umami.is`, beacons to `gateway.umami.is`); scripts `'self'` + Umami + one SHA-256; no `object`, no framing, `base-uri`/`form-action` locked, `upgrade-insecure-requests` | XSS and injected third-party code, clickjacking |
 | `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` | protocol downgrade |
 | `X-Content-Type-Options` | `nosniff` | MIME sniffing |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | leaking full URLs to other sites |
@@ -105,7 +105,7 @@ Defined twice, identically: `public/_headers` for Cloudflare, `vercel.json` for 
 | `Cross-Origin-Opener-Policy` | `same-origin` | cross-window attacks |
 | `Cache-Control` on `/assets/*` | `public, max-age=31536000, immutable` | (performance) hashed files never change in place |
 
-The site makes no network requests at runtime and loads no third-party script, font or image, which is what makes a policy this strict possible. Fonts are self-hosted for the same reason (and for speed, see [§6](#6-performance-work)).
+Apart from analytics, the site makes no network requests at runtime and loads no third-party script, font or image, which is what makes a policy this strict possible. The one exception, Umami, is allowed by exact origin, not by a wildcard ([§6](#analytics)). Fonts are self-hosted for the same reason (and for speed, see [§6](#6-performance-work)).
 
 `style-src` keeps `'unsafe-inline'`: React writes some inline `style` attributes (view-transition names, brand colours). Inline styles cannot run code, so the risk is low and documented rather than hidden.
 
@@ -214,6 +214,15 @@ Measured with Lighthouse, mobile profile, 2026-10-01.
 | Preload of the latin Geist file | CLS on `/projects` 0.15 → **0** (the late font swap shifted the grid; found by Lighthouse CI) |
 | **Result** | Home: performance 90 → **98**, LCP 3.1 s → **2.2 s**; `/projects` 99 |
 
+### Analytics
+
+Visits are counted with **Umami Cloud**: no cookies and no personal data, so no consent banner is needed.
+
+- The script is loaded `async`, not `defer`: deferred scripts run in document order, so a slow response from `cloud.umami.is` would hold back the app's own module. With `async` it runs whenever it arrives and never delays the page.
+- `data-domains="amidousoro.me"`: PR previews, the Vercel mirror and `localhost` load the script but send nothing, so the stats only count production.
+- It hooks `history.pushState`, so each SPA route (`/projects`, `/about`) is counted without code in the app.
+- Verified in Chrome behind the real CSP: the script loads, `gateway.umami.is` is reachable, and a control request to another origin is still blocked.
+
 ### Build-time data
 
 The "N+ projects" tile shows the number of public GitHub repositories. `vite.config.ts` fetches it from the GitHub API during `vite build` only (never in dev or tests), with a 5 s timeout. If the call fails (offline, rate limit), the site falls back to the last known count instead of failing the build or showing 0 (`src/lib/repoCount.ts`, unit-tested).
@@ -240,7 +249,7 @@ CI fails with `inline script hash 'sha256-…' is missing from the CSP`.
 
 The CSP blocks every outside origin by default.
 
-1. Add the origin to `script-src` (and `connect-src` if it sends data) in both header files. Example for Cloudflare Web Analytics: `https://static.cloudflareinsights.com` in `script-src`, `https://cloudflareinsights.com` in `connect-src`.
+1. Add the origin to `script-src` (and `connect-src` if it sends data) in both header files. Real example, Umami: `https://cloud.umami.is` in `script-src` (the script), `https://gateway.umami.is` in `connect-src` (where it sends page views). Read the vendor's script to find both, as was done here.
 2. Load the page in a browser and check the console for CSP violations.
 3. Watch the Lighthouse result on the PR: a third-party script costs performance.
 
@@ -285,6 +294,7 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 | Two hosts (Cloudflare + Vercel) | free tiers, previews on both, a working fallback if one has an incident | headers and rewrites must be kept identical; the CSP guard checks it |
 | CSP with a script **hash**, not a nonce | static hosting has no per-request server to mint nonces | the hash must follow the script; automated by the guard |
 | `'unsafe-inline'` kept for styles only | React inline style attributes; styles cannot execute code | slightly weaker style policy, documented |
+| Umami Cloud for analytics | cookieless (no consent banner), small script (~5 KB), SPA routes tracked out of the box, works on both hosts | one third-party origin in the CSP; the data lives at Umami |
 | Self-hosted fonts | no third-party origin in the CSP, no render-blocking request | fonts ship in the bundle (~50 KB for the latin files) |
 | Lighthouse performance at 0.90, LCP as a warning | CI runners are noisier than local runs; `/about` LCP (~3 s) is client-side render time, inherent to an SPA | small regressions under the threshold can pass; the reports still show them |
 | No Docker image | the site is static files on an edge platform; a container would be ceremony, not value | — |
@@ -299,4 +309,5 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 - [x] **Level 2, infrastructure as code** — Terraform for Cloudflare (DNS, Pages project, TLS settings), imported with zero changes; state in R2 with locking; plan on PRs, apply on merge. See [§5](#5-infrastructure-as-code).
 - [x] **Level 2b, TLS settings declared, not inherited** — `always_use_https` on, minimum TLS 1.2, SSL mode Full (strict). See [§5](#tls-settings-declared-not-inherited).
 - [ ] **Level 3, AWS in parallel** — the same build on S3 + CloudFront at `aws.amidousoro.me`, in Terraform, deployed from GitHub Actions with OIDC (no stored AWS keys), and a written Cloudflare vs AWS comparison (cost, latency, operations).
-- [ ] **Later** — pre-rendering to fix the `/about` LCP; Cloudflare Web Analytics; uptime monitoring.
+- [x] **Analytics** — Umami Cloud, cookieless, production only.
+- [ ] **Later** — pre-rendering to fix the `/about` LCP; uptime monitoring.
