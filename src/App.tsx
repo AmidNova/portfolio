@@ -79,14 +79,7 @@ function AppShell() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<ProjectsPage />} />
-          <Route
-            path="/about"
-            element={
-              <div className="mx-auto max-w-2xl px-6">
-                <About />
-              </div>
-            }
-          />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
