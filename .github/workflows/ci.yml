@@ -12,7 +12,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +27,14 @@ jobs:
       - run: npm run build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # The CSP pins the inline theme script by hash; fail if they drift apart.
+      - name: CSP covers the inline scripts
+        run: node scripts/check-csp.mjs
+
+      # Performance, accessibility, best practices and SEO budgets (lighthouserc.json).
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@0.15.1 autorun
 
       # Cloudflare Pages refuses any single file above 25 MiB.
       - name: No file over 25 MiB in dist

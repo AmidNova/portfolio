@@ -43,6 +43,17 @@ Node version is pinned in `.nvmrc` (22).
 
 ## CI and deploy
 
-GitHub Actions (`.github/workflows/ci.yml`) runs lint, tests and the build on every pull request and on `main`, and fails if any built file exceeds Cloudflare's 25 MiB limit.
+GitHub Actions (`.github/workflows/ci.yml`) runs on every pull request and on `main`:
+
+1. lint, tests, type-check and build;
+2. **CSP guard** (`scripts/check-csp.mjs`): the Content-Security-Policy pins the inline theme script by its SHA-256, so the job fails if that script changes without the policy, or if Cloudflare and Vercel serve different policies;
+3. **Lighthouse CI** (`lighthouserc.json`) on `/`, `/projects` and `/about`, median of 3 runs: performance ≥ 90, accessibility, best practices and SEO = 100, CLS ≤ 0.1 (LCP > 2.5 s warns); the reports are uploaded and linked in the job log;
+4. no built file over Cloudflare's 25 MiB limit.
+
+Locally, a husky pre-commit hook runs ESLint on the staged files (lint-staged). Dependabot opens weekly PRs for npm (minor and patch grouped) and GitHub Actions.
+
+### Security headers
+
+`public/_headers` (Cloudflare) and `vercel.json` (Vercel) send the same headers: a strict CSP (no third-party origins, no `unsafe-inline` scripts), HSTS, `nosniff`, a strict referrer policy, a locked-down Permissions-Policy and COOP. Hashed assets under `/assets/` are cached for a year as immutable.
 
 Both hosts build from `main`. Deep links (`/projects`, `/about`) are served by an SPA fallback: Cloudflare Pages does it by default, Vercel through `vercel.json`.
