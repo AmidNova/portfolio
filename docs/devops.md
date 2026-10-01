@@ -6,11 +6,12 @@ This document covers everything around the code: hosting, the delivery pipeline,
 - [2. Delivery pipeline](#2-delivery-pipeline)
 - [3. Quality gates](#3-quality-gates)
 - [4. Security](#4-security)
-- [5. Performance work](#5-performance-work)
-- [6. Dependencies and local tooling](#6-dependencies-and-local-tooling)
-- [7. Runbooks](#7-runbooks)
-- [8. Decision log](#8-decision-log)
-- [9. Roadmap](#9-roadmap)
+- [5. Infrastructure as code](#5-infrastructure-as-code)
+- [6. Performance work](#6-performance-work)
+- [7. Dependencies and local tooling](#7-dependencies-and-local-tooling)
+- [8. Runbooks](#8-runbooks)
+- [9. Decision log](#9-decision-log)
+- [10. Roadmap](#10-roadmap)
 
 ---
 
@@ -35,7 +36,8 @@ flowchart LR
 | **Cloudflare Pages** | Production host for `amidousoro.me` (DNS is on Cloudflare too). Builds every push; each branch gets a preview at `<branch>.portfolio-ci3.pages.dev`. Serves `index.html` for unknown paths (SPA fallback) and applies `public/_headers`. |
 | **Vercel** | Mirror at `portfolio-nine-weld-45.vercel.app`, with a preview per PR. `vercel.json` adds the SPA rewrite (without it, deep links like `/projects` returned 404) and the same headers. |
 | **GitHub Actions** | The gate: a PR is mergeable when the `check` job is green. |
-| **GitHub API** | Read at build time for the "N+ projects" tile (see [§5](#build-time-data)). |
+| **GitHub API** | Read at build time for the "N+ projects" tile (see [§6](#build-time-data)). |
+| **Terraform** (`infra/cloudflare/`) | Declares the Cloudflare side: DNS records, the Pages project, the zone's TLS settings. State in Cloudflare R2. See [§5](#5-infrastructure-as-code). |
 
 There is no server and no database: the attack surface is the static files and the headers that come with them.
 
@@ -103,7 +105,7 @@ Defined twice, identically: `public/_headers` for Cloudflare, `vercel.json` for 
 | `Cross-Origin-Opener-Policy` | `same-origin` | cross-window attacks |
 | `Cache-Control` on `/assets/*` | `public, max-age=31536000, immutable` | (performance) hashed files never change in place |
 
-The site makes no network requests at runtime and loads no third-party script, font or image, which is what makes a policy this strict possible. Fonts are self-hosted for the same reason (and for speed, see [§5](#5-performance-work)).
+The site makes no network requests at runtime and loads no third-party script, font or image, which is what makes a policy this strict possible. Fonts are self-hosted for the same reason (and for speed, see [§6](#6-performance-work)).
 
 `style-src` keeps `'unsafe-inline'`: React writes some inline `style` attributes (view-transition names, brand colours). Inline styles cannot run code, so the risk is low and documented rather than hidden.
 
@@ -123,11 +125,67 @@ Its helpers (`scripts/csp.mjs`) are unit-tested in `src/__tests__/csp.test.ts`.
 
 ### Supply chain
 
-- Dependabot keeps npm packages and GitHub Actions current ([§6](#6-dependencies-and-local-tooling)).
+- Dependabot keeps npm packages and GitHub Actions current ([§7](#7-dependencies-and-local-tooling)).
 - `npm ci` installs exactly what `package-lock.json` pins.
 - The build reads the GitHub API with the workflow's own short-lived `GITHUB_TOKEN`; no personal token is stored.
 
-## 5. Performance work
+## 5. Infrastructure as code
+
+Everything Cloudflare serves the site with is described in `infra/cloudflare/` and changed through pull requests, not by clicking in the dashboard.
+
+| File | Manages |
+| --- | --- |
+| `dns.tf` | apex and `www` CNAMEs to Pages (proxied); the 5 MX records and the SPF record of the Namecheap email forwarding |
+| `pages.tf` | the Pages project: GitHub source, build command, production branch, preview policy, runtime |
+| `zone_settings.tf` | `always_use_https`, `min_tls_version`, `ssl`, `tls_1_3`, `automatic_https_rewrites` |
+| `imports.tf` | the one-off adoption of the resources first created by hand |
+| `versions.tf` | Terraform ≥ 1.10, provider `cloudflare/cloudflare ~> 5.26`, the R2 backend |
+
+### Adopting what already existed
+
+The DNS records, the Pages project and the settings were created in the dashboard long before Terraform. They were **imported**, not recreated: `import` blocks map each resource to its real ID, and the configuration was written (DNS, settings) or generated then cleaned up (Pages) until the plan read:
+
+```
+Plan: 14 to import, 0 to add, 0 to change, 0 to destroy.
+```
+
+Zero changes is the proof that the code describes exactly what runs. Only after that baseline do changes start, each one as its own reviewed diff.
+
+### State
+
+The state file lives in a private R2 bucket, `portfolio-tfstate`, through Terraform's S3 backend (R2 speaks the S3 API). `use_lockfile = true` uses S3-native locking, so a local run and a CI run cannot write the state at the same time. Nothing about the state is committed: `infra/cloudflare/.gitignore` excludes it.
+
+### Credentials, least privilege
+
+| Credential | Scope | Where it lives |
+| --- | --- | --- |
+| Cloudflare API token `terraform-portfolio` | account: Cloudflare Pages edit · zone `amidousoro.me` only: Zone read, DNS edit, Zone Settings edit · expires 2027-10-01 | GitHub secret `CLOUDFLARE_API_TOKEN`; locally `~/.config/cloudflare/portfolio.env` (mode 600) |
+| R2 key `terraform-state` | object read & write on the `portfolio-tfstate` bucket only | GitHub secrets `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`; same local file |
+| Account and zone IDs | not secret | GitHub variables `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_ZONE_ID`; looked up from the API locally |
+
+The token was checked after creation: it sees one zone (`amidousoro.me`) and one Pages project, nothing else.
+
+### Pipeline
+
+`.github/workflows/terraform.yml` runs only when `infra/cloudflare/` (or the workflow) changes:
+
+- **pull request**: `fmt -check`, `init`, `validate`, `plan`; the plan is posted as a PR comment (updated in place on each push);
+- **merge to `main`**: the same plan, then `apply`;
+- **manual run** (`workflow_dispatch`): plan only. A non-empty plan means someone changed something in the dashboard: that's drift, to fold back into the code or undo.
+
+Runs are serialised and never cancelled, so an apply can't be cut off halfway.
+
+### Working locally
+
+```sh
+cd infra/cloudflare
+./tf.sh init     # once: configures the R2 backend
+./tf.sh plan     # what would change
+```
+
+`tf.sh` loads the token and the R2 key from `~/.config/cloudflare/portfolio.env`, looks up the account and zone IDs, and maps the R2 key to the `AWS_*` variables for that process only, so it never collides with real AWS credentials. Apply from CI, not from a laptop: the PR is the review.
+
+## 6. Performance work
 
 Measured with Lighthouse, mobile profile, 2026-10-01.
 
@@ -143,7 +201,7 @@ Measured with Lighthouse, mobile profile, 2026-10-01.
 
 The "N+ projects" tile shows the number of public GitHub repositories. `vite.config.ts` fetches it from the GitHub API during `vite build` only (never in dev or tests), with a 5 s timeout. If the call fails (offline, rate limit), the site falls back to the last known count instead of failing the build or showing 0 (`src/lib/repoCount.ts`, unit-tested).
 
-## 6. Dependencies and local tooling
+## 7. Dependencies and local tooling
 
 - **Dependabot** (`.github/dependabot.yml`), every Monday:
   - npm: minor and patch updates grouped in one PR; majors one by one, since they deserve a real look;
@@ -151,7 +209,7 @@ The "N+ projects" tile shows the number of public GitHub repositories. `vite.con
   Each Dependabot PR runs the full CI, Lighthouse included, so an update that breaks the build or slows the site is caught before merge.
 - **Pre-commit hook** (husky + lint-staged): ESLint with `--max-warnings=0` on the staged `.ts`, `.tsx` and `.js` files only, so commits stay fast. Installed by `npm install` (`prepare` script). Outside a git checkout (the Cloudflare and Vercel builders) `husky` exits cleanly.
 
-## 7. Runbooks
+## 8. Runbooks
 
 ### The theme script in `index.html` changed
 
@@ -175,6 +233,21 @@ The CSP blocks every outside origin by default.
 2. Real regression (heavier image, layout shift, missing label): fix it in the PR.
 3. Runner noise (performance just under 0.90 with no related change): re-run the job once. If it fails again, treat it as real.
 
+### Changing DNS, Pages or a zone setting
+
+1. Edit the `.tf` file on a branch, run `./tf.sh plan` locally if you like.
+2. Open a PR: the Terraform workflow comments the plan. Check it changes only what you meant (a `destroy` on an MX record means email stops).
+3. Merge: CI applies it.
+
+Never change these in the dashboard: the next plan would show the drift and the next apply would revert it.
+
+### Rotating the Cloudflare token or the R2 key (before 2027-10-01)
+
+1. Create the new token/key with the same scopes (see the credentials table in [§5](#credentials-least-privilege)).
+2. `gh secret set CLOUDFLARE_API_TOKEN` (or the R2 pair), and update `~/.config/cloudflare/portfolio.env`.
+3. Run the Terraform workflow manually: a clean plan proves the new credentials work.
+4. Revoke the old token/key in the dashboard.
+
 ### A deploy broke production
 
 1. Fastest: in the Cloudflare Pages dashboard, roll back to the previous deployment (same in Vercel).
@@ -188,7 +261,7 @@ curl -sI https://amidousoro.me/ | grep -iE 'content-security|strict-transport|x-
 
 For a graded report, run https://securityheaders.com/?q=amidousoro.me in a browser.
 
-## 8. Decision log
+## 9. Decision log
 
 | Decision | Why | Trade-off accepted |
 | --- | --- | --- |
@@ -198,11 +271,15 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 | Self-hosted fonts | no third-party origin in the CSP, no render-blocking request | fonts ship in the bundle (~50 KB for the latin files) |
 | Lighthouse performance at 0.90, LCP as a warning | CI runners are noisier than local runs; `/about` LCP (~3 s) is client-side render time, inherent to an SPA | small regressions under the threshold can pass; the reports still show them |
 | No Docker image | the site is static files on an edge platform; a container would be ceremony, not value | — |
+| Import the existing Cloudflare setup instead of recreating it | recreating DNS records means downtime and lost email; import keeps everything live | the code first mirrors the dashboard as it was, flaws included; fixes follow as separate diffs |
+| Terraform state in R2 | stays inside Cloudflare, S3-compatible, native locking, free at this size | one more credential (the R2 key) to keep and rotate |
+| Apply on merge, no manual approval step | the PR review of the posted plan is the approval; a single maintainer | a merged mistake is applied straight away; mitigated by small, separate diffs |
 | Repo count at build time, with a fallback | the tile stays true without a manual edit | a build without network shows the last known count |
 
-## 9. Roadmap
+## 10. Roadmap
 
 - [x] **Level 1, CI/CD foundations** — CI, Lighthouse budgets, security headers with a guard, Dependabot, pre-commit hooks.
-- [ ] **Level 2, infrastructure as code** — Terraform for Cloudflare (DNS zone, Pages project, settings), importing what exists today; remote state; `terraform plan` posted on PRs, `apply` on merge. Needs a scoped Cloudflare API token.
+- [x] **Level 2, infrastructure as code** — Terraform for Cloudflare (DNS, Pages project, TLS settings), imported with zero changes; state in R2 with locking; plan on PRs, apply on merge. See [§5](#5-infrastructure-as-code).
+- [ ] **Level 2b, hardening through Terraform** — `always_use_https` on (HTTP is not redirected today) and minimum TLS 1.2 (1.0 is allowed today), as reviewed diffs.
 - [ ] **Level 3, AWS in parallel** — the same build on S3 + CloudFront at `aws.amidousoro.me`, in Terraform, deployed from GitHub Actions with OIDC (no stored AWS keys), and a written Cloudflare vs AWS comparison (cost, latency, operations).
 - [ ] **Later** — pre-rendering to fix the `/about` LCP; Cloudflare Web Analytics; uptime monitoring.
