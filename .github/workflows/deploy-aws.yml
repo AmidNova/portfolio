@@ -1,0 +1,75 @@
+name: Deploy to AWS
+
+# The AWS mirror (aws.amidousoro.me, infra/aws): deploy main once CI has passed on it.
+# No AWS key is stored in GitHub: the job trades its OIDC token for a short-lived
+# session of a role that can only upload to the site bucket and invalidate the cache.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# Deploys queue up; a newer one never cuts an upload halfway.
+concurrency:
+  group: deploy-aws
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # lets the job request the OIDC token
+
+jobs:
+  deploy:
+    # Only after a green CI (or a manual run).
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: aws
+      url: https://aws.amidousoro.me
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The commit CI just checked, not whatever main points to now.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: eu-west-3
+
+      # Hashed assets first, cached for a year; then the rest (index.html…), revalidated
+      # on every visit, so a new index.html never points at assets not uploaded yet.
+      # --delete runs last, so files still referenced by an old cached page stay until then.
+      - name: Upload
+        env:
+          BUCKET: ${{ vars.AWS_SITE_BUCKET }}
+        run: |
+          aws s3 sync dist/assets "s3://$BUCKET/assets" --cache-control "public, max-age=31536000, immutable" --only-show-errors
+          aws s3 sync dist "s3://$BUCKET" --exclude "assets/*" --cache-control "public, max-age=0, must-revalidate" --only-show-errors
+          aws s3 sync dist "s3://$BUCKET" --delete --only-show-errors --size-only
+
+      - name: Invalidate the CDN cache
+        run: |
+          id=$(aws cloudfront create-invalidation --distribution-id "${{ vars.AWS_DISTRIBUTION_ID }}" --paths "/*" --query Invalidation.Id --output text)
+          aws cloudfront wait invalidation-completed --distribution-id "${{ vars.AWS_DISTRIBUTION_ID }}" --id "$id"
+
+      - name: Smoke test
+        run: |
+          for path in / /projects /about; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://aws.amidousoro.me$path")
+            echo "$path $code"
+            [ "$code" = 200 ] || { echo "::error::$path returned $code"; exit 1; }
+          done
+          curl -sI https://aws.amidousoro.me/ | grep -qi '^content-security-policy:' || { echo "::error::CSP header missing"; exit 1; }
