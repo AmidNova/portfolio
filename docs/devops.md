@@ -7,6 +7,7 @@ This document covers everything around the code: hosting, the delivery pipeline,
 - [3. Quality gates](#3-quality-gates)
 - [4. Security](#4-security)
 - [5. Infrastructure as code](#5-infrastructure-as-code)
+- [5b. Cloudflare vs AWS, measured](#5b-cloudflare-vs-aws-measured)
 - [6. Performance work](#6-performance-work)
 - [7. Dependencies and local tooling](#7-dependencies-and-local-tooling)
 - [8. Runbooks](#8-runbooks)
@@ -233,7 +234,7 @@ flowchart LR
 - **One source for the security headers.** `headers.tf` parses the `/*` block of `public/_headers` and maps each header to CloudFront (CSP, HSTS, nosniff and Referrer-Policy have dedicated fields, the rest go as custom headers). Change `_headers` and the next plan shows the CloudFront update: the three hosts can't drift.
 - **Private bucket, no website endpoint.** CloudFront signs its requests with OAC; S3 serves nothing directly (a direct request gets 403). CloudFront may also list the bucket, so a missing file is a 404, not a misleading 403.
 - **SPA routing at the edge.** A path with no file extension (`/projects`, `/about`, an unknown route) is rewritten to `/index.html` by a CloudFront Function; React renders the page or its 404. Files pass through untouched. Same behaviour as the Pages fallback.
-- **Caching set at upload.** Hashed `/assets/*` go up with `max-age=31536000, immutable`, everything else with `max-age=0, must-revalidate`; the AWS managed `CachingOptimized` policy honours both and compresses (brotli, gzip). Each deploy invalidates `/*`.
+- **Caching set at upload.** Hashed `/assets/*` go up with `max-age=31536000, immutable`; everything else with `max-age=0, s-maxage=31536000, must-revalidate`: browsers revalidate the HTML on every visit, CloudFront keeps it at the edge until the next deploy invalidates `/*`. The AWS managed `CachingOptimized` policy honours both and compresses (brotli, gzip). The first version had no `s-maxage`, and the measurements in [§5b](#5b-cloudflare-vs-aws-measured) showed what it cost.
 
 **Deploy without stored keys.** `.github/workflows/deploy-aws.yml` runs when CI finishes green on `main` (or by hand). The job asks GitHub for an OIDC token and trades it for a one-hour session of `portfolio-github-deploy`. That role trusts only tokens whose subject is `repo:AmidNova/portfolio:environment:aws`, and the GitHub environment `aws` accepts only `main`; its permissions are `s3:ListBucket`, `PutObject`, `DeleteObject` on the site bucket and `CreateInvalidation` on this distribution. The job builds, uploads assets before `index.html` (a new page never points at missing files), deletes stale files last, waits for the invalidation, then smoke-tests `/`, `/projects`, `/about` and the CSP header.
 
@@ -261,6 +262,75 @@ AWS_PROFILE=portfolio ./bootstrap.sh   # once: the state bucket
 ./tf.sh init                           # once: backend
 ./tf.sh plan
 ```
+
+## 5b. Cloudflare vs AWS, measured
+
+Same build, same headers, two platforms: Cloudflare Pages at `amidousoro.me`, S3 + CloudFront at `aws.amidousoro.me`. Measured on 2026-10-02.
+
+### Latency
+
+[Globalping](https://globalping.io) probes in 11 cities fetched `/` (the HTML, the request every visit starts with) over HTTPS, caches warmed first, three runs each; the table shows the medians, in milliseconds. *TTFB* is the time to the first byte once the connection is up; *total* includes DNS, TCP and TLS.
+
+| City | Cloudflare TTFB | AWS TTFB | Cloudflare total | AWS total |
+| --- | ---: | ---: | ---: | ---: |
+| Paris | 53 | 7 | 93 | 39 |
+| Frankfurt | 66 | 12 | 110 | 81 |
+| New York | 64 | 14 | 95 | 66 |
+| Los Angeles | 115 | 87 | 149 | 135 |
+| São Paulo | 57 | 10 | 81 | 40 |
+| Johannesburg | 56 | 11 | 123 | 73 |
+| Lagos | 156 | 13 | 560 | 204 |
+| Mumbai | 122 | 15 | 156 | 38 |
+| Singapore | 67 | 12 | 105 | 45 |
+| Tokyo | 65 | 12 | 105 | 44 |
+| Sydney | 40 | 12 | 55 | 35 |
+| **Median of cities** | | | **105** | **45** |
+
+How to read it:
+
+- **The first AWS measurement was the opposite.** With `index.html` uploaded as `max-age=0`, CloudFront revalidated it against S3 in Paris on every request (`x-cache: RefreshHit`): 300 to 900 ms outside Europe, 960 ms from Sydney. Adding `s-maxage` (the edge keeps the page, the deploy's invalidation refreshes it) turned every response into `Hit from cloudfront`. The platform was never the bottleneck; one cache header was.
+- **Cloudflare does not cache this HTML at the edge.** Every response says `cf-cache-status: DYNAMIC`: Pages serves the page from its own asset store, which costs 40 to 150 ms. A Cloudflare cache rule could close that gap; it was left as is, to compare each platform as it comes.
+- **Assets are a draw.** Hashed files are edge-cached for a year on both, compressed with brotli, over HTTP/3 (both announce `h3`).
+- Limits: 11 cities, probes hosted on varied networks, HTML only, a quiet site. Enough to see orders of magnitude, not to rank two CDNs.
+
+### Cost
+
+| | Cloudflare Pages | S3 + CloudFront |
+| --- | --- | --- |
+| This site today | 0 USD | **0.00 USD** spent so far (AWS budget, 2026-10-02) |
+| What is free | static requests and bandwidth; 500 builds a month | CloudFront always-free tier: 1 TB out, 10 M requests, 2 M function runs a month; S3 storage ~12 MB, fractions of a cent |
+| Beyond the free tier | still free for static files | from 0.085 USD/GB (US, Europe) to 0.120 USD/GB (Asia-Pacific), 0.012 USD per 10 000 HTTPS requests (Europe), 0.10 USD per million function runs |
+| DNS | included | would be 0.50 USD/month on Route53; avoided by keeping DNS on Cloudflare |
+
+A first visit to the home page moves about 0.5 MB in about 20 requests (the initial JS, CSS and font are 150 KB compressed; the rest is images). At that rate:
+
+| Visits a month | Cloudflare | AWS (pay-as-you-go) |
+| --- | ---: | ---: |
+| 1 000 | 0 | 0 (free tier) |
+| 100 000 | 0 | 0 (50 GB, 2 M requests: free tier) |
+| 1 000 000 | 0 | ≈ 14 USD (500 GB is free; 20 M requests and function runs, 10 M and 18 M of them billable) |
+
+AWS also sells CloudFront flat-rate plans (Free at 0 USD with 1 M requests and 100 GB, Pro at 15 USD/month); for a static site, Cloudflare stays cheaper at every size. Prices from the AWS CloudFront pricing pages, October 2026.
+
+### Operations
+
+| | Cloudflare Pages | S3 + CloudFront |
+| --- | --- | --- |
+| Terraform resources | 14 (DNS, Pages, zone settings) | 23 (bucket and its 4 settings, distribution, OAC, function, headers policy, certificate, 2 DNS records, OIDC, 3 roles, budget…) |
+| Terraform code | 165 lines | 494 lines |
+| Build and deploy | Cloudflare builds from Git by itself, ~40 s | a workflow of mine: build, upload, invalidate, smoke test, ~60 s |
+| Merge to live | ~40 s, **even if CI is red**: Pages doesn't wait for the checks | ~4 min: deploys only after CI (~3 min) passes |
+| Previews per branch | built in | not built (would need a bucket prefix or a distribution per branch) |
+| SPA routing, headers | a `_headers` file and a built-in fallback | a CloudFront Function and a response headers policy (generated from `_headers`) |
+| Access to production | one API token | IAM Identity Center, 3 OIDC roles, a state bucket |
+
+### Verdict
+
+**For this site, Cloudflare Pages.** Free at any traffic, previews and builds included, a third of the code to own. That is why it stays the production host.
+
+**AWS earns its place when the site stops being static files**: an API on Lambda, a database, private content behind signed URLs, compliance needs, or a company already on AWS. The extra machinery bought real things here too: deploys gated by CI (Pages ships a red build), access with no stored keys, and fine control over caching, which, once one header was fixed, gave the lower latency on every probe.
+
+**The lesson worth keeping is the cache header.** Same CDN, same files: one missing `s-maxage` made AWS look three to ten times slower than it is. Measure, find the cause, then judge the platform.
 
 ## 6. Performance work
 
@@ -380,6 +450,6 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 - [x] **Level 2b, TLS settings declared, not inherited** — `always_use_https` on, minimum TLS 1.2, SSL mode Full (strict). See [§5](#tls-settings-declared-not-inherited).
 - [x] **Level 3, AWS in parallel** — the same build on S3 + CloudFront at `aws.amidousoro.me`, in Terraform, deployed from GitHub Actions with OIDC (no stored AWS keys). See [§5](#aws-mirror-s3--cloudfront).
 - [x] **Level 3b, Terraform pipeline for `infra/aws`** — plan on PR with a read-only OIDC role, apply on merge from the `main`-only `infra` environment.
-- [ ] **Level 3c** — a written Cloudflare vs AWS comparison (cost, latency, operations) from real measurements.
+- [x] **Level 3c, Cloudflare vs AWS measured** — latency from 11 cities, cost, operations, verdict. See [§5b](#5b-cloudflare-vs-aws-measured).
 - [x] **Analytics** — Umami Cloud, cookieless, production only.
 - [ ] **Later** — pre-rendering to fix the `/about` LCP; uptime monitoring.
