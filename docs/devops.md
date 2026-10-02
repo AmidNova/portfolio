@@ -17,7 +17,7 @@ This document covers everything around the code: hosting, the delivery pipeline,
 
 ## 1. Architecture
 
-A static single-page app (React 19, Vite 7), built once per commit and served from two edge platforms.
+A static single-page app (React 19, Vite), built once per commit and served from three places: Cloudflare Pages (production), Vercel (mirror) and AWS S3 + CloudFront (`aws.amidousoro.me`, the multi-cloud comparison).
 
 ```mermaid
 flowchart LR
@@ -25,9 +25,11 @@ flowchart LR
   gh -->|Actions| ci[CI: lint · tests · build · CSP guard · Lighthouse · size guard]
   gh -->|Git integration| cf[Cloudflare Pages]
   gh -->|Git integration| vc[Vercel]
+  ci -->|green on main · OIDC| aws[S3 + CloudFront]
   dns[Cloudflare DNS<br/>amidousoro.me] --> cf
   cf --> users((Visitors))
   vc -. mirror .-> users
+  aws -. aws.amidousoro.me .-> users
   build[Build step] -.->|GitHub API: public repo count| gh
 ```
 
@@ -35,6 +37,7 @@ flowchart LR
 | --- | --- |
 | **Cloudflare Pages** | Production host for `amidousoro.me` (DNS is on Cloudflare too). Builds every push; each branch gets a preview at `<branch>.portfolio-ci3.pages.dev`. Serves `index.html` for unknown paths (SPA fallback) and applies `public/_headers`. |
 | **Vercel** | Mirror at `portfolio-nine-weld-45.vercel.app`, with a preview per PR. `vercel.json` adds the SPA rewrite (without it, deep links like `/projects` returned 404) and the same headers. |
+| **AWS** (`infra/aws/`) | Mirror at `aws.amidousoro.me`: private S3 bucket behind CloudFront, deployed by GitHub Actions after CI passes on `main`. See [§5](#aws-mirror-s3--cloudfront). |
 | **GitHub Actions** | The gate: a PR is mergeable when the `check` job is green. |
 | **GitHub API** | Read at build time for the "N+ projects" tile (see [§6](#build-time-data)). |
 | **Terraform** (`infra/cloudflare/`) | Declares the Cloudflare side: DNS records, the Pages project, the zone's TLS settings. State in Cloudflare R2. See [§5](#5-infrastructure-as-code). |
@@ -202,6 +205,52 @@ cd infra/cloudflare
 
 `tf.sh` loads the token and the R2 key from `~/.config/cloudflare/portfolio.env`, looks up the account and zone IDs, and maps the R2 key to the `AWS_*` variables for that process only, so it never collides with real AWS credentials. Apply from CI, not from a laptop: the PR is the review.
 
+### AWS mirror: S3 + CloudFront
+
+The same build also runs on AWS, at `aws.amidousoro.me`, to compare two ways of serving a static site with numbers rather than opinions. It lives in its own stack, `infra/aws/`, with its own state.
+
+```mermaid
+flowchart LR
+  v((Visitor)) -->|DNS on Cloudflare, not proxied| cf[CloudFront<br/>TLS 1.2+, HTTP/3]
+  cf -->|viewer-request| fn[Function: route → index.html]
+  cf -->|OAC, SigV4| s3[(S3 bucket, private)]
+  gha[GitHub Actions] -->|OIDC → role, upload + invalidate| s3
+```
+
+| File | Manages |
+| --- | --- |
+| `s3.tf` | the private site bucket: public access blocked, ACLs off, encrypted; its policy lets only this distribution read it and refuses plain HTTP |
+| `cloudfront.tf` | the distribution (every edge location, HTTP/2 and 3, IPv6, TLS 1.2 minimum), the Origin Access Control, the SPA routing function (`spa-router.js`) |
+| `headers.tf` | the response headers policy, **read from `public/_headers`** |
+| `dns.tf` | the ACM certificate (us-east-1, as CloudFront requires) and its validation record, the `aws` CNAME on Cloudflare |
+| `github_oidc.tf` | GitHub's OIDC provider and the deploy role |
+| `budget.tf` | the 1 USD monthly budget, created by hand first and imported |
+
+**Choices worth explaining:**
+
+- **DNS stays on Cloudflare.** The stack drives two providers: AWS for the site, Cloudflare for its two records. A Route53 zone would cost 0.50 USD a month for nothing. The `aws` record is *DNS only*: proxied, visitors would hit Cloudflare first and the comparison would measure Cloudflare twice.
+- **One source for the security headers.** `headers.tf` parses the `/*` block of `public/_headers` and maps each header to CloudFront (CSP, HSTS, nosniff and Referrer-Policy have dedicated fields, the rest go as custom headers). Change `_headers` and the next plan shows the CloudFront update: the three hosts can't drift.
+- **Private bucket, no website endpoint.** CloudFront signs its requests with OAC; S3 serves nothing directly (a direct request gets 403). CloudFront may also list the bucket, so a missing file is a 404, not a misleading 403.
+- **SPA routing at the edge.** A path with no file extension (`/projects`, `/about`, an unknown route) is rewritten to `/index.html` by a CloudFront Function; React renders the page or its 404. Files pass through untouched. Same behaviour as the Pages fallback.
+- **Caching set at upload.** Hashed `/assets/*` go up with `max-age=31536000, immutable`, everything else with `max-age=0, must-revalidate`; the AWS managed `CachingOptimized` policy honours both and compresses (brotli, gzip). Each deploy invalidates `/*`.
+
+**Deploy without stored keys.** `.github/workflows/deploy-aws.yml` runs when CI finishes green on `main` (or by hand). The job asks GitHub for an OIDC token and trades it for a one-hour session of `portfolio-github-deploy`. That role trusts only tokens whose subject is `repo:AmidNova/portfolio:environment:aws`, and the GitHub environment `aws` accepts only `main`; its permissions are `s3:ListBucket`, `PutObject`, `DeleteObject` on the site bucket and `CreateInvalidation` on this distribution. The job builds, uploads assets before `index.html` (a new page never points at missing files), deletes stale files last, waits for the invalidation, then smoke-tests `/`, `/projects`, `/about` and the CSP header.
+
+**State and bootstrap.** The state is in `portfolio-tfstate-<account-id>`, an S3 bucket created once by `bootstrap.sh` (Terraform can't create the bucket its own state lives in): private, versioned (a corrupted state can be rolled back), encrypted, S3-native locking.
+
+**Access.** Humans sign in through IAM Identity Center (permission set `AdministratorAccess`, MFA); the root user has MFA and is kept for billing. Locally, `tf.sh` uses the SSO profile `portfolio`, so no long-lived AWS key exists on the laptop either.
+
+**Verified after the first apply** (2026-10-02): every header identical to Cloudflare; `/projects`, `/about`, unknown routes 200; a missing file 404; `/assets` served `immutable` and compressed; `http://` → 301 to HTTPS; TLS 1.1 refused, 1.2 accepted; the bucket refuses direct requests. A re-plan reads *No changes*.
+
+**First apply was local, by necessity.** CI had no way into AWS yet: this stack creates the very role CI would use. From here, changes go through PRs; a Terraform pipeline for this stack (plan on PR with a read-only role) is the next step.
+
+```sh
+cd infra/aws
+AWS_PROFILE=portfolio ./bootstrap.sh   # once: the state bucket
+./tf.sh init                           # once: backend
+./tf.sh plan
+```
+
 ## 6. Performance work
 
 Measured with Lighthouse, mobile profile, 2026-10-01.
@@ -274,6 +323,12 @@ Never change these in the dashboard: the next plan would show the drift and the 
 3. Run the Terraform workflow manually: a clean plan proves the new credentials work.
 4. Revoke the old token/key in the dashboard.
 
+### The AWS mirror serves an old version
+
+1. Check the last *Deploy to AWS* run: it only starts after CI passes on `main`.
+2. Re-run it by hand (*Run workflow*): it rebuilds, uploads and invalidates the cache.
+3. `curl -sI https://aws.amidousoro.me/ | grep -i x-cache` shows whether CloudFront served from cache.
+
 ### A deploy broke production
 
 1. Fastest: in the Cloudflare Pages dashboard, roll back to the previous deployment (same in Vercel).
@@ -301,6 +356,9 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 | Import the existing Cloudflare setup instead of recreating it | recreating DNS records means downtime and lost email; import keeps everything live | the code first mirrors the dashboard as it was, flaws included; fixes follow as separate diffs |
 | Terraform state in R2 | stays inside Cloudflare, S3-compatible, native locking, free at this size | one more credential (the R2 key) to keep and rotate |
 | Apply on merge, no manual approval step | the PR review of the posted plan is the approval; a single maintainer | a merged mistake is applied straight away; mitigated by small, separate diffs |
+| AWS mirror on S3 + CloudFront, DNS kept on Cloudflare | a real multi-cloud comparison on the same build; no Route53 zone to pay for | two providers in one stack; the Cloudflare token must reach that zone |
+| Security headers on AWS parsed from `public/_headers` | one source of truth across three hosts | a format change in `_headers` must keep the parser working (the plan fails loudly if not) |
+| OIDC role bound to a GitHub environment limited to `main` | no AWS key in GitHub; a branch or a fork can't deploy | the environment's branch rule is part of the security model and lives in GitHub settings, not in code |
 | Repo count at build time, with a fallback | the tile stays true without a manual edit | a build without network shows the last known count |
 
 ## 10. Roadmap
@@ -308,6 +366,7 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 - [x] **Level 1, CI/CD foundations** — CI, Lighthouse budgets, security headers with a guard, Dependabot, pre-commit hooks.
 - [x] **Level 2, infrastructure as code** — Terraform for Cloudflare (DNS, Pages project, TLS settings), imported with zero changes; state in R2 with locking; plan on PRs, apply on merge. See [§5](#5-infrastructure-as-code).
 - [x] **Level 2b, TLS settings declared, not inherited** — `always_use_https` on, minimum TLS 1.2, SSL mode Full (strict). See [§5](#tls-settings-declared-not-inherited).
-- [ ] **Level 3, AWS in parallel** — the same build on S3 + CloudFront at `aws.amidousoro.me`, in Terraform, deployed from GitHub Actions with OIDC (no stored AWS keys), and a written Cloudflare vs AWS comparison (cost, latency, operations).
+- [x] **Level 3, AWS in parallel** — the same build on S3 + CloudFront at `aws.amidousoro.me`, in Terraform, deployed from GitHub Actions with OIDC (no stored AWS keys). See [§5](#aws-mirror-s3--cloudfront).
+- [ ] **Level 3b** — Terraform pipeline for `infra/aws` (plan on PR, apply on merge, OIDC roles), then a written Cloudflare vs AWS comparison (cost, latency, operations) from real measurements.
 - [x] **Analytics** — Umami Cloud, cookieless, production only.
 - [ ] **Later** — pre-rendering to fix the `/about` LCP; uptime monitoring.
