@@ -224,6 +224,7 @@ flowchart LR
 | `headers.tf` | the response headers policy, **read from `public/_headers`** |
 | `dns.tf` | the ACM certificate (us-east-1, as CloudFront requires) and its validation record, the `aws` CNAME on Cloudflare |
 | `github_oidc.tf` | GitHub's OIDC provider and the deploy role |
+| `github_terraform.tf` | the two roles of the Terraform pipeline: plan (read only) and apply |
 | `budget.tf` | the 1 USD monthly budget, created by hand first and imported |
 
 **Choices worth explaining:**
@@ -242,7 +243,17 @@ flowchart LR
 
 **Verified after the first apply** (2026-10-02): every header identical to Cloudflare; `/projects`, `/about`, unknown routes 200; a missing file 404; `/assets` served `immutable` and compressed; `http://` → 301 to HTTPS; TLS 1.1 refused, 1.2 accepted; the bucket refuses direct requests. A re-plan reads *No changes*.
 
-**First apply was local, by necessity.** CI had no way into AWS yet: this stack creates the very role CI would use. From here, changes go through PRs; a Terraform pipeline for this stack (plan on PR with a read-only role) is the next step.
+**Pipeline.** `.github/workflows/terraform-aws.yml` works like the Cloudflare one, on `infra/aws/**` and on `public/_headers` (the headers policy is built from it):
+
+- **pull request**: `fmt`, `init`, `validate`, `plan`, the plan posted as a PR comment. The job assumes `portfolio-terraform-plan`: AWS `ReadOnlyAccess`, plus write access to the state's lock file and nothing else. It trusts PRs of this repo (forks get no OIDC token) and manual runs on `main`.
+- **merge to `main`**: plan then apply, in a job bound to the GitHub environment `infra` (accepts `main` only), which alone may assume `portfolio-terraform-apply`. That role writes only what the stack owns: `portfolio-site-*` buckets, `portfolio-*` roles, GitHub's OIDC provider, the budget, CloudFront and ACM.
+- **manual run**: plan only; a non-empty plan is drift.
+
+The budget's e-mail address is a GitHub **secret**, not a variable: the repo is public, and secrets are masked in logs and in the plan comment.
+
+Honest limit: a role allowed to edit `portfolio-*` roles can widen its own permissions. That's inherent to a pipeline that manages its own access. What holds it is upstream: only reviewed code on `main` can assume it.
+
+**First applies were local, by necessity.** CI had no way into AWS until this stack created the roles it uses (the deploy role, then the two pipeline roles). Since then, changes go through PRs.
 
 ```sh
 cd infra/aws
@@ -358,6 +369,7 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 | Apply on merge, no manual approval step | the PR review of the posted plan is the approval; a single maintainer | a merged mistake is applied straight away; mitigated by small, separate diffs |
 | AWS mirror on S3 + CloudFront, DNS kept on Cloudflare | a real multi-cloud comparison on the same build; no Route53 zone to pay for | two providers in one stack; the Cloudflare token must reach that zone |
 | Security headers on AWS parsed from `public/_headers` | one source of truth across three hosts | a format change in `_headers` must keep the parser working (the plan fails loudly if not) |
+| Terraform pipeline split into a read-only plan role and an apply role | a PR (even one that edits the workflow) can read the account, never change it | two roles to keep; the apply role is powerful by nature, guarded by the `main`-only environment |
 | OIDC role bound to a GitHub environment limited to `main` | no AWS key in GitHub; a branch or a fork can't deploy | the environment's branch rule is part of the security model and lives in GitHub settings, not in code |
 | Repo count at build time, with a fallback | the tile stays true without a manual edit | a build without network shows the last known count |
 
@@ -367,6 +379,7 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 - [x] **Level 2, infrastructure as code** — Terraform for Cloudflare (DNS, Pages project, TLS settings), imported with zero changes; state in R2 with locking; plan on PRs, apply on merge. See [§5](#5-infrastructure-as-code).
 - [x] **Level 2b, TLS settings declared, not inherited** — `always_use_https` on, minimum TLS 1.2, SSL mode Full (strict). See [§5](#tls-settings-declared-not-inherited).
 - [x] **Level 3, AWS in parallel** — the same build on S3 + CloudFront at `aws.amidousoro.me`, in Terraform, deployed from GitHub Actions with OIDC (no stored AWS keys). See [§5](#aws-mirror-s3--cloudfront).
-- [ ] **Level 3b** — Terraform pipeline for `infra/aws` (plan on PR, apply on merge, OIDC roles), then a written Cloudflare vs AWS comparison (cost, latency, operations) from real measurements.
+- [x] **Level 3b, Terraform pipeline for `infra/aws`** — plan on PR with a read-only OIDC role, apply on merge from the `main`-only `infra` environment.
+- [ ] **Level 3c** — a written Cloudflare vs AWS comparison (cost, latency, operations) from real measurements.
 - [x] **Analytics** — Umami Cloud, cookieless, production only.
 - [ ] **Later** — pre-rendering to fix the `/about` LCP; uptime monitoring.

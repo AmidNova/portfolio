@@ -1,0 +1,105 @@
+name: Terraform AWS
+
+# AWS infrastructure (infra/aws): plan on every PR that touches it, apply the
+# reviewed plan when it lands on main. AWS access through OIDC, no stored key:
+# PRs get a read-only role; only main, through the "infra" environment, can apply.
+on:
+  pull_request:
+    paths: ["infra/aws/**", "public/_headers", ".github/workflows/terraform-aws.yml", ".github/scripts/comment-plan.cjs"]
+  push:
+    branches: [main]
+    paths: ["infra/aws/**", "public/_headers", ".github/workflows/terraform-aws.yml", ".github/scripts/comment-plan.cjs"]
+  workflow_dispatch: # plan only: a non-empty plan means drift
+
+# One run at a time and never cancelled: an apply must not be cut off halfway.
+concurrency:
+  group: terraform-aws
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+env:
+  TF_IN_AUTOMATION: "1"
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  TF_VAR_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
+  # A secret, not a variable: secrets are masked in logs and plan comments.
+  TF_VAR_budget_alert_email: ${{ secrets.BUDGET_ALERT_EMAIL }}
+
+defaults:
+  run:
+    working-directory: infra/aws
+
+jobs:
+  plan:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~1.16"
+          terraform_wrapper: false
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_TERRAFORM_PLAN_ROLE_ARN }}
+          aws-region: eu-west-3
+
+      - name: Format
+        run: terraform fmt -check -recursive
+
+      - name: Init
+        run: terraform init -input=false -backend-config="bucket=portfolio-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+
+      - name: Validate
+        run: terraform validate -no-color
+
+      - name: Plan
+        id: plan
+        run: |
+          terraform plan -input=false -no-color | tee plan.txt
+          echo "summary=$(grep -E '^(Plan:|No changes)' plan.txt | head -1)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment the plan on the PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v9
+        env:
+          SUMMARY: ${{ steps.plan.outputs.summary }}
+        with:
+          script: |
+            await require("./.github/scripts/comment-plan.cjs")({
+              github, context, stack: "AWS",
+              planFile: "infra/aws/plan.txt", summary: process.env.SUMMARY,
+            });
+
+  apply:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30 # a CloudFront change can take ~10 min to propagate
+    environment: infra
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~1.16"
+          terraform_wrapper: false
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_TERRAFORM_APPLY_ROLE_ARN }}
+          aws-region: eu-west-3
+
+      - name: Init
+        run: terraform init -input=false -backend-config="bucket=portfolio-tfstate-$(aws sts get-caller-identity --query Account --output text)"
+
+      - name: Plan
+        run: terraform plan -input=false -no-color -out=tfplan
+
+      - name: Apply
+        run: terraform apply -input=false -no-color tfplan
