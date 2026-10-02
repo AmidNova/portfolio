@@ -4,11 +4,11 @@
 
 Personal site of a Data Engineering student (ISEP Paris, AWS and Databricks certified) looking for an internship from January 2027. Dark bento layout, French and English.
 
-- Live: [portfolio-ci3.pages.dev](https://portfolio-ci3.pages.dev) (Cloudflare Pages) · [portfolio-nine-weld-45.vercel.app](https://portfolio-nine-weld-45.vercel.app) (Vercel)
+- Live: [amidousoro.me](https://amidousoro.me) (Cloudflare Pages) · [aws.amidousoro.me](https://aws.amidousoro.me) (AWS S3 + CloudFront mirror)
 
 ## Stack
 
-- React 19, TypeScript, Vite 7
+- React 19, TypeScript, Vite
 - Tailwind CSS v4, Framer Motion, lucide / react-icons / devicon
 - React Router v7 (home, `/projects`, `/about`, styled 404)
 - Vitest + Testing Library
@@ -43,6 +43,6 @@ Node version is pinned in `.nvmrc` (22).
 
 ## CI and deploy
 
-Every pull request runs lint, tests, the build, a CSP guard, Lighthouse budgets and a file-size guard in GitHub Actions, and gets live previews on Cloudflare Pages and Vercel. Merging to `main` deploys both. Security headers (strict CSP, HSTS…) live in `public/_headers` and `vercel.json`.
+Every pull request runs lint, tests, the build, a CSP guard, Lighthouse budgets and a file-size guard in GitHub Actions, and gets a live preview on Cloudflare Pages. Merging to `main` deploys Cloudflare Pages, and the AWS mirror once CI passes. Both hosts are described in Terraform (`infra/`). Security headers (strict CSP, HSTS…) live in one file, `public/_headers`, used by both.
 
 **Full write-up: [docs/devops.md](docs/devops.md)**, covering the architecture, pipeline, quality gates, security headers, performance work, runbooks and decision log.

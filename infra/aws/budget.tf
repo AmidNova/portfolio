@@ -1,8 +1,4 @@
-# Cost guard: created by hand with the CLI before anything else existed, adopted here.
-import {
-  to = aws_budgets_budget.monthly
-  id = "${data.aws_caller_identity.current.account_id}:monthly-1usd"
-}
+# Cost guard: created by hand with the CLI before anything else existed, then imported.
 
 resource "aws_budgets_budget" "monthly" {
   name         = "monthly-1usd"
