@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import About from "./components/About";
 import Contact from "./components/Contact";
+import ContactPage from "./components/ContactPage";
 import Credentials from "./components/Credentials";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
@@ -80,6 +81,7 @@ function AppShell() {
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

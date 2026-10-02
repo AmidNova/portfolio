@@ -141,6 +141,45 @@ data "aws_iam_policy_document" "terraform_apply" {
     actions   = ["budgets:*"]
     resources = ["arn:aws:budgets::${local.account_id}:budget/*"]
   }
+
+  # Contact form backend.
+  statement {
+    sid       = "ContactLambda"
+    actions   = ["lambda:*"]
+    resources = ["arn:aws:lambda:eu-west-3:${local.account_id}:function:portfolio-*"]
+  }
+  statement {
+    sid       = "ContactTable"
+    actions   = ["dynamodb:*"]
+    resources = ["arn:aws:dynamodb:eu-west-3:${local.account_id}:table/portfolio-*"]
+  }
+  statement {
+    sid       = "ContactLogs"
+    actions   = ["logs:*"]
+    resources = ["arn:aws:logs:eu-west-3:${local.account_id}:log-group:/aws/lambda/portfolio-*"]
+  }
+  statement {
+    sid       = "ContactLogsList"
+    actions   = ["logs:DescribeLogGroups", "logs:ListTagsForResource"]
+    resources = ["*"]
+  }
+  # API Gateway and SES identities have no name-based ARNs before creation.
+  statement {
+    sid       = "ContactApiAndEmail"
+    actions   = ["apigateway:*", "ses:*"]
+    resources = ["*"]
+  }
+  # Hand the Lambda its own role, and nothing else.
+  statement {
+    sid       = "PassContactRole"
+    actions   = ["iam:PassRole"]
+    resources = ["arn:aws:iam::${local.account_id}:role/portfolio-contact-lambda"]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values   = ["lambda.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "terraform_apply" {

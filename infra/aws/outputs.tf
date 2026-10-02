@@ -26,3 +26,11 @@ output "terraform_plan_role_arn" {
 output "terraform_apply_role_arn" {
   value = aws_iam_role.terraform_apply.arn
 }
+
+output "api_url" {
+  value = "https://${local.api_host}/contact"
+}
+
+output "turnstile_site_key" {
+  value = cloudflare_turnstile_widget.contact.sitekey
+}

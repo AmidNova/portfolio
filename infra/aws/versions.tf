@@ -11,6 +11,10 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 5.26"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.8"
+    }
   }
 
   # State in a private S3 bucket of this account, created once by bootstrap.sh.
