@@ -1,4 +1,5 @@
-# Cloudflare Pages response headers. Keep in step with vercel.json;
+# Response headers, single source: Cloudflare Pages serves this file and
+# infra/aws/headers.tf builds the CloudFront headers policy from the /* block.
 # scripts/check-csp.mjs (CI) fails if the inline theme script's hash drifts.
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self' https://cloud.umami.is 'sha256-ILRJjH51pNXNiM7xUpisFuxGmp/DAJdjU1qCve9NPQc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://gateway.umami.is; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests

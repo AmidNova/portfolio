@@ -18,18 +18,16 @@ This document covers everything around the code: hosting, the delivery pipeline,
 
 ## 1. Architecture
 
-A static single-page app (React 19, Vite), built once per commit and served from three places: Cloudflare Pages (production), Vercel (mirror) and AWS S3 + CloudFront (`aws.amidousoro.me`, the multi-cloud comparison).
+A static single-page app (React 19, Vite), built once per commit and served from two places: Cloudflare Pages (production) and AWS S3 + CloudFront (`aws.amidousoro.me`, the multi-cloud comparison).
 
 ```mermaid
 flowchart LR
   dev[Developer] -->|git push / PR| gh[GitHub repo]
   gh -->|Actions| ci[CI: lint · tests · build · CSP guard · Lighthouse · size guard]
   gh -->|Git integration| cf[Cloudflare Pages]
-  gh -->|Git integration| vc[Vercel]
   ci -->|green on main · OIDC| aws[S3 + CloudFront]
   dns[Cloudflare DNS<br/>amidousoro.me] --> cf
   cf --> users((Visitors))
-  vc -. mirror .-> users
   aws -. aws.amidousoro.me .-> users
   build[Build step] -.->|GitHub API: public repo count| gh
 ```
@@ -37,7 +35,6 @@ flowchart LR
 | Piece | Role |
 | --- | --- |
 | **Cloudflare Pages** | Production host for `amidousoro.me` (DNS is on Cloudflare too). Builds every push; each branch gets a preview at `<branch>.portfolio-ci3.pages.dev`. Serves `index.html` for unknown paths (SPA fallback) and applies `public/_headers`. |
-| **Vercel** | Mirror at `portfolio-nine-weld-45.vercel.app`, with a preview per PR. `vercel.json` adds the SPA rewrite (without it, deep links like `/projects` returned 404) and the same headers. |
 | **AWS** (`infra/aws/`) | Mirror at `aws.amidousoro.me`: private S3 bucket behind CloudFront, deployed by GitHub Actions after CI passes on `main`. See [§5](#aws-mirror-s3--cloudfront). |
 | **GitHub Actions** | The gate: a PR is mergeable when the `check` job is green. |
 | **GitHub API** | Read at build time for the "N+ projects" tile (see [§6](#build-time-data)). |
@@ -52,15 +49,16 @@ flowchart LR
   a[Branch + commit] -->|pre-commit: ESLint on staged files| b[Push]
   b --> c[Pull request]
   c --> d{CI check job}
-  c --> e[Cloudflare + Vercel previews]
+  c --> e[Cloudflare preview]
   d -->|green| f[Review on previews]
   f --> g[Merge to main]
-  g --> h[Cloudflare + Vercel deploy production]
+  g --> h[Cloudflare deploys production]
+  g --> i[CI green on main → AWS deploy]
 ```
 
 - Work happens on a branch; nothing is pushed straight to `main`.
-- Every PR gets the CI job **and** two live previews, so a change is reviewed on a real URL before it ships.
-- Merging to `main` deploys both hosts. Rolling back is a revert PR (or redeploying a previous build from the Cloudflare/Vercel dashboard for an immediate fix).
+- Every PR gets the CI job **and** a live preview, so a change is reviewed on a real URL before it ships.
+- Merging to `main` deploys Cloudflare Pages, and the AWS mirror once CI passes on `main`. Rolling back is a revert PR (or redeploying a previous build from the Cloudflare dashboard for an immediate fix).
 
 ## 3. Quality gates
 
@@ -70,9 +68,9 @@ flowchart LR
 | --- | --- | --- |
 | `npm ci` | lockfile and `package.json` disagree | reproducible installs |
 | `npm run lint` | any ESLint error | style and React-hooks rules |
-| `npm run test:run` | any Vitest test fails (68 tests) | behaviour: navigation, filters, case studies, a11y roles, CSP helpers… |
+| `npm run test:run` | any Vitest test fails (87 tests) | behaviour: navigation, filters, case studies, a11y roles, CSP helpers… |
 | `npm run build` | type errors (`tsc -b`) or build errors | the artefact that ships |
-| `node scripts/check-csp.mjs` | an inline script's hash is missing from the CSP, or Cloudflare and Vercel policies differ | see [§4](#csp-hash-guard) |
+| `node scripts/check-csp.mjs` | an inline script's hash is missing from the CSP | see [§4](#csp-hash-guard) |
 | Lighthouse CI | budgets in `lighthouserc.json` broken | performance and accessibility can't silently regress |
 | size guard | a file in `dist/` is over 25 MiB | Cloudflare Pages rejects such files (a 67 MB video once broke deploys) |
 
@@ -97,7 +95,7 @@ Performance is set at 0.90 rather than the 0.98 measured locally because shared 
 
 ### Response headers
 
-Defined twice, identically: `public/_headers` for Cloudflare, `vercel.json` for Vercel.
+Defined once, in `public/_headers`: Cloudflare Pages serves the file, and `infra/aws/headers.tf` builds the CloudFront headers policy from it.
 
 | Header | Value (summary) | Protects against |
 | --- | --- | --- |
@@ -120,8 +118,7 @@ Apart from analytics, the site makes no network requests at runtime and loads no
 The risk with a hash: edit that script and the browser blocks it in production, with no build error. `scripts/check-csp.mjs` closes the gap. After the build it:
 
 1. hashes every executable inline script in `dist/index.html` (JSON-LD is data, not code, so it is skipped);
-2. checks each hash is in the CSP from `public/_headers`;
-3. checks `vercel.json` serves the exact same policy.
+2. checks each hash is in the CSP from `public/_headers`.
 
 Its helpers (`scripts/csp.mjs`) are unit-tested in `src/__tests__/csp.test.ts`.
 
@@ -142,12 +139,11 @@ Everything Cloudflare serves the site with is described in `infra/cloudflare/` a
 | `dns.tf` | apex and `www` CNAMEs to Pages (proxied); the 5 MX records and the SPF record of the Namecheap email forwarding |
 | `pages.tf` | the Pages project: GitHub source, build command, production branch, preview policy, runtime |
 | `zone_settings.tf` | `always_use_https`, `min_tls_version`, `ssl`, `tls_1_3`, `automatic_https_rewrites` |
-| `imports.tf` | the one-off adoption of the resources first created by hand |
 | `versions.tf` | Terraform ≥ 1.10, provider `cloudflare/cloudflare ~> 5.26`, the R2 backend |
 
 ### Adopting what already existed
 
-The DNS records, the Pages project and the settings were created in the dashboard long before Terraform. They were **imported**, not recreated: `import` blocks map each resource to its real ID, and the configuration was written (DNS, settings) or generated then cleaned up (Pages) until the plan read:
+The DNS records, the Pages project and the settings were created in the dashboard long before Terraform. They were **imported**, not recreated: `import` blocks (removed once applied, they're in the git history) mapped each resource to its real ID, and the configuration was written (DNS, settings) or generated then cleaned up (Pages) until the plan read:
 
 ```
 Plan: 14 to import, 0 to add, 0 to change, 0 to destroy.
@@ -349,7 +345,7 @@ Measured with Lighthouse, mobile profile, 2026-10-01.
 Visits are counted with **Umami Cloud**: no cookies and no personal data, so no consent banner is needed.
 
 - The script is loaded `async`, not `defer`: deferred scripts run in document order, so a slow response from `cloud.umami.is` would hold back the app's own module. With `async` it runs whenever it arrives and never delays the page.
-- `data-domains="amidousoro.me"`: PR previews, the Vercel mirror and `localhost` load the script but send nothing, so the stats only count production.
+- `data-domains="amidousoro.me"`: PR previews, the AWS mirror and `localhost` load the script but send nothing, so the stats only count production.
 - It hooks `history.pushState`, so each SPA route (`/projects`, `/about`) is counted without code in the app.
 - Verified in Chrome behind the real CSP: the script loads, `gateway.umami.is` is reachable, and a control request to another origin is still blocked.
 
@@ -363,7 +359,7 @@ The "N+ projects" tile shows the number of public GitHub repositories. `vite.con
   - npm: minor and patch updates grouped in one PR; majors one by one, since they deserve a real look;
   - GitHub Actions: one grouped PR.
   Each Dependabot PR runs the full CI, Lighthouse included, so an update that breaks the build or slows the site is caught before merge.
-- **Pre-commit hook** (husky + lint-staged): ESLint with `--max-warnings=0` on the staged `.ts`, `.tsx` and `.js` files only, so commits stay fast. Installed by `npm install` (`prepare` script). Outside a git checkout (the Cloudflare and Vercel builders) `husky` exits cleanly.
+- **Pre-commit hook** (husky + lint-staged): ESLint with `--max-warnings=0` on the staged `.ts`, `.tsx` and `.js` files only, so commits stay fast. Installed by `npm install` (`prepare` script). Outside a git checkout (the Cloudflare builder) `husky` exits cleanly.
 
 ## 8. Runbooks
 
@@ -372,14 +368,14 @@ The "N+ projects" tile shows the number of public GitHub repositories. `vite.con
 CI fails with `inline script hash 'sha256-…' is missing from the CSP`.
 
 1. Copy the hash from the error.
-2. Replace the old `'sha256-…'` in **both** `public/_headers` and `vercel.json`.
+2. Replace the old `'sha256-…'` in `public/_headers` (the AWS headers follow on the next Terraform apply).
 3. Re-run CI. `node scripts/check-csp.mjs` after `npm run build` checks it locally.
 
 ### Adding a third-party script (for example analytics)
 
 The CSP blocks every outside origin by default.
 
-1. Add the origin to `script-src` (and `connect-src` if it sends data) in both header files. Real example, Umami: `https://cloud.umami.is` in `script-src` (the script), `https://gateway.umami.is` in `connect-src` (where it sends page views). Read the vendor's script to find both, as was done here.
+1. Add the origin to `script-src` (and `connect-src` if it sends data) in `public/_headers`. Real example, Umami: `https://cloud.umami.is` in `script-src` (the script), `https://gateway.umami.is` in `connect-src` (where it sends page views). Read the vendor's script to find both, as was done here.
 2. Load the page in a browser and check the console for CSP violations.
 3. Watch the Lighthouse result on the PR: a third-party script costs performance.
 
@@ -412,7 +408,7 @@ Never change these in the dashboard: the next plan would show the drift and the 
 
 ### A deploy broke production
 
-1. Fastest: in the Cloudflare Pages dashboard, roll back to the previous deployment (same in Vercel).
+1. Fastest: in the Cloudflare Pages dashboard, roll back to the previous deployment (for AWS, run *Deploy to AWS* by hand on the previous commit).
 2. Then revert the offending PR on GitHub so `main` matches what is served.
 
 ### Checking the security headers
@@ -427,7 +423,7 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 
 | Decision | Why | Trade-off accepted |
 | --- | --- | --- |
-| Two hosts (Cloudflare + Vercel) | free tiers, previews on both, a working fallback if one has an incident | headers and rewrites must be kept identical; the CSP guard checks it |
+| Vercel mirror retired (2026-10-02) | the AWS mirror covers the "second host" role, with numbers behind it; Vercel was one more header file to keep in sync | no second preview per PR; Cloudflare's preview is enough |
 | CSP with a script **hash**, not a nonce | static hosting has no per-request server to mint nonces | the hash must follow the script; automated by the guard |
 | `'unsafe-inline'` kept for styles only | React inline style attributes; styles cannot execute code | slightly weaker style policy, documented |
 | Umami Cloud for analytics | cookieless (no consent banner), small script (~5 KB), SPA routes tracked out of the box, works on both hosts | one third-party origin in the CSP; the data lives at Umami |
@@ -452,4 +448,5 @@ For a graded report, run https://securityheaders.com/?q=amidousoro.me in a brows
 - [x] **Level 3b, Terraform pipeline for `infra/aws`** — plan on PR with a read-only OIDC role, apply on merge from the `main`-only `infra` environment.
 - [x] **Level 3c, Cloudflare vs AWS measured** — latency from 11 cities, cost, operations, verdict. See [§5b](#5b-cloudflare-vs-aws-measured).
 - [x] **Analytics** — Umami Cloud, cookieless, production only.
+- [x] **Cleanup** — Vercel mirror retired, spent Terraform `import` blocks removed.
 - [ ] **Later** — pre-rendering to fix the `/about` LCP; uptime monitoring.
