@@ -1,5 +1,6 @@
-import { Check, Copy, Github, Linkedin, Mail } from "lucide-react";
+import { Check, Copy, Github, Linkedin, Mail, PenLine } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { PiHandshakeFill } from "react-icons/pi";
 import { useLang } from "../hooks/useLang";
 import { EMAIL, LINKS } from "../data/profile";
@@ -64,7 +65,11 @@ function Contact() {
         {t.cards.contact.title}
       </h2>
       <p className="mt-2 max-w-sm font-medium leading-relaxed text-subtle">{t.contact.body}</p>
-      <div className="mt-6 flex items-center justify-center gap-3">
+      <Link to="/contact" viewTransition className="btn btn-primary mt-6">
+        <PenLine size={16} aria-hidden="true" />
+        {t.contact.write}
+      </Link>
+      <div className="mt-4 flex items-center justify-center gap-3">
         <a href={LINKS.email} aria-label={t.contact.cta} className={iconButton}>
           <Mail size={19} aria-hidden="true" />
         </a>

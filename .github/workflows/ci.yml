@@ -44,3 +44,22 @@ jobs:
             echo "::error::Files over 25 MiB: $big"
             exit 1
           fi
+
+  # Contact form Lambda (backend/contact): unit tests with coverage, stdlib + pytest only.
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14" # the Lambda runtime
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+
+      - run: pip install -r requirements-dev.txt
+      - run: pytest --cov=contact --cov-fail-under=80

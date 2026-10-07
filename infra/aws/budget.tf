@@ -19,7 +19,7 @@ resource "aws_budgets_budget" "monthly" {
       comparison_operator        = "GREATER_THAN"
       threshold                  = notification.value.threshold
       threshold_type             = "PERCENTAGE"
-      subscriber_email_addresses = [var.budget_alert_email]
+      subscriber_email_addresses = [var.owner_email]
     }
   }
 }

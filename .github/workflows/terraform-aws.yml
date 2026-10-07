@@ -1,14 +1,15 @@
 name: Terraform AWS
 
-# AWS infrastructure (infra/aws): plan on every PR that touches it, apply the
+# AWS infrastructure (infra/aws, and the contact Lambda's code in backend/contact,
+# which Terraform packages): plan on every PR that touches it, apply the
 # reviewed plan when it lands on main. AWS access through OIDC, no stored key:
 # PRs get a read-only role; only main, through the "infra" environment, can apply.
 on:
   pull_request:
-    paths: ["infra/aws/**", "public/_headers", ".github/workflows/terraform-aws.yml", ".github/scripts/comment-plan.cjs"]
+    paths: ["infra/aws/**", "backend/contact/**", "public/_headers", ".github/workflows/terraform-aws.yml", ".github/scripts/comment-plan.cjs"]
   push:
     branches: [main]
-    paths: ["infra/aws/**", "public/_headers", ".github/workflows/terraform-aws.yml", ".github/scripts/comment-plan.cjs"]
+    paths: ["infra/aws/**", "backend/contact/**", "public/_headers", ".github/workflows/terraform-aws.yml", ".github/scripts/comment-plan.cjs"]
   workflow_dispatch: # plan only: a non-empty plan means drift
 
 # One run at a time and never cancelled: an apply must not be cut off halfway.
@@ -25,8 +26,10 @@ env:
   TF_IN_AUTOMATION: "1"
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   TF_VAR_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
+  TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
   # A secret, not a variable: secrets are masked in logs and plan comments.
-  TF_VAR_budget_alert_email: ${{ secrets.BUDGET_ALERT_EMAIL }}
+  # (Named after its first use, the budget alerts; it is the owner's address.)
+  TF_VAR_owner_email: ${{ secrets.BUDGET_ALERT_EMAIL }}
 
 defaults:
   run:

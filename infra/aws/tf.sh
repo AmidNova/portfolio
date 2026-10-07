@@ -13,9 +13,10 @@ unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
 export AWS_PROFILE="${AWS_PROFILE:-portfolio}"
 aws sts get-caller-identity >/dev/null 2>&1 || aws sso login
 
-TF_VAR_zone_id=$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-  "https://api.cloudflare.com/client/v4/zones?name=amidousoro.me" | jq -r '.result[0].id')
-export TF_VAR_zone_id
+cf() { curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4$1"; }
+TF_VAR_zone_id=$(cf "/zones?name=amidousoro.me" | jq -r '.result[0].id')
+TF_VAR_cloudflare_account_id=$(cf /accounts | jq -r '.result[0].id')
+export TF_VAR_zone_id TF_VAR_cloudflare_account_id
 
 if [ "${1:-}" = "init" ]; then
   shift
