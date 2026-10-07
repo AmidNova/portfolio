@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 
 // Public by design: Turnstile site keys ship in the page. The secret lives in the Lambda.
-export const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+export const TURNSTILE_SITE_KEY = "0x4AAAAAAFQrFOp4SpXAHfQc";
 const SCRIPT_URL = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
 interface RenderOptions {
