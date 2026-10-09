@@ -54,11 +54,11 @@ function Gate({ cx, cy }: { cx: number; cy: number }) {
   );
 }
 
-const RETAIL_W = 96;
-const RETAIL_H = 46;
-const RETAIL_Y = 20;
-const RETAIL_GAP = 36;
-const RETAIL_XS = [4, 136, 268, 400];
+const FLOW_W = 96;
+const FLOW_H = 46;
+const FLOW_Y = 20;
+const FLOW_GAP = 36;
+const FLOW_XS = [4, 136, 268, 400];
 
 function RetailFlow() {
   const { t } = useLang();
@@ -71,17 +71,17 @@ function RetailFlow() {
     { label: "BigQuery", sub: d.warehouse },
     { label: "BigQuery ML", sub: d.ml },
   ];
-  const midY = RETAIL_Y + RETAIL_H / 2;
+  const midY = FLOW_Y + FLOW_H / 2;
   // BigQuery ML feeds two outputs, drawn below it.
-  const mlX = RETAIL_XS[3];
+  const mlX = FLOW_XS[3];
   const outY = 104;
   const outH = 40;
   const outputs = [
-    { label: d.forecast, sub: d.forecastSub, x: RETAIL_XS[2] },
+    { label: d.forecast, sub: d.forecastSub, x: FLOW_XS[2] },
     { label: d.segments, sub: d.segmentsSub, x: mlX },
   ];
-  const mlCenter = mlX + RETAIL_W / 2;
-  const splitY = RETAIL_Y + RETAIL_H + 16;
+  const mlCenter = mlX + FLOW_W / 2;
+  const splitY = FLOW_Y + FLOW_H + 16;
 
   return (
     <svg viewBox="0 0 500 150" role="img" aria-labelledby={`${uid}-t ${uid}-d`} className="h-auto w-full">
@@ -92,29 +92,29 @@ function RetailFlow() {
           <path d="M0 0 L8 4 L0 8 z" className="fill-subtle" />
         </marker>
       </defs>
-      {RETAIL_XS.slice(0, -1).map((x) => (
+      {FLOW_XS.slice(0, -1).map((x) => (
         <g key={x}>
           <path
-            d={`M${x + RETAIL_W} ${midY} H${x + RETAIL_W + RETAIL_GAP - 4}`}
+            d={`M${x + FLOW_W} ${midY} H${x + FLOW_W + FLOW_GAP - 4}`}
             className="fill-none stroke-subtle"
             strokeWidth="1"
             markerEnd={`url(#${arrow})`}
           />
-          <Gate cx={x + RETAIL_W + RETAIL_GAP / 2 - 2} cy={midY} />
+          <Gate cx={x + FLOW_W + FLOW_GAP / 2 - 2} cy={midY} />
         </g>
       ))}
       <g className="fill-none stroke-subtle" strokeWidth="1">
-        <path d={`M${mlCenter} ${RETAIL_Y + RETAIL_H} V${outY - 4}`} markerEnd={`url(#${arrow})`} />
+        <path d={`M${mlCenter} ${FLOW_Y + FLOW_H} V${outY - 4}`} markerEnd={`url(#${arrow})`} />
         <path
-          d={`M${mlCenter} ${splitY} H${outputs[0].x + RETAIL_W / 2} V${outY - 4}`}
+          d={`M${mlCenter} ${splitY} H${outputs[0].x + FLOW_W / 2} V${outY - 4}`}
           markerEnd={`url(#${arrow})`}
         />
       </g>
       {nodes.map((n, i) => (
-        <Node key={n.label} x={RETAIL_XS[i]} y={RETAIL_Y} w={RETAIL_W} h={RETAIL_H} label={n.label} sub={n.sub} />
+        <Node key={n.label} x={FLOW_XS[i]} y={FLOW_Y} w={FLOW_W} h={FLOW_H} label={n.label} sub={n.sub} />
       ))}
       {outputs.map((o) => (
-        <Node key={o.label} x={o.x} y={outY} w={RETAIL_W} h={outH} label={o.label} sub={o.sub} />
+        <Node key={o.label} x={o.x} y={outY} w={FLOW_W} h={outH} label={o.label} sub={o.sub} />
       ))}
       <g className="font-mono" fontSize="9.5">
         <Gate cx={11} cy={124} />
@@ -159,6 +159,55 @@ function StarSchema() {
   );
 }
 
+function FraudFlow() {
+  const { t } = useLang();
+  const d = t.projects.visuals.fraud;
+  const uid = useId().replace(/:/g, "");
+  const arrow = `arrow-${uid}`;
+  const nodes = [
+    { label: d.data, sub: d.dataSub },
+    { label: d.features, sub: d.featuresSub },
+    { label: d.model, sub: d.modelSub },
+    { label: d.alert, sub: d.alertSub },
+  ];
+  const midY = FLOW_Y + FLOW_H / 2;
+  // SHAP reads the model, drawn below it.
+  const modelX = FLOW_XS[2];
+  const modelCenter = modelX + FLOW_W / 2;
+  const shapY = 104;
+
+  return (
+    <svg viewBox="0 0 500 150" role="img" aria-labelledby={`${uid}-t ${uid}-d`} className="h-auto w-full">
+      <title id={`${uid}-t`}>{d.title}</title>
+      <desc id={`${uid}-d`}>{d.desc}</desc>
+      <defs>
+        <marker id={arrow} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" className="fill-subtle" />
+        </marker>
+      </defs>
+      <g className="fill-none stroke-subtle" strokeWidth="1">
+        {FLOW_XS.slice(0, -1).map((x) => (
+          <path key={x} d={`M${x + FLOW_W} ${midY} H${x + FLOW_W + FLOW_GAP - 4}`} markerEnd={`url(#${arrow})`} />
+        ))}
+        <path d={`M${modelCenter} ${FLOW_Y + FLOW_H} V${shapY - 4}`} markerEnd={`url(#${arrow})`} />
+      </g>
+      {nodes.map((n, i) => (
+        <Node
+          key={n.label}
+          x={FLOW_XS[i]}
+          y={FLOW_Y}
+          w={FLOW_W}
+          h={FLOW_H}
+          label={n.label}
+          sub={n.sub}
+          strong={i === nodes.length - 1}
+        />
+      ))}
+      <Node x={modelX} y={shapY} w={FLOW_W} h={40} label={d.shap} sub={d.shapSub} />
+    </svg>
+  );
+}
+
 type VisualId = ProjectMeta["id"];
 
 /**
@@ -171,6 +220,7 @@ const VISUALS: Partial<Record<VisualId, (compact: boolean) => ReactNode>> = {
     <ArchitectureDiagram className={compact ? "w-[165%]! max-w-none shrink-0" : "min-w-[560px]"} />
   ),
   "retail-pipeline": () => <RetailFlow />,
+  "fraud-detection": () => <FraudFlow />,
   "healthcare-bi": () => <StarSchema />,
 };
 
