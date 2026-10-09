@@ -6,6 +6,7 @@ import imPays from "../assets/papers/im4_pays.png";
 import imTempo from "../assets/papers/im5_histogramme_tempo.png";
 import imVelocity from "../assets/papers/im6_velocity.png";
 import imRatio from "../assets/papers/im7_ratio_effort_attention.png";
+import fraudVideo from "../assets/papers/fraud_detection.mp4";
 import fraudShap from "../assets/papers/fraud_shap_summary.png";
 import fraudTest from "../assets/papers/fraud_test_evaluation.png";
 import fraudMix from "../assets/papers/fraud_transaction_mix.png";
@@ -42,6 +43,7 @@ export const projectMediaById: Record<string, ProjectMedia> = {
   // No screenshots yet: the case study tells the flow and the decisions.
   "retail-pipeline": { images: [] },
   "fraud-detection": {
+    video: fraudVideo,
     images: [
       { src: fraudTest, captionKey: "test" },
       { src: fraudMix, captionKey: "mix" },
