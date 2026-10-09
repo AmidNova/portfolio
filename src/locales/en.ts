@@ -4,7 +4,7 @@ const en = {
     homeDescription:
       "Engineering student at ISEP Paris, AWS and Databricks certified. Real-time pipelines (Kafka, Spark, Airflow), BigQuery warehouses and BI. Looking for a Data Engineering internship from January 2027.",
     projectsTitle: "Projects · Soro Amidou",
-    projectsDescription: "Real-time pipelines, BigQuery warehouses and BI: Soro Amidou's data projects, with architecture, figures and code.",
+    projectsDescription: "Real-time pipelines, BigQuery warehouses, BI and machine learning: Soro Amidou's data projects, with architecture, figures and code.",
     aboutTitle: "About · Soro Amidou",
     aboutDescription: "The longer story: from equations to data engineering, by Soro Amidou.",
     contactTitle: "Contact · Soro Amidou",
@@ -13,7 +13,7 @@ const en = {
   cards: {
     pauseMotion: "Pause the scrolling",
     about: { subtitle: "From equations to pipelines." },
-    projects: { subtitle: "Pipelines, warehouses and BI, each explained by its diagram.", viewAll: "View all projects" },
+    projects: { subtitle: "Pipelines, warehouses, BI and ML, each explained by its diagram.", viewAll: "View all projects" },
     journey: { title: "Journey", subtitle: "Where I've worked and studied" },
     credentials: { title: "Certifications & languages", subtitle: "Verified skills and the languages I work in" },
     services: {
@@ -128,7 +128,7 @@ const en = {
     title: "Projects",
     page: {
       title: "My projects",
-      subtitle: "Pipelines, warehouses and BI, each explained by its diagram. Filter by tech, open a case study or read the code.",
+      subtitle: "Pipelines, warehouses, BI and ML, each explained by its diagram. Filter by tech, open a case study or read the code.",
       back: "Back to home",
       filter: "Technologies",
       shown: { one: "project shown", other: "projects shown" },
@@ -178,6 +178,20 @@ const en = {
         segmentsSub: "customers by value",
         checks: "automated quality check",
       },
+      fraud: {
+        title: "Fraudster Detection flow",
+        desc: "Users and their transactions become one row of features per user, a calibrated Gradient Boosting model scores them, and a cost-based threshold turns the score into an alert. SHAP explains every score.",
+        data: "Bank data",
+        dataSub: "688k transactions",
+        features: "Features",
+        featuresSub: "one row per user",
+        model: "Gradient Boosting",
+        modelSub: "calibrated",
+        alert: "Alert",
+        alertSub: "cost-based threshold",
+        shap: "SHAP",
+        shapSub: "why this score",
+      },
       healthcare: {
         title: "Healthcare BI star schema",
         desc: "An admissions fact table joined to hospital site, patient, date and diagnosis dimensions.",
@@ -210,6 +224,16 @@ const en = {
           { value: "100%", label: "of stages quality-checked" },
         ],
       },
+      "fraud-detection": {
+        status: "2026",
+        summary:
+          "Spotting the money mules among an online bank's users from their profile and transaction history: a Gradient Boosting model that catches 9 fraudsters in 10, and explains why.",
+        metrics: [
+          { value: "53 / 59", label: "fraudsters caught (test)" },
+          { value: "0.86", label: "PR-AUC (random: 0.03)" },
+          { value: "688k", label: "transactions" },
+        ],
+      },
       "healthcare-bi": {
         status: "2026",
         summary:
@@ -240,6 +264,29 @@ const en = {
           "Moved from Astro CLI to plain Airflow 2.7 (LocalExecutor, Docker Compose): the stack starts with one command and needs no vendor tooling.",
           "CI on every pull request: dbt compile checks the SQL without cloud access; dbt test runs against BigQuery on main.",
         ],
+      },
+      "fraud-detection": {
+        architecture:
+          "A StrataScratch take-home on an online bank: 9,944 users (3% fraudsters) and 688,651 transactions. The notebook builds one row per user (transaction mix, amounts, timing, geography, how fast money leaves after a top-up), compares Logistic Regression, Random Forest and Gradient Boosting under 5-fold cross-validation on PR-AUC, then calibrates the winner and sets its alert threshold from the cost of a missed fraudster versus a false alarm. Feature code and evaluation helpers live in a tested Python package.",
+        flow: [
+          { label: "Users + transactions", detail: "9,944 users · 688k rows" },
+          { label: "Data checks", detail: "leaky STATE column dropped" },
+          { label: "Features", detail: "one row per user · sequences" },
+          { label: "Model selection", detail: "3 models · 5-fold CV · PR-AUC" },
+          { label: "Gradient Boosting", detail: "calibrated · cost threshold" },
+          { label: "SHAP · drift", detail: "explanations · PSI monitoring" },
+        ],
+        decisions: [
+          "Dropped the account STATE column: a locked account gives the answer away, so a model using it would look perfect and be useless.",
+          "PR-AUC rather than accuracy: with 3% fraudsters, a model that flags nobody is already 97% accurate.",
+          "The test set chooses nothing: thresholds and models are picked on validation, the test set only reports.",
+          "Honest estimates next to the headline: PR-AUC 0.76 when trained on older accounts and tested on newer ones, 0.68 when deciding after only 30 days of activity.",
+        ],
+        shots: {
+          test: "Test set: confusion matrix and precision-recall curve",
+          mix: "Transaction mix: fraudsters vs other users",
+          shap: "SHAP: what pushes a user towards \"fraudster\"",
+        },
       },
       "healthcare-bi": {
         architecture:

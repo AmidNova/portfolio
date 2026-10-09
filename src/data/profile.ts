@@ -106,7 +106,7 @@ export const TOOLBOX: { name: string; proof?: ToolProof }[] = [
  * (t.projects.items); the projects page, its filters and counters follow on their own.
  */
 export interface ProjectMeta {
-  id: "wikipedia-pulse" | "retail-pipeline" | "healthcare-bi";
+  id: "wikipedia-pulse" | "retail-pipeline" | "fraud-detection" | "healthcare-bi";
   title: string;
   tags: string[];
   /** Public source repository; no repo, no "Code" button. */
@@ -128,6 +128,12 @@ export const PROJECTS: ProjectMeta[] = [
     title: "Retail Data Pipeline",
     tags: ["GCP", "GCS", "BigQuery", "Airflow", "dbt", "Soda", "BigQuery ML", "Metabase", "Docker"],
     repo: "https://github.com/AmidNova/retail-gcp-pipeline",
+  },
+  {
+    id: "fraud-detection",
+    title: "Fraudster Detection",
+    tags: ["Python", "pandas", "scikit-learn", "Gradient Boosting", "SHAP", "pytest"],
+    repo: "https://github.com/AmidNova/fraudster-detection",
   },
   {
     id: "healthcare-bi",

@@ -4,7 +4,7 @@ const fr = {
     homeDescription:
       "Étudiant ingénieur à l'ISEP Paris, certifié AWS et Databricks. Pipelines temps réel (Kafka, Spark, Airflow), entrepôts BigQuery et BI. Recherche un stage en Data Engineering dès janvier 2027.",
     projectsTitle: "Projets · Soro Amidou",
-    projectsDescription: "Pipelines temps réel, entrepôts BigQuery et BI : les projets data de Soro Amidou, avec architecture, chiffres et code.",
+    projectsDescription: "Pipelines temps réel, entrepôts BigQuery, BI et machine learning : les projets data de Soro Amidou, avec architecture, chiffres et code.",
     aboutTitle: "À propos · Soro Amidou",
     aboutDescription: "L'histoire complète : des équations au Data Engineering, par Soro Amidou.",
     contactTitle: "Contact · Soro Amidou",
@@ -13,7 +13,7 @@ const fr = {
   cards: {
     pauseMotion: "Mettre le défilement en pause",
     about: { subtitle: "Des équations aux pipelines." },
-    projects: { subtitle: "Pipelines, entrepôts et BI, chacun expliqué par son schéma.", viewAll: "Voir tous les projets" },
+    projects: { subtitle: "Pipelines, entrepôts, BI et ML, chacun expliqué par son schéma.", viewAll: "Voir tous les projets" },
     journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
     credentials: { title: "Certifications & langues", subtitle: "Compétences vérifiées et langues de travail" },
     services: {
@@ -127,7 +127,7 @@ const fr = {
     title: "Projets",
     page: {
       title: "Mes projets",
-      subtitle: "Pipelines, entrepôts et BI, chacun expliqué par son schéma. Filtre par techno, ouvre une étude de cas ou lis le code.",
+      subtitle: "Pipelines, entrepôts, BI et ML, chacun expliqué par son schéma. Filtre par techno, ouvre une étude de cas ou lis le code.",
       back: "Retour à l'accueil",
       filter: "Technologies",
       shown: { one: "projet affiché", other: "projets affichés" },
@@ -177,6 +177,20 @@ const fr = {
         segmentsSub: "clients par valeur",
         checks: "contrôle qualité automatique",
       },
+      fraud: {
+        title: "Flux de Fraudster Detection",
+        desc: "Les utilisateurs et leurs transactions deviennent une ligne de variables par utilisateur, un Gradient Boosting calibré les note, et un seuil fondé sur les coûts transforme la note en alerte. SHAP explique chaque note.",
+        data: "Données",
+        dataSub: "688 k transactions",
+        features: "Variables",
+        featuresSub: "une ligne par utilisateur",
+        model: "Gradient Boosting",
+        modelSub: "calibré",
+        alert: "Alerte",
+        alertSub: "seuil fondé sur les coûts",
+        shap: "SHAP",
+        shapSub: "pourquoi cette note",
+      },
       healthcare: {
         title: "Schéma en étoile de Healthcare BI",
         desc: "Une table de faits des admissions reliée aux dimensions site hospitalier, patient, date et diagnostic.",
@@ -209,6 +223,16 @@ const fr = {
           { value: "100 %", label: "des étapes contrôlées" },
         ],
       },
+      "fraud-detection": {
+        status: "2026",
+        summary:
+          "Repérer les mules financières parmi les clients d'une banque en ligne à partir de leur profil et de leurs transactions : un modèle Gradient Boosting qui attrape 9 fraudeurs sur 10, et explique pourquoi.",
+        metrics: [
+          { value: "53 / 59", label: "fraudeurs détectés (test)" },
+          { value: "0,86", label: "PR-AUC (hasard : 0,03)" },
+          { value: "688 k", label: "transactions" },
+        ],
+      },
       "healthcare-bi": {
         status: "2026",
         summary:
@@ -239,6 +263,29 @@ const fr = {
           "Migration d'Astro CLI vers Airflow 2.7 standard (LocalExecutor, Docker Compose) : la stack démarre en une commande, sans outil propriétaire.",
           "CI à chaque pull request : dbt compile vérifie le SQL sans accès au cloud ; dbt test tourne sur BigQuery depuis main.",
         ],
+      },
+      "fraud-detection": {
+        architecture:
+          "Un cas pratique StrataScratch sur une banque en ligne : 9 944 utilisateurs (3 % de fraudeurs) et 688 651 transactions. Le notebook construit une ligne par utilisateur (répartition des transactions, montants, rythme, géographie, vitesse à laquelle l'argent ressort après un rechargement), compare Régression logistique, Random Forest et Gradient Boosting en validation croisée à 5 plis sur la PR-AUC, puis calibre le gagnant et fixe son seuil d'alerte d'après le coût d'un fraudeur raté face à une fausse alerte. Le calcul des variables et l'évaluation vivent dans un package Python testé.",
+        flow: [
+          { label: "Users + transactions", detail: "9 944 utilisateurs · 688 k lignes" },
+          { label: "Contrôles", detail: "colonne STATE (fuite) écartée" },
+          { label: "Variables", detail: "une ligne par utilisateur · séquences" },
+          { label: "Choix du modèle", detail: "3 modèles · CV 5 plis · PR-AUC" },
+          { label: "Gradient Boosting", detail: "calibré · seuil par les coûts" },
+          { label: "SHAP · dérive", detail: "explications · suivi PSI" },
+        ],
+        decisions: [
+          "Colonne STATE écartée : un compte bloqué donne la réponse, un modèle qui l'utilise paraîtrait parfait et ne servirait à rien.",
+          "PR-AUC plutôt qu'accuracy : avec 3 % de fraudeurs, un modèle qui ne signale personne a déjà 97 % d'accuracy.",
+          "Le jeu de test ne choisit rien : seuils et modèles sont fixés sur la validation, le test sert seulement à rapporter.",
+          "Des estimations honnêtes à côté du chiffre phare : PR-AUC 0,76 en entraînant sur les comptes anciens et en testant sur les récents, 0,68 en décidant après 30 jours d'activité seulement.",
+        ],
+        shots: {
+          test: "Jeu de test : matrice de confusion et courbe précision-rappel",
+          mix: "Répartition des transactions : fraudeurs vs autres utilisateurs",
+          shap: "SHAP : ce qui pousse un utilisateur vers « fraudeur »",
+        },
       },
       "healthcare-bi": {
         architecture:
