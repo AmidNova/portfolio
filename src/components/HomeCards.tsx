@@ -1,12 +1,9 @@
-import { Boxes, FolderGit2, PencilRuler, UserRound, Wrench } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, Boxes, FolderGit2, PencilRuler, UserRound, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLang } from "../hooks/useLang";
-import { PROJECTS, type ProjectMeta } from "../data/profile";
+import { PROJECTS } from "../data/profile";
 import AboutSection from "./AboutSection";
 import { Card, CardHeader } from "./Card";
-import Marquee, { MarqueePause } from "./Marquee";
-import ProjectPreview from "./ProjectPreview";
 import Toolbox from "./Toolbox";
 
 /** Thin tiles that wrap existing sections in the bento card shell. */
@@ -30,73 +27,58 @@ export function StackCard() {
   );
 }
 
-const servicePill = (service: string) => (
-  <span className="block whitespace-nowrap rounded-xl bg-bg px-5 py-2.5 text-base font-bold tracking-tight text-accent">
-    {service}
-  </span>
-);
-
 export function ServicesCard() {
   const { t } = useLang();
-  const [paused, setPaused] = useState(false);
   return (
     <Card id="services" labelledBy="services-title" className="flex flex-1 flex-col">
-      <CardHeader
-        id="services-title"
-        icon={PencilRuler}
-        title={t.cards.services.title}
-        subtitle={t.cards.services.subtitle}
-        action={<MarqueePause paused={paused} onToggle={() => setPaused((p) => !p)} label={t.cards.pauseMotion} />}
-      />
-      <div className="flex flex-1 flex-col justify-center gap-3">
-        {t.cards.services.rows.map((row, i) => (
-          <Marquee
-            key={row[0]}
-            items={row}
-            keyOf={(s) => s}
-            renderItem={servicePill}
-            reverse={i % 2 === 1}
-            paused={paused}
-          />
+      <CardHeader id="services-title" icon={PencilRuler} title={t.cards.services.title} subtitle={t.cards.services.subtitle} />
+      <ul className="flex flex-1 flex-wrap content-center gap-2">
+        {t.cards.services.rows.flat().map((service) => (
+          <li key={service} className="rounded-lg bg-bg px-3.5 py-2 text-sm font-semibold tracking-tight text-accent">
+            {service}
+          </li>
         ))}
-      </div>
+      </ul>
     </Card>
   );
 }
 
-/** A project's thumbnail; opens the project's own page. */
-const projectThumb = (project: ProjectMeta) => (
-  <Link to={`/projects/${project.id}`} aria-label={project.title} className="tile-link block rounded-xl">
-    <ProjectPreview project={project} captioned className="w-96 rounded-xl border border-line" />
-  </Link>
-);
-
-/** Summary only: the projects scroll by, the detail lives behind "View all projects". */
+/** Every project in one glance — name, stack, headline figure — each row opening the project's page. */
 export function ProjectsCard() {
   const { t } = useLang();
-  const [paused, setPaused] = useState(false);
   return (
     <Card id="projects" labelledBy="projects-title">
-      <CardHeader
-        id="projects-title"
-        icon={FolderGit2}
-        title={t.projects.title}
-        subtitle={t.cards.projects.subtitle}
-        action={<MarqueePause paused={paused} onToggle={() => setPaused((p) => !p)} label={t.cards.pauseMotion} />}
-      />
-      <Marquee
-        items={PROJECTS}
-        keyOf={(p) => p.id}
-        renderItem={projectThumb}
-        paused={paused}
-        className="marquee-slow"
-      />
-      <div className="relative z-10 -mt-12 flex justify-center">
-        <Link to="/projects" className="btn btn-primary h-12 px-6 text-base shadow-lg shadow-black/40">
-          <Boxes size={20} aria-hidden="true" />
-          {t.cards.projects.viewAll}
-        </Link>
-      </div>
+      <CardHeader id="projects-title" icon={FolderGit2} title={t.projects.title} subtitle={t.cards.projects.subtitle} />
+      <ul className="-mx-2 divide-y divide-line">
+        {PROJECTS.map((project) => {
+          const figure = t.projects.items[project.id].metrics[0];
+          return (
+            <li key={project.id}>
+              <Link
+                to={`/projects/${project.id}`}
+                viewTransition
+                className="group flex items-center gap-4 rounded-lg px-2 py-3.5 transition-colors hover:bg-bg"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold tracking-tight transition-colors group-hover:text-accent">
+                    {project.title}
+                  </span>
+                  <span className="mt-0.5 block truncate text-sm text-subtle">{project.tags.slice(0, 4).join(" · ")}</span>
+                </span>
+                <span className="shrink-0 text-right">
+                  <span className="block font-semibold tabular-nums">{figure.value}</span>
+                  <span className="block text-xs text-subtle">{figure.label}</span>
+                </span>
+                <ArrowRight size={16} aria-hidden="true" className="shrink-0 text-subtle transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <Link to="/projects" viewTransition className="btn mt-4 w-full">
+        <Boxes size={18} aria-hidden="true" />
+        {t.cards.projects.viewAll}
+      </Link>
     </Card>
   );
 }

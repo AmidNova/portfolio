@@ -1,5 +1,4 @@
 import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import ProjectsPage from "../components/ProjectsPage";
 import { LangProvider } from "../context/LangContext";
@@ -31,12 +30,19 @@ describe("ProjectsPage", () => {
     expect(screen.getAllByText("Phare")).toHaveLength(PROJECTS.filter((p) => p.featured).length);
   });
 
-  it("donne à chaque carte son schéma, ses chiffres et un ancre pour les liens de l'accueil", () => {
+  it("donne à chaque carte son visuel et ses chiffres : capture réelle si elle existe, sinon le schéma", () => {
     renderPage();
     const pulse = screen.getByRole("article", { name: "Wikipedia Pulse" });
-    expect(pulse).toHaveAttribute("id", "project-wikipedia-pulse");
-    expect(within(pulse).getByRole("img", { name: /Architecture de Wikipedia Pulse/ })).toBeInTheDocument();
+    expect(within(pulse).getByRole("figure", { name: "Wikipedia Pulse" }).querySelector("img")).not.toBeNull();
     expect(within(pulse).getByText("articles émergents")).toBeInTheDocument();
+    const retail = screen.getByRole("article", { name: "Retail Data Pipeline" });
+    expect(within(retail).getByRole("img", { name: /Flux du Retail Data Pipeline/ })).toBeInTheDocument();
+  });
+
+  it("n'a plus de filtre par techno", () => {
+    renderPage();
+    expect(screen.queryByRole("button", { name: "Réinitialiser" })).not.toBeInTheDocument();
+    expect(screen.getAllByRole("article")).toHaveLength(PROJECTS.length);
   });
 
   it("n'offre le code que pour les projets qui ont un dépôt public", () => {
@@ -52,24 +58,6 @@ describe("ProjectsPage", () => {
         expect(within(card).getByText("Code non public")).toBeInTheDocument();
       }
     }
-  });
-
-  it("filtre par techno, compte les résultats et se réinitialise", async () => {
-    const user = userEvent.setup();
-    renderPage();
-    await user.click(screen.getByRole("button", { name: "Power BI" }));
-    expect(screen.getByRole("button", { name: "Power BI" })).toHaveAttribute("aria-pressed", "true");
-    expect(cardTitles()).toEqual(["Healthcare BI"]);
-    expect(screen.getByRole("status")).toHaveTextContent("1 projet affiché");
-
-    await user.click(screen.getByRole("button", { name: "Réinitialiser" }));
-    expect(cardTitles()).toHaveLength(PROJECTS.length);
-  });
-
-  it("lit le filtre depuis l'URL et explique quand rien ne correspond", () => {
-    renderPage("fr", "/projects?tech=Kafka,Power%20BI");
-    expect(screen.queryAllByRole("article")).toHaveLength(0);
-    expect(screen.getByText(/Aucun projet ne combine/)).toBeInTheDocument();
   });
 
   it("mène chaque carte à la page du projet", () => {

@@ -11,7 +11,6 @@ const en = {
     contactDescription: "Write to Soro Amidou about a Data Engineering internship from January 2027.",
   },
   cards: {
-    pauseMotion: "Pause the scrolling",
     about: { subtitle: "From equations to pipelines." },
     projects: { subtitle: "From the real-time stream to the dashboard.", viewAll: "View all projects" },
     journey: { title: "Journey", subtitle: "Where I've worked and studied" },
@@ -130,10 +129,6 @@ const en = {
       title: "My projects",
       subtitle: "Four data projects, from the real-time stream to the dashboard. Each has its own page: context, architecture, technical choices and limits.",
       back: "Back to home",
-      filter: "Technologies",
-      shown: { one: "project shown", other: "projects shown" },
-      reset: "Reset",
-      empty: "No project combines all these technologies. Remove a filter or reset.",
       featured: "Featured",
       code: "Code",
       codePrivate: "Code not public",

@@ -3,6 +3,7 @@ import { useId, type ReactNode } from "react";
 import { useLang } from "../hooks/useLang";
 import type { ProjectMeta } from "../data/profile";
 import ArchitectureDiagram from "./ArchitectureDiagram";
+import { projectMediaById } from "./projectMedia";
 
 interface NodeProps {
   x: number;
@@ -236,8 +237,24 @@ interface ProjectPreviewProps {
   className?: string;
 }
 
-/** A project's visual in a screenshot-like 16:9 frame — shared by the home thumbnails and the projects page. */
+/** A project's visual in a 16:9 frame: its real screenshot when there is one, else its diagram. */
 function ProjectPreview({ project, captioned = false, className = "" }: ProjectPreviewProps) {
+  const media = projectMediaById[project.id];
+  const cover = media?.cover !== undefined ? media.images[media.cover] : undefined;
+  if (cover) {
+    return (
+      <figure aria-label={project.title} className={`aspect-video overflow-hidden bg-white ${className}`}>
+        <img
+          src={cover.small ?? cover.src}
+          width={cover.width}
+          height={cover.height}
+          alt=""
+          loading="lazy"
+          className="size-full object-cover object-left-top"
+        />
+      </figure>
+    );
+  }
   const visual = VISUALS[project.id]?.(true);
   return (
     <figure

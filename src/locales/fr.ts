@@ -11,7 +11,6 @@ const fr = {
     contactDescription: "Écrire à Soro Amidou au sujet d'un stage en Data Engineering à partir de janvier 2027.",
   },
   cards: {
-    pauseMotion: "Mettre le défilement en pause",
     about: { subtitle: "Des équations aux pipelines." },
     projects: { subtitle: "Du flux temps réel au tableau de bord.", viewAll: "Voir tous les projets" },
     journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
@@ -129,10 +128,6 @@ const fr = {
       title: "Mes projets",
       subtitle: "Quatre projets data, du flux temps réel au tableau de bord. Chacun a sa page : contexte, architecture, choix techniques et limites.",
       back: "Retour à l'accueil",
-      filter: "Technologies",
-      shown: { one: "projet affiché", other: "projets affichés" },
-      reset: "Réinitialiser",
-      empty: "Aucun projet ne combine toutes ces technologies. Retire un filtre ou réinitialise.",
       featured: "Phare",
       code: "Code",
       codePrivate: "Code non public",

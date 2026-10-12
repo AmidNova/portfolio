@@ -7,7 +7,7 @@ import { useLang } from "../hooks/useLang";
 import Lightbox, { type LightboxImage } from "./Lightbox";
 import NotFound from "./NotFound";
 import { ProjectVisual } from "./ProjectPreview";
-import { projectMediaById } from "./projectMedia";
+import { projectMediaById, srcSetOf } from "./projectMedia";
 
 interface FlowStep {
   label: string;
@@ -40,7 +40,8 @@ function ProjectArticle({ project, next }: { project: ProjectMeta; next: Project
   const media = projectMediaById[project.id];
   const mediaCopy: MediaCopy | undefined = t.projects.media[project.id as keyof typeof t.projects.media];
   const shots = mediaCopy?.shots ?? {};
-  const gallery: LightboxImage[] = (media?.images ?? []).map((shot) => ({
+  const images = media?.images ?? [];
+  const gallery: LightboxImage[] = images.map((shot) => ({
     src: shot.src,
     caption: shots[shot.captionKey] ?? project.title,
   }));
@@ -118,7 +119,16 @@ function ProjectArticle({ project, next }: { project: ProjectMeta; next: Project
                   aria-label={`${t.projects.enlarge} — ${shot.caption}`}
                   className="block w-full cursor-zoom-in overflow-hidden rounded-lg border border-line transition-colors hover:border-subtle"
                 >
-                  <img src={shot.src} alt="" loading="lazy" className="w-full" />
+                  <img
+                    src={shot.src}
+                    srcSet={srcSetOf(images[i])}
+                    sizes="(min-width: 900px) 852px, 100vw"
+                    width={images[i].width}
+                    height={images[i].height}
+                    alt=""
+                    loading="lazy"
+                    className="h-auto w-full"
+                  />
                 </button>
                 <figcaption className="mt-2 text-sm text-subtle">{shot.caption}</figcaption>
               </figure>

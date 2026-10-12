@@ -4,8 +4,7 @@ const SITE_ORIGIN = "https://amidousoro.me";
 
 /**
  * Keeps the tab title, meta description and canonical link in step with the
- * current page and language. The canonical drops the query string, so a
- * filtered /projects?tech=… still points at /projects.
+ * current page and language. The canonical drops any query string.
  */
 export function useDocumentMeta(title: string, description: string): void {
   useEffect(() => {
