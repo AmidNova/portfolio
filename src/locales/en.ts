@@ -13,7 +13,7 @@ const en = {
   cards: {
     pauseMotion: "Pause the scrolling",
     about: { subtitle: "From equations to pipelines." },
-    projects: { subtitle: "Pipelines, warehouses, BI and ML, each explained by its diagram.", viewAll: "View all projects" },
+    projects: { subtitle: "From the real-time stream to the dashboard.", viewAll: "View all projects" },
     journey: { title: "Journey", subtitle: "Where I've worked and studied" },
     credentials: { title: "Certifications & languages", subtitle: "Verified skills and the languages I work in" },
     services: {
@@ -73,7 +73,7 @@ const en = {
     title: "About",
     body: [
       "I got into engineering through data: taking a raw, messy stream and turning it into something people can trust and act on. Today I work mostly with Kafka, Airflow and Spark, and I deploy on AWS with a Solutions Architect mindset.",
-      "I care about systems that keep working after the first demo: clear data contracts, orchestration you can reason about, and infrastructure you can rebuild from code.",
+      "In my projects, every stage checks its data before writing it, the orchestration reads as a single DAG and the whole stack restarts with one command.",
     ],
     more: "The longer story",
   },
@@ -128,7 +128,7 @@ const en = {
     title: "Projects",
     page: {
       title: "My projects",
-      subtitle: "Pipelines, warehouses, BI and ML, each explained by its diagram. Filter by tech, open a case study or read the code.",
+      subtitle: "Four data projects, from the real-time stream to the dashboard. Each has its own page: context, architecture, technical choices and limits.",
       back: "Back to home",
       filter: "Technologies",
       shown: { one: "project shown", other: "projects shown" },
@@ -138,11 +138,14 @@ const en = {
       code: "Code",
       codePrivate: "Code not public",
     },
-    caseStudy: "Case study",
+    caseStudy: "View project",
     close: "Close",
-    watchDemo: "Demo video",
+    allProjects: "All projects",
+    nextProject: "Next project",
     readDoc: "Technical documentation (PDF)",
-    sectionDecisions: "Key decisions",
+    watchDemo: "Demo video",
+    sectionDecisions: "Technical choices",
+    sectionLimits: "Limits",
     flowLabel: "Pipeline",
     viewCode: "View the code",
     sectionArchitecture: "Architecture",
@@ -151,23 +154,27 @@ const en = {
     enlarge: "Enlarge image",
     previous: "Previous image",
     next: "Next image",
+    context: {
+      label: "Project context",
+      type: "Setting",
+      period: "Period",
+      data: "Data",
+    },
     diagram: {
       title: "Wikipedia Pulse architecture",
-      desc: "Wikimedia's real-time stream flows through Kafka into Spark; the batch API feeds an Airflow DAG that runs Isolation Forest anomaly detection. Both land in Elasticsearch and are visualised in Kibana.",
-      sse: "real-time stream",
-      api: "batch · D+1",
+      desc: "A producer pushes Wikimedia's edit stream into Kafka. Every day, an Airflow 3 DAG drains the topic, fetches pageviews and Wikidata IDs, computes emergence and lead-lag with PySpark, then indexes the results in Elasticsearch for Kibana.",
+      sse: "continuous edits",
+      api: "views · Wikidata",
       kafka: "buffer",
-      airflow: "DAG · 6 tasks",
-      spark: "processing",
-      iforest: "anomaly detection",
+      airflow: "DAG · 12 tasks",
+      spark: "emergence · lead-lag",
       es: "index",
-      kibana: "dashboards",
-      orchestration: "orchestration",
+      kibana: "dashboard as code",
     },
     visuals: {
       retail: {
         title: "Retail Data Pipeline flow",
-        desc: "Raw transactions land in Cloud Storage, are loaded into a BigQuery warehouse, then feed BigQuery ML forecasts and segments. An automated quality check guards every hand-off.",
+        desc: "Raw transactions land in Cloud Storage, are loaded into a BigQuery warehouse, then prepared for BigQuery ML forecasts and segments. A Soda quality check guards every hand-off.",
         raw: "raw data",
         landing: "raw zone",
         warehouse: "warehouse",
@@ -175,8 +182,8 @@ const en = {
         forecast: "Forecast",
         forecastSub: "30-day sales",
         segments: "Segments",
-        segmentsSub: "customers by value",
-        checks: "automated quality check",
+        segmentsSub: "RFM customers",
+        checks: "blocking quality check",
       },
       fraud: {
         title: "Fraudster Detection flow",
@@ -194,7 +201,7 @@ const en = {
       },
       healthcare: {
         title: "Healthcare BI star schema",
-        desc: "An admissions fact table joined to hospital site, patient, date and diagnosis dimensions.",
+        desc: "An admissions fact table joined to hospital, patient, date and diagnosis dimensions.",
         fact: "fact table",
         site: "Hospital",
         patient: "Patient",
@@ -205,50 +212,85 @@ const en = {
     },
     items: {
       "wikipedia-pulse": {
-        status: "2026",
         summary:
-          "Wikipedia articles surge with edits before the media covers an event. This system catches that signal in real time and flags the anomalies.",
+          "On Wikipedia, editors react to an event hours before readers do. This pipeline measures that gap every day across 5 languages and flags the articles that break from their usual behaviour.",
         metrics: [
-          { value: "365", label: "pre-viral events" },
-          { value: "4,808", label: "articles monitored" },
-          { value: "5", label: "languages" },
+          { value: "212,788", label: "edits captured in 5 days" },
+          { value: "241", label: "emerging articles" },
+          { value: "13 min", label: "per daily run" },
+        ],
+        context: {
+          type: "Personal project · solo",
+          period: "May – Oct 2026",
+          data: "Wikimedia: edit stream, pageviews, Wikidata (public)",
+        },
+        limits: [
+          "Five days of data only: the 28-day per-article history isn't filled yet, many medians are 0 and detection is still loose.",
+          "The stack runs locally with Docker Compose; it isn't deployed to the cloud.",
+          "On a single article the hourly correlation is noisy: lead-lag is read as a distribution, not article by article.",
         ],
       },
       "retail-pipeline": {
-        status: "2026",
         summary:
-          "Millions of raw retail transactions turned into a reliable BigQuery warehouse, with a quality gate at every stage, then 30-day sales forecasting and customer segmentation.",
+          "An ELT pipeline on GCP that turns 500,000 raw e-commerce transactions into a BigQuery star-schema warehouse, with a blocking quality check after every layer.",
         metrics: [
-          { value: "30 days", label: "forecast horizon" },
-          { value: "2", label: "BigQuery ML models" },
-          { value: "100%", label: "of stages quality-checked" },
+          { value: "≈ 500k", label: "transactions loaded" },
+          { value: "9", label: "dbt models" },
+          { value: "8", label: "Soda check suites" },
+        ],
+        context: {
+          type: "Personal project · solo",
+          period: "2026",
+          data: "Online Retail II (UCI), public dataset",
+        },
+        limits: [
+          "A historical, frozen dataset (2009–2011): the DAG reloads the whole file, with no incremental load.",
+          "dbt test only runs on main, since pull requests have no GCP secrets: a data regression is caught only after merging.",
         ],
       },
       "fraud-detection": {
-        status: "2026",
         summary:
-          "Spotting the money mules among an online bank's users from their profile and transaction history: a Gradient Boosting model that catches 9 fraudsters in 10, and explains why.",
+          "Spotting the money mules among an online bank's users from their profile and transaction history. The chosen model catches 53 of the 59 fraudsters in the test set, and SHAP explains every alert.",
         metrics: [
           { value: "53 / 59", label: "fraudsters caught (test)" },
           { value: "0.86", label: "PR-AUC (random: 0.03)" },
           { value: "688k", label: "transactions" },
         ],
+        context: {
+          type: "StrataScratch take-home · solo",
+          period: "Oct 2026",
+          data: "Online bank, provided by StrataScratch (not public)",
+        },
+        limits: [
+          "Only 298 fraudsters, about 60 per evaluation set: scores carry roughly ± 0.05 of uncertainty.",
+          "More realistic estimates than the headline: PR-AUC 0.76 when testing on newer accounts, 0.68 when deciding after only 30 days of activity.",
+          "Labels only cover fraudsters who were caught, so the model partly learns past detection rules.",
+          "The cost ratio behind the threshold is an assumption, not a business figure.",
+        ],
       },
       "healthcare-bi": {
-        status: "2026",
         summary:
-          "A Power BI star-schema warehouse to steer 10 hospitals: DAX KPIs tied to alert thresholds, a what-if scenario and documented governance.",
+          "A Power BI report on 55,500 hospital admissions: a star-schema model and four DAX KPIs, each tied to an alert threshold and to the person who has to act.",
         metrics: [
-          { value: "55,500", label: "admissions" },
-          { value: "10", label: "hospitals" },
-          { value: "$25.6M", label: "savings (what‑if)" },
+          { value: "55,500", label: "admissions (synthetic)" },
+          { value: "4", label: "KPIs with alert thresholds" },
+          { value: "10", label: "hospitals compared" },
+        ],
+        context: {
+          type: "ISEP course project · team",
+          period: "2025 – 2026",
+          data: "Synthetic dataset provided by the course",
+        },
+        limits: [
+          "The data is synthetic: cost or length-of-stay trends say nothing about real hospitals. The work is in the modelling, the KPIs and the governance.",
+          "The $25.6M savings in the what-if scenario depend entirely on the chosen assumptions: an order of magnitude to discuss, not a forecast.",
         ],
       },
     },
     media: {
       "retail-pipeline": {
         architecture:
-          "One Airflow DAG drives the whole run, from the raw Online Retail II file (about 500k UK e-commerce transactions, 2009–2011) to the dashboards. The CSV lands in Cloud Storage and loads into BigQuery; dbt rebuilds it as a star schema (customer, date and product dimensions around an invoice fact table), then as report tables. Soda checks the data after each of the three layers, so a bad row stops where it appears instead of reaching a dashboard. Two dbt models feed BigQuery ML: daily revenue for a 30-day forecast, and RFM scores for customer segments.",
+          "One Airflow DAG drives the whole run, from the raw Online Retail II file (about 500k UK e-commerce transactions, 2009–2011) to the Metabase dashboards. The CSV lands in Cloud Storage, then in BigQuery. dbt rebuilds it as a star schema (customer, date and product dimensions around an invoice fact table), then as report tables. Soda checks the data after each of the three layers. Two dbt models prepare the BigQuery ML inputs: daily revenue for a 30-day forecast, and RFM scores for customer segments.",
         flow: [
           { label: "Raw CSV", detail: "~500k transactions" },
           { label: "Cloud Storage", detail: "raw landing" },
@@ -259,15 +301,15 @@ const en = {
           { label: "Metabase", detail: "dashboards" },
         ],
         decisions: [
-          "A quality gate after every layer: Soda runs after the load, the transform and the reports, and a failed check stops the DAG at that layer.",
+          "Soda runs after the load, the transform and the reports. A failed check stops the DAG, so a bad row stays in the layer where it appeared.",
           "dbt and Soda live in their own virtualenvs inside the Airflow image, so their dependencies never clash with Airflow's.",
           "Moved from Astro CLI to plain Airflow 2.7 (LocalExecutor, Docker Compose): the stack starts with one command and needs no vendor tooling.",
-          "CI on every pull request: dbt compile checks the SQL without cloud access; dbt test runs against BigQuery on main.",
+          "CI on every pull request: dbt compile checks the SQL without cloud access.",
         ],
       },
       "fraud-detection": {
         architecture:
-          "A StrataScratch take-home on an online bank: 9,944 users (3% fraudsters) and 688,651 transactions. The notebook builds one row per user (transaction mix, amounts, timing, geography, how fast money leaves after a top-up), compares Logistic Regression, Random Forest and Gradient Boosting under 5-fold cross-validation on PR-AUC, then calibrates the winner and sets its alert threshold from the cost of a missed fraudster versus a false alarm. Feature code and evaluation helpers live in a tested Python package.",
+          "9,944 users, 3% of them fraudsters, and 688,651 transactions. The notebook builds one row per user (transaction mix, amounts, timing, geography, how fast money leaves after a top-up), compares Logistic Regression, Random Forest and Gradient Boosting under 5-fold cross-validation on PR-AUC, then calibrates the winner and sets its alert threshold from the cost of a missed fraudster versus a false alarm. Feature code and evaluation helpers live in a Python package tested in CI.",
         flow: [
           { label: "Users + transactions", detail: "9,944 users · 688k rows" },
           { label: "Data checks", detail: "leaky STATE column dropped" },
@@ -277,10 +319,9 @@ const en = {
           { label: "SHAP · drift", detail: "explanations · PSI monitoring" },
         ],
         decisions: [
-          "Dropped the account STATE column: a locked account gives the answer away, so a model using it would look perfect and be useless.",
+          "Dropped the account STATE column: a locked account gives the answer away. A model using it would look perfect and be useless.",
           "PR-AUC rather than accuracy: with 3% fraudsters, a model that flags nobody is already 97% accurate.",
-          "The test set chooses nothing: thresholds and models are picked on validation, the test set only reports.",
-          "Honest estimates next to the headline: PR-AUC 0.76 when trained on older accounts and tested on newer ones, 0.68 when deciding after only 30 days of activity.",
+          "The test set only reports results. Thresholds and models are picked on validation.",
         ],
         shots: {
           test: "Test set: confusion matrix and precision-recall curve",
@@ -290,33 +331,41 @@ const en = {
       },
       "healthcare-bi": {
         architecture:
-          "55,500 hospital admissions across 10 US sites, modelled as a star schema in Power BI. Four advanced DAX KPIs each carry a trigger threshold and the persona who acts on it, so the report says who should move, not just what changed. A parameter-driven what‑if scenario puts a figure on the stakes: $25.6M in potential savings.",
+          "The brief: an oversight body wants to understand admissions, lengths of stay and costs across 10 US hospitals. The data is prepared in Power Query and DuckDB, then modelled as a star schema in Power BI (admissions fact, hospital, patient, date and diagnosis dimensions). Four DAX KPIs each carry a trigger threshold and the persona who acts on it. A what-if parameter puts a figure on lower costs.",
         flow: [
           { label: "Sources", detail: "55,500 admissions · 10 sites" },
           { label: "Power Query · DuckDB", detail: "preparation" },
           { label: "Star schema", detail: "Power BI model" },
           { label: "DAX KPIs", detail: "4 KPIs · alert thresholds" },
-          { label: "What-if", detail: "$25.6M potential savings" },
+          { label: "What-if", detail: "adjustable scenario" },
           { label: "Power BI report", detail: "one owner per KPI" },
         ],
         decisions: [
-          "Every KPI is tied to a threshold and a decision-maker: a number with no owner and no trigger doesn't make the report.",
+          "Every KPI has a threshold and an owner. A number nobody can act on doesn't make the report.",
           "A what-if parameter rather than a fixed estimate, so the savings figure moves with the assumptions.",
-          "Governance written down end to end: source inventory, metric definitions, freshness, access control, metadata snapshot, limitations and an ethics statement.",
+          "Governance written down: source inventory, metric definitions, freshness, access control, limitations and an ethics statement.",
         ],
+        shots: {
+          overview: "Overview: admissions, billing, length of stay and YoY / YTD indicators",
+          demographics: "Patient demographics: age, gender and blood type",
+          conditions: "Medical conditions: volume, stay, cost and results by condition",
+          stay: "Length of stay by condition, hospital and admission type",
+          finance: "Costs by condition, hospital and insurer",
+          outcomes: "Hospitals: patient volume and test results",
+        },
       },
       "wikipedia-pulse": {
         architecture:
-          "Two sources feed the pipeline: Wikimedia's real-time SSE stream (lead indicator) and the Wikimedia API in batch (lag indicator, D+1). Kafka buffers the stream; a 6-task Airflow DAG orchestrates the flow. Spark computes raw usage and an Isolation Forest model flags anomalies. Results are indexed in Elasticsearch and visualised in Kibana.",
+          "A producer listens to Wikimedia's SSE change stream around the clock and pushes every edit into Kafka. Once a day, a 12-task Airflow 3 DAG drains the topic, fetches pageviews (API and hourly dumps) and Wikidata IDs, then runs everything through three datalake layers: raw, formatted (Parquet, UTC) and usage (PySpark). The final tables are indexed in Elasticsearch; the Kibana dashboard is generated by a versioned script. First result: when edits lead (23% of the 4,347 measurable articles), reads follow with a 12-hour median lag.",
+        decisions: [
+          "Each article is compared with its own 28-day history (median and MAD), not with the day's other articles. It is emerging at a robust z-score ≥ 3.5 with at least 3 distinct editors, so the number of emerging articles follows the news instead of being a quota.",
+          "Languages are grouped by Wikidata entity, not by title: \"Tour Eiffel\" and \"Eiffel Tower\" are the same subject, and two homonyms aren't merged.",
+          "Every task checks its output and fails before writing when the data is plainly wrong: under 1,000 edits, a broken pageview join, more than 5% emerging.",
+          "Business logic lives outside the DAG in unit-tested modules; CI reruns those tests and the DAG integrity check on every push.",
+        ],
         shots: {
-          metric: "Real-time KPIs on the live edit stream",
-          trending1: "Trending articles: surfacing spikes",
-          trending2: "Trending breakdown by topic",
-          scoop: "Scoop detection: early edit bursts",
-          country: "Edit activity by country",
-          tempo: "Edit tempo histogram over time",
-          velocity: "Editorial velocity per article",
-          ratio: "Effort / attention ratio analysis",
+          dashboard: "Kibana dashboard on 5 days of real data (Oct 3–7, 2026)",
+          dag: "October 7 run in Airflow 3: 12 tasks, 13 min 33 s",
         },
       },
     },

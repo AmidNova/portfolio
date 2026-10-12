@@ -1,28 +1,20 @@
-import { ArrowLeft, Code2, Github, Lock, PlayCircle, RotateCcw, Star } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, ArrowRight, Code2, Github, Lock, RotateCcw, Star } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLang } from "../hooks/useLang";
 import { PROJECTS, type ProjectMeta } from "../data/profile";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { filterByTech, parseTechParam, techOptions } from "../lib/projectFilter";
-import ProjectCaseStudy from "./ProjectCaseStudy";
 import ProjectPreview from "./ProjectPreview";
-import { projectMediaById } from "./projectMedia";
 
 // Featured projects first; the rest keep their order in PROJECTS.
 const ORDERED = [...PROJECTS].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
 const TECHS = techOptions(PROJECTS);
 
-interface ProjectTileProps {
-  project: ProjectMeta;
-  onOpenCaseStudy: (id: ProjectMeta["id"]) => void;
-}
-
 /** One project, summarized: picture, pitch, three figures, stack, then the ways in. */
-function ProjectTile({ project, onOpenCaseStudy }: ProjectTileProps) {
+function ProjectTile({ project }: { project: ProjectMeta }) {
   const { t } = useLang();
   const copy = t.projects.items[project.id];
-  const hasCaseStudy = Boolean(projectMediaById[project.id]);
+  const page = `/projects/${project.id}`;
   const titleId = `project-title-${project.id}`;
 
   return (
@@ -32,7 +24,9 @@ function ProjectTile({ project, onOpenCaseStudy }: ProjectTileProps) {
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-start justify-between gap-3">
           <h2 id={titleId} className="text-lg font-semibold tracking-tight">
-            {project.title}
+            <Link to={page} viewTransition className="transition-colors hover:text-accent">
+              {project.title}
+            </Link>
           </h2>
           {project.featured && (
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent">
@@ -65,12 +59,10 @@ function ProjectTile({ project, onOpenCaseStudy }: ProjectTileProps) {
 
       {/* Always present so cards line up; a project without a public repo says so instead of hiding it. */}
       <div className="flex gap-2 border-t border-line p-4">
-          {hasCaseStudy && (
-            <button type="button" onClick={() => onOpenCaseStudy(project.id)} className="btn btn-primary flex-1">
-              <PlayCircle size={16} aria-hidden="true" />
-              {t.projects.caseStudy}
-            </button>
-          )}
+          <Link to={page} viewTransition className="btn btn-primary flex-1">
+            {t.projects.caseStudy}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
           {project.repo ? (
             <a href={project.repo} target="_blank" rel="noopener noreferrer" className="btn flex-1">
               <Github size={16} aria-hidden="true" />
@@ -145,9 +137,6 @@ function ProjectsPage() {
   const [params, setParams] = useSearchParams();
   const selected = parseTechParam(params.get("tech"), TECHS);
   const visible = filterByTech(ORDERED, selected);
-  const [openId, setOpenId] = useState<ProjectMeta["id"] | null>(null);
-  const open = PROJECTS.find((p) => p.id === openId);
-  const openMedia = openId ? projectMediaById[openId] : undefined;
 
   const setSelected = (next: string[]) =>
     setParams(next.length ? { tech: next.join(",") } : {}, { replace: true, preventScrollReset: true });
@@ -170,14 +159,13 @@ function ProjectsPage() {
       {visible.length > 0 ? (
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((p) => (
-            <ProjectTile key={p.id} project={p} onOpenCaseStudy={setOpenId} />
+            <ProjectTile key={p.id} project={p} />
           ))}
         </div>
       ) : (
         <p className="card mt-4 p-10 text-center text-muted">{t.projects.page.empty}</p>
       )}
 
-      {open && openMedia && <ProjectCaseStudy project={open} media={openMedia} onClose={() => setOpenId(null)} />}
     </div>
   );
 }

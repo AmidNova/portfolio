@@ -15,6 +15,7 @@ import {
 import Journey from "./components/Journey";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
+import ProjectDetail from "./components/ProjectDetail";
 import ProjectsPage from "./components/ProjectsPage";
 import StatTiles from "./components/StatTiles";
 import { LangProvider } from "./context/LangContext";
@@ -80,6 +81,7 @@ function AppShell() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFound />} />

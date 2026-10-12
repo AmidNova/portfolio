@@ -224,6 +224,11 @@ const VISUALS: Partial<Record<VisualId, (compact: boolean) => ReactNode>> = {
   "healthcare-bi": () => <StarSchema />,
 };
 
+/** A project's diagram at full size, for its own page; null when it has none yet. */
+export function ProjectVisual({ project }: { project: ProjectMeta }) {
+  return VISUALS[project.id]?.(false) ?? null;
+}
+
 interface ProjectPreviewProps {
   project: ProjectMeta;
   /** Show the title in the frame's corner (thumbnails that have no heading of their own). */

@@ -1,16 +1,14 @@
-import imMetric from "../assets/papers/im1_metric.png";
-import imTrending1 from "../assets/papers/im2_trending1.png";
-import imTrending2 from "../assets/papers/im2_trending2.png";
-import imScoop from "../assets/papers/im3_scoop.png";
-import imPays from "../assets/papers/im4_pays.png";
-import imTempo from "../assets/papers/im5_histogramme_tempo.png";
-import imVelocity from "../assets/papers/im6_velocity.png";
-import imRatio from "../assets/papers/im7_ratio_effort_attention.png";
 import fraudShap from "../assets/papers/fraud_shap_summary.png";
 import fraudTest from "../assets/papers/fraud_test_evaluation.png";
 import fraudMix from "../assets/papers/fraud_transaction_mix.png";
-import wikiPulseVideo from "../assets/papers/wiki_pulse.mp4";
-import wikiPulseDoc from "../assets/papers/wikipedia-pulse.pdf";
+import healthConditions from "../assets/papers/health_conditions.webp";
+import healthDemographics from "../assets/papers/health_demographics.webp";
+import healthFinance from "../assets/papers/health_finance.webp";
+import healthOutcomes from "../assets/papers/health_outcomes.webp";
+import healthOverview from "../assets/papers/health_overview.webp";
+import healthStay from "../assets/papers/health_stay.webp";
+import pulseDag from "../assets/papers/pulse_airflow_dag.webp";
+import pulseDashboard from "../assets/papers/pulse_kibana_dashboard.webp";
 
 export interface ProjectGalleryImage {
   src: string;
@@ -26,20 +24,12 @@ export interface ProjectMedia {
 
 export const projectMediaById: Record<string, ProjectMedia> = {
   "wikipedia-pulse": {
-    video: wikiPulseVideo,
-    doc: wikiPulseDoc,
     images: [
-      { src: imMetric, captionKey: "metric" },
-      { src: imTrending1, captionKey: "trending1" },
-      { src: imTrending2, captionKey: "trending2" },
-      { src: imScoop, captionKey: "scoop" },
-      { src: imPays, captionKey: "country" },
-      { src: imTempo, captionKey: "tempo" },
-      { src: imVelocity, captionKey: "velocity" },
-      { src: imRatio, captionKey: "ratio" },
+      { src: pulseDashboard, captionKey: "dashboard" },
+      { src: pulseDag, captionKey: "dag" },
     ],
   },
-  // No screenshots yet: the case study tells the flow and the decisions.
+  // No screenshots yet: the project page tells the flow and the decisions.
   "retail-pipeline": { images: [] },
   "fraud-detection": {
     images: [
@@ -48,5 +38,14 @@ export const projectMediaById: Record<string, ProjectMedia> = {
       { src: fraudShap, captionKey: "shap" },
     ],
   },
-  "healthcare-bi": { images: [] },
+  "healthcare-bi": {
+    images: [
+      { src: healthOverview, captionKey: "overview" },
+      { src: healthDemographics, captionKey: "demographics" },
+      { src: healthConditions, captionKey: "conditions" },
+      { src: healthStay, captionKey: "stay" },
+      { src: healthFinance, captionKey: "finance" },
+      { src: healthOutcomes, captionKey: "outcomes" },
+    ],
+  },
 };
