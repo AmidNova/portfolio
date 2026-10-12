@@ -1,31 +1,31 @@
 import { useId } from "react";
 import { useLang } from "../hooks/useLang";
 
-type NodeKey = "sse" | "api" | "kafka" | "airflow" | "spark" | "iforest" | "es" | "kibana";
+type NodeKey = "sse" | "api" | "kafka" | "airflow" | "spark" | "es" | "kibana";
 
 const W = 118;
 const H = 46;
+const STEP = 144;
+const col = (i: number) => 8 + i * STEP;
 
-// Two lanes (stream on top, batch below) converging on the index.
+// Stream lane on top, batch lane below, both drained by the daily DAG, then one line to the dashboard.
 const NODES: { key: NodeKey; label: string; x: number; y: number }[] = [
-  { key: "sse", label: "Wikimedia SSE", x: 8, y: 24 },
-  { key: "api", label: "Wikimedia API", x: 8, y: 112 },
-  { key: "kafka", label: "Kafka", x: 160, y: 24 },
-  { key: "airflow", label: "Airflow", x: 160, y: 112 },
-  { key: "spark", label: "Spark", x: 312, y: 24 },
-  { key: "iforest", label: "Isolation Forest", x: 312, y: 112 },
-  { key: "es", label: "Elasticsearch", x: 464, y: 68 },
-  { key: "kibana", label: "Kibana", x: 616, y: 68 },
+  { key: "sse", label: "Wikimedia SSE", x: col(0), y: 24 },
+  { key: "api", label: "Wikimedia API", x: col(0), y: 112 },
+  { key: "kafka", label: "Kafka", x: col(1), y: 24 },
+  { key: "airflow", label: "Airflow 3", x: col(2), y: 68 },
+  { key: "spark", label: "PySpark", x: col(3), y: 68 },
+  { key: "es", label: "Elasticsearch", x: col(4), y: 68 },
+  { key: "kibana", label: "Kibana", x: col(5), y: 68 },
 ];
 
 const EDGES = [
-  "M126 47 H156", // SSE → Kafka
-  "M126 135 H156", // API → Airflow
-  "M278 47 H308", // Kafka → Spark
-  "M278 135 H308", // Airflow → Isolation Forest
-  "M430 47 H446 V84 H460", // Spark → Elasticsearch
-  "M430 135 H446 V98 H460", // Isolation Forest → Elasticsearch
-  "M582 91 H612", // Elasticsearch → Kibana
+  `M${col(0) + W} 47 H${col(1) - 4}`, // SSE → Kafka
+  `M${col(1) + W} 47 H${col(2) - 12} V84 H${col(2) - 4}`, // Kafka → Airflow
+  `M${col(0) + W} 135 H${col(2) - 12} V98 H${col(2) - 4}`, // API → Airflow
+  `M${col(2) + W} 91 H${col(3) - 4}`, // Airflow → PySpark
+  `M${col(3) + W} 91 H${col(4) - 4}`, // PySpark → Elasticsearch
+  `M${col(4) + W} 91 H${col(5) - 4}`, // Elasticsearch → Kibana
 ];
 
 /** Native, theme-aware diagram of the Wikipedia Pulse data flow. */
@@ -37,7 +37,7 @@ function ArchitectureDiagram({ className = "" }: { className?: string }) {
 
   return (
     <svg
-      viewBox="0 0 744 196"
+      viewBox={`0 0 ${col(5) + W + 8} 180`}
       role="img"
       aria-labelledby={`${uid}-title ${uid}-desc`}
       className={`h-auto w-full ${className}`}
@@ -54,8 +54,6 @@ function ArchitectureDiagram({ className = "" }: { className?: string }) {
         {EDGES.map((path) => (
           <path key={path} d={path} markerEnd={`url(#${arrow})`} />
         ))}
-        {/* Airflow orchestrates the Spark jobs. */}
-        <path d="M262 112 L326 72" strokeDasharray="3 3" markerEnd={`url(#${arrow})`} />
       </g>
 
       {NODES.map((n) => (
@@ -76,13 +74,6 @@ function ArchitectureDiagram({ className = "" }: { className?: string }) {
           </text>
         </g>
       ))}
-
-      <g className="font-mono" fontSize="9.5">
-        <path d="M612 184 H640" className="stroke-subtle" strokeDasharray="3 3" />
-        <text x="646" y="187" className="fill-subtle">
-          {d.orchestration}
-        </text>
-      </g>
     </svg>
   );
 }

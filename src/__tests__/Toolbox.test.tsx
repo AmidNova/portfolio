@@ -33,7 +33,7 @@ describe("Toolbox", () => {
     renderToolbox();
     expect(screen.getByRole("link", { name: "Kafka — Wikipedia Pulse" })).toHaveAttribute(
       "href",
-      "/projects#project-wikipedia-pulse",
+      "/projects/wikipedia-pulse",
     );
     expect(screen.getByRole("link", { name: "Databricks — Certification" })).toHaveAttribute("href", "/#credentials");
     expect(screen.queryByRole("link", { name: /Azure/ })).not.toBeInTheDocument();

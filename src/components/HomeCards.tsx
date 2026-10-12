@@ -64,9 +64,9 @@ export function ServicesCard() {
   );
 }
 
-/** A project's thumbnail; opens the project's card on the projects page. */
+/** A project's thumbnail; opens the project's own page. */
 const projectThumb = (project: ProjectMeta) => (
-  <Link to={`/projects#project-${project.id}`} aria-label={project.title} className="tile-link block rounded-xl">
+  <Link to={`/projects/${project.id}`} aria-label={project.title} className="tile-link block rounded-xl">
     <ProjectPreview project={project} captioned className="w-96 rounded-xl border border-line" />
   </Link>
 );

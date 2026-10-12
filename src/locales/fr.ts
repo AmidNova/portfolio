@@ -13,7 +13,7 @@ const fr = {
   cards: {
     pauseMotion: "Mettre le défilement en pause",
     about: { subtitle: "Des équations aux pipelines." },
-    projects: { subtitle: "Pipelines, entrepôts, BI et ML, chacun expliqué par son schéma.", viewAll: "Voir tous les projets" },
+    projects: { subtitle: "Du flux temps réel au tableau de bord.", viewAll: "Voir tous les projets" },
     journey: { title: "Parcours", subtitle: "Où j'ai travaillé et étudié" },
     credentials: { title: "Certifications & langues", subtitle: "Compétences vérifiées et langues de travail" },
     services: {
@@ -72,7 +72,7 @@ const fr = {
     title: "À propos",
     body: [
       "Je suis venu à l'ingénierie par la donnée : prendre un flux brut et désordonné, et en faire quelque chose de fiable sur lequel on peut agir. Aujourd'hui je travaille surtout avec Kafka, Airflow et Spark, et je déploie sur AWS avec une approche Solutions Architect.",
-      "Ce qui m'intéresse, ce sont les systèmes qui tiennent après la première démo : des contrats de données clairs, une orchestration lisible et une infrastructure qu'on peut reconstruire depuis le code.",
+      "Dans mes projets, chaque étape vérifie ses données avant de les écrire, l'orchestration se lit dans un seul DAG et toute la stack se relance en une commande.",
     ],
     more: "L'histoire complète",
   },
@@ -127,7 +127,7 @@ const fr = {
     title: "Projets",
     page: {
       title: "Mes projets",
-      subtitle: "Pipelines, entrepôts, BI et ML, chacun expliqué par son schéma. Filtre par techno, ouvre une étude de cas ou lis le code.",
+      subtitle: "Quatre projets data, du flux temps réel au tableau de bord. Chacun a sa page : contexte, architecture, choix techniques et limites.",
       back: "Retour à l'accueil",
       filter: "Technologies",
       shown: { one: "projet affiché", other: "projets affichés" },
@@ -137,11 +137,14 @@ const fr = {
       code: "Code",
       codePrivate: "Code non public",
     },
-    caseStudy: "Étude de cas",
+    caseStudy: "Voir le projet",
     close: "Fermer",
-    watchDemo: "Vidéo de démo",
+    allProjects: "Tous les projets",
+    nextProject: "Projet suivant",
     readDoc: "Documentation technique (PDF)",
-    sectionDecisions: "Choix clés",
+    watchDemo: "Vidéo de démo",
+    sectionDecisions: "Choix techniques",
+    sectionLimits: "Limites",
     flowLabel: "Pipeline",
     viewCode: "Voir le code",
     sectionArchitecture: "Architecture",
@@ -150,23 +153,27 @@ const fr = {
     enlarge: "Agrandir l'image",
     previous: "Image précédente",
     next: "Image suivante",
+    context: {
+      label: "Contexte du projet",
+      type: "Cadre",
+      period: "Période",
+      data: "Données",
+    },
     diagram: {
       title: "Architecture de Wikipedia Pulse",
-      desc: "Le flux temps réel de Wikimedia passe par Kafka puis Spark ; l'API batch alimente un DAG Airflow qui lance la détection d'anomalies Isolation Forest. Tout aboutit dans Elasticsearch, visualisé dans Kibana.",
-      sse: "flux temps réel",
-      api: "batch · J+1",
+      desc: "Un producer pousse le flux d'éditions Wikimedia dans Kafka. Chaque jour, un DAG Airflow 3 vide le topic, récupère les pages vues et les identifiants Wikidata, calcule l'émergence et le lead-lag avec PySpark, puis indexe les résultats dans Elasticsearch pour Kibana.",
+      sse: "éditions en continu",
+      api: "vues · Wikidata",
       kafka: "tampon",
-      airflow: "DAG · 6 tâches",
-      spark: "traitement",
-      iforest: "détection d'anomalies",
+      airflow: "DAG · 12 tâches",
+      spark: "émergence · lead-lag",
       es: "index",
-      kibana: "tableaux de bord",
-      orchestration: "orchestration",
+      kibana: "dashboard as code",
     },
     visuals: {
       retail: {
         title: "Flux du Retail Data Pipeline",
-        desc: "Les transactions brutes arrivent dans Cloud Storage, sont chargées dans un entrepôt BigQuery, puis alimentent les prévisions et segments BigQuery ML. Un contrôle qualité automatique garde chaque passage.",
+        desc: "Les transactions brutes arrivent dans Cloud Storage, sont chargées dans un entrepôt BigQuery, puis préparées pour les prévisions et segments BigQuery ML. Un contrôle qualité Soda garde chaque passage.",
         raw: "données brutes",
         landing: "zone brute",
         warehouse: "entrepôt",
@@ -174,8 +181,8 @@ const fr = {
         forecast: "Prévision",
         forecastSub: "ventes à 30 jours",
         segments: "Segments",
-        segmentsSub: "clients par valeur",
-        checks: "contrôle qualité automatique",
+        segmentsSub: "clients RFM",
+        checks: "contrôle qualité bloquant",
       },
       fraud: {
         title: "Flux de Fraudster Detection",
@@ -193,7 +200,7 @@ const fr = {
       },
       healthcare: {
         title: "Schéma en étoile de Healthcare BI",
-        desc: "Une table de faits des admissions reliée aux dimensions site hospitalier, patient, date et diagnostic.",
+        desc: "Une table de faits des admissions reliée aux dimensions hôpital, patient, date et diagnostic.",
         fact: "table de faits",
         site: "Hôpital",
         patient: "Patient",
@@ -204,50 +211,85 @@ const fr = {
     },
     items: {
       "wikipedia-pulse": {
-        status: "2026",
         summary:
-          "Les articles Wikipédia s'emballent avant que les médias parlent d'un événement. Ce système capte ce signal en temps réel et signale les anomalies.",
+          "Sur Wikipédia, les éditeurs réagissent à un événement des heures avant les lecteurs. Ce pipeline mesure cet écart chaque jour sur 5 langues et repère les articles qui sortent de leur comportement habituel.",
         metrics: [
-          { value: "365", label: "événements pré-viraux" },
-          { value: "4 808", label: "articles suivis" },
-          { value: "5", label: "langues" },
+          { value: "212 788", label: "éditions captées en 5 jours" },
+          { value: "241", label: "articles émergents" },
+          { value: "13 min", label: "par run quotidien" },
+        ],
+        context: {
+          type: "Projet personnel · seul",
+          period: "Mai – oct. 2026",
+          data: "Wikimedia : flux d'éditions, pages vues, Wikidata (public)",
+        },
+        limits: [
+          "Cinq jours de données seulement : l'historique de 28 jours par article n'est pas encore rempli, beaucoup de médianes valent 0 et la détection reste large.",
+          "La stack tourne en local avec Docker Compose ; elle n'est pas déployée dans le cloud.",
+          "Sur un article isolé, la corrélation horaire est bruitée : le lead-lag se lit en distribution, pas article par article.",
         ],
       },
       "retail-pipeline": {
-        status: "2026",
         summary:
-          "Des millions de transactions brutes transformées en entrepôt BigQuery fiable, avec un contrôle qualité à chaque étape, puis prévision des ventes à 30 jours et segmentation client.",
+          "Un pipeline ELT sur GCP qui transforme 500 000 transactions e-commerce brutes en entrepôt BigQuery en étoile, avec un contrôle qualité bloquant après chaque couche.",
         metrics: [
-          { value: "30 j", label: "horizon de prévision" },
-          { value: "2", label: "modèles BigQuery ML" },
-          { value: "100 %", label: "des étapes contrôlées" },
+          { value: "≈ 500 k", label: "transactions chargées" },
+          { value: "9", label: "modèles dbt" },
+          { value: "8", label: "suites de contrôles Soda" },
+        ],
+        context: {
+          type: "Projet personnel · seul",
+          period: "2026",
+          data: "Online Retail II (UCI), jeu public",
+        },
+        limits: [
+          "Jeu de données historique et figé (2009–2011) : le DAG recharge le fichier complet, sans chargement incrémental.",
+          "dbt test ne tourne que sur main, faute de secrets GCP sur les pull requests : une régression de données n'est détectée qu'après la fusion.",
         ],
       },
       "fraud-detection": {
-        status: "2026",
         summary:
-          "Repérer les mules financières parmi les clients d'une banque en ligne à partir de leur profil et de leurs transactions : un modèle Gradient Boosting qui attrape 9 fraudeurs sur 10, et explique pourquoi.",
+          "Repérer les mules financières parmi les clients d'une banque en ligne à partir de leur profil et de leurs transactions. Le modèle retenu détecte 53 des 59 fraudeurs du jeu de test, et SHAP explique chaque alerte.",
         metrics: [
           { value: "53 / 59", label: "fraudeurs détectés (test)" },
           { value: "0,86", label: "PR-AUC (hasard : 0,03)" },
           { value: "688 k", label: "transactions" },
         ],
+        context: {
+          type: "Exercice take-home StrataScratch · seul",
+          period: "Oct. 2026",
+          data: "Banque en ligne, fourni par StrataScratch (non public)",
+        },
+        limits: [
+          "Seulement 298 fraudeurs, une soixantaine par jeu d'évaluation : les scores ont une incertitude d'environ ± 0,05.",
+          "Estimations plus réalistes que le chiffre phare : PR-AUC 0,76 en testant sur les comptes récents, 0,68 en décidant après 30 jours d'activité.",
+          "Les étiquettes ne couvrent que les fraudeurs déjà repérés : le modèle apprend en partie les anciennes règles de détection.",
+          "Le ratio de coûts qui fixe le seuil est une hypothèse, pas un chiffre métier.",
+        ],
       },
       "healthcare-bi": {
-        status: "2026",
         summary:
-          "Un entrepôt en étoile sous Power BI pour piloter 10 hôpitaux : KPIs DAX reliés à des seuils d'alerte, scénario what-if et gouvernance documentée.",
+          "Un rapport Power BI sur 55 500 admissions hospitalières : modèle en étoile et quatre KPIs DAX, chacun relié à un seuil d'alerte et à la personne qui doit agir.",
         metrics: [
-          { value: "55 500", label: "admissions" },
-          { value: "10", label: "hôpitaux" },
-          { value: "25,6 M$", label: "d'économies (what‑if)" },
+          { value: "55 500", label: "admissions (synthétiques)" },
+          { value: "4", label: "KPIs avec seuil d'alerte" },
+          { value: "10", label: "hôpitaux comparés" },
+        ],
+        context: {
+          type: "Projet de cours ISEP · en équipe",
+          period: "2025 – 2026",
+          data: "Jeu synthétique fourni par le cours",
+        },
+        limits: [
+          "Les données sont synthétiques : les tendances de coûts ou de durées ne disent rien de vrais hôpitaux. Le travail porte sur la modélisation, les KPIs et la gouvernance.",
+          "Les 25,6 M$ d'économies du scénario what-if dépendent entièrement des hypothèses choisies : un ordre de grandeur pour discuter, pas une prévision.",
         ],
       },
     },
     media: {
       "retail-pipeline": {
         architecture:
-          "Un seul DAG Airflow pilote tout, du fichier brut Online Retail II (environ 500 000 transactions e-commerce britanniques, 2009–2011) jusqu'aux dashboards. Le CSV arrive dans Cloud Storage puis dans BigQuery ; dbt le réorganise en schéma en étoile (dimensions client, date et produit autour d'une table de faits des factures), puis en tables de reporting. Soda contrôle les données après chacune des trois couches : une ligne fausse reste bloquée là où elle apparaît au lieu d'atteindre un dashboard. Deux modèles dbt alimentent BigQuery ML : le chiffre d'affaires quotidien pour une prévision à 30 jours, et des scores RFM pour segmenter les clients.",
+          "Un seul DAG Airflow pilote tout, du fichier brut Online Retail II (environ 500 000 transactions e-commerce britanniques, 2009–2011) jusqu'aux dashboards Metabase. Le CSV arrive dans Cloud Storage puis dans BigQuery. dbt le réorganise en schéma en étoile (dimensions client, date et produit autour d'une table de faits des factures), puis en tables de reporting. Soda contrôle les données après chacune des trois couches. Deux modèles dbt préparent les données de BigQuery ML : le chiffre d'affaires quotidien pour une prévision à 30 jours, et des scores RFM pour segmenter les clients.",
         flow: [
           { label: "CSV brut", detail: "~500 000 transactions" },
           { label: "Cloud Storage", detail: "zone brute" },
@@ -258,15 +300,15 @@ const fr = {
           { label: "Metabase", detail: "dashboards" },
         ],
         decisions: [
-          "Un contrôle qualité après chaque couche : Soda passe après le chargement, la transformation et les rapports, et un contrôle en échec arrête le DAG à cette couche.",
-          "dbt et Soda tournent dans leurs propres virtualenvs dans l'image Airflow : leurs dépendances n'entrent jamais en conflit avec celles d'Airflow.",
+          "Soda passe après le chargement, la transformation et les rapports. Un contrôle en échec arrête le DAG : une ligne fausse reste bloquée dans la couche où elle apparaît.",
+          "dbt et Soda tournent dans leurs propres virtualenvs dans l'image Airflow, pour que leurs dépendances n'entrent jamais en conflit avec celles d'Airflow.",
           "Migration d'Astro CLI vers Airflow 2.7 standard (LocalExecutor, Docker Compose) : la stack démarre en une commande, sans outil propriétaire.",
-          "CI à chaque pull request : dbt compile vérifie le SQL sans accès au cloud ; dbt test tourne sur BigQuery depuis main.",
+          "CI à chaque pull request : dbt compile vérifie le SQL sans accès au cloud.",
         ],
       },
       "fraud-detection": {
         architecture:
-          "Un cas pratique StrataScratch sur une banque en ligne : 9 944 utilisateurs (3 % de fraudeurs) et 688 651 transactions. Le notebook construit une ligne par utilisateur (répartition des transactions, montants, rythme, géographie, vitesse à laquelle l'argent ressort après un rechargement), compare Régression logistique, Random Forest et Gradient Boosting en validation croisée à 5 plis sur la PR-AUC, puis calibre le gagnant et fixe son seuil d'alerte d'après le coût d'un fraudeur raté face à une fausse alerte. Le calcul des variables et l'évaluation vivent dans un package Python testé.",
+          "9 944 utilisateurs, dont 3 % de fraudeurs, et 688 651 transactions. Le notebook construit une ligne par utilisateur (répartition des transactions, montants, rythme, géographie, vitesse à laquelle l'argent ressort après un rechargement), compare Régression logistique, Random Forest et Gradient Boosting en validation croisée à 5 plis sur la PR-AUC, puis calibre le gagnant et fixe son seuil d'alerte d'après le coût d'un fraudeur raté face à une fausse alerte. Le calcul des variables et l'évaluation vivent dans un package Python testé par la CI.",
         flow: [
           { label: "Users + transactions", detail: "9 944 utilisateurs · 688 k lignes" },
           { label: "Contrôles", detail: "colonne STATE (fuite) écartée" },
@@ -276,10 +318,9 @@ const fr = {
           { label: "SHAP · dérive", detail: "explications · suivi PSI" },
         ],
         decisions: [
-          "Colonne STATE écartée : un compte bloqué donne la réponse, un modèle qui l'utilise paraîtrait parfait et ne servirait à rien.",
+          "Colonne STATE écartée : un compte bloqué donne la réponse. Un modèle qui l'utilise paraîtrait parfait et ne servirait à rien.",
           "PR-AUC plutôt qu'accuracy : avec 3 % de fraudeurs, un modèle qui ne signale personne a déjà 97 % d'accuracy.",
-          "Le jeu de test ne choisit rien : seuils et modèles sont fixés sur la validation, le test sert seulement à rapporter.",
-          "Des estimations honnêtes à côté du chiffre phare : PR-AUC 0,76 en entraînant sur les comptes anciens et en testant sur les récents, 0,68 en décidant après 30 jours d'activité seulement.",
+          "Le jeu de test ne sert qu'à rapporter les résultats. Seuils et modèles sont fixés sur la validation.",
         ],
         shots: {
           test: "Jeu de test : matrice de confusion et courbe précision-rappel",
@@ -289,33 +330,33 @@ const fr = {
       },
       "healthcare-bi": {
         architecture:
-          "55 500 admissions hospitalières sur 10 sites américains, modélisées en étoile sous Power BI. Quatre KPIs DAX avancés portent chacun un seuil de déclenchement et la persona qui agit : le rapport dit qui doit bouger, pas seulement ce qui a changé. Un scénario what‑if paramétrique chiffre l'enjeu : 25,6 M$ d'économies potentielles.",
+          "Le brief : un organisme de supervision veut comprendre les admissions, les durées de séjour et les coûts de 10 hôpitaux américains. Les données sont préparées dans Power Query et DuckDB, puis modélisées en étoile sous Power BI (faits des admissions, dimensions hôpital, patient, date et diagnostic). Quatre KPIs DAX portent chacun un seuil de déclenchement et la persona qui agit. Un paramètre what-if chiffre l'effet d'une baisse des coûts.",
         flow: [
           { label: "Sources", detail: "55 500 admissions · 10 sites" },
           { label: "Power Query · DuckDB", detail: "préparation" },
           { label: "Schéma en étoile", detail: "modèle Power BI" },
           { label: "KPIs DAX", detail: "4 KPIs · seuils d'alerte" },
-          { label: "What-if", detail: "25,6 M$ d'économies potentielles" },
+          { label: "What-if", detail: "scénario paramétrable" },
           { label: "Rapport Power BI", detail: "un responsable par KPI" },
         ],
         decisions: [
-          "Chaque KPI est relié à un seuil et à un décideur : un chiffre sans responsable ni déclencheur n'entre pas dans le rapport.",
+          "Chaque KPI a un seuil et un responsable. Un chiffre sans personne pour agir dessus n'entre pas dans le rapport.",
           "Un paramètre what-if plutôt qu'une estimation figée : le chiffre d'économies suit les hypothèses.",
-          "Gouvernance documentée de bout en bout : inventaire des sources, définitions des métriques, fraîcheur, contrôle d'accès, metadata snapshot, limites et déclaration éthique.",
+          "Gouvernance documentée : inventaire des sources, définitions des métriques, fraîcheur, contrôle d'accès, limites et déclaration éthique.",
         ],
       },
       "wikipedia-pulse": {
         architecture:
-          "Deux sources alimentent le pipeline : le flux SSE temps réel de Wikimedia (indicateur avancé) et l'API Wikimedia en batch (indicateur retardé, J+1). Kafka encaisse le flux ; un DAG Airflow de 6 tâches orchestre le tout. Spark calcule les usages bruts et un modèle Isolation Forest détecte les anomalies. Les résultats sont indexés dans Elasticsearch puis visualisés dans Kibana.",
+          "Un producer écoute en continu le flux SSE des modifications Wikimedia et pousse chaque édition dans Kafka. Une fois par jour, un DAG Airflow 3 de 12 tâches vide le topic, récupère les pages vues (API et dumps horaires) et les identifiants Wikidata, puis fait passer le tout par trois couches de datalake : raw, formatted (Parquet, UTC) et usage (PySpark). Les tables finales sont indexées dans Elasticsearch ; le dashboard Kibana est généré par un script versionné. Premier résultat : quand les éditions mènent (23 % des 4 347 articles mesurables), les lectures suivent avec 12 h de retard en médiane.",
+        decisions: [
+          "Chaque article est comparé à son propre historique sur 28 jours (médiane et MAD), pas aux autres articles du jour. Il est émergent avec un z-score robuste ≥ 3,5 et au moins 3 éditeurs distincts : le nombre d'émergents suit l'actualité au lieu d'être un quota.",
+          "Les langues sont regroupées par entité Wikidata, pas par titre : « Tour Eiffel » et « Eiffel Tower » sont le même sujet, et deux homonymes ne sont pas confondus.",
+          "Chaque tâche vérifie sa sortie et échoue avant d'écrire si les données sont manifestement fausses : moins de 1 000 éditions, jointure des vues cassée, plus de 5 % d'émergents.",
+          "La logique métier vit hors du DAG, dans des modules testés unitairement ; la CI relance ces tests et l'intégrité du DAG à chaque push.",
+        ],
         shots: {
-          metric: "KPIs en temps réel sur le flux d'éditions",
-          trending1: "Articles tendance : détection des pics",
-          trending2: "Tendances par thématique",
-          scoop: "Détection de scoops : rafales d'éditions précoces",
-          country: "Activité d'édition par pays",
-          tempo: "Histogramme du tempo des éditions",
-          velocity: "Vélocité éditoriale par article",
-          ratio: "Analyse du ratio effort / attention",
+          dashboard: "Dashboard Kibana sur 5 jours de données réelles (3–7 oct. 2026)",
+          dag: "Run du 7 octobre dans Airflow 3 : 12 tâches, 13 min 33 s",
         },
       },
     },

@@ -40,7 +40,7 @@ function Toolbox() {
   const proofOf = (proof: ToolProof) =>
     proof === "certifications"
       ? { href: "/#credentials", label: t.skills.certification }
-      : { href: `/projects#project-${proof}`, label: PROJECTS.find((p) => p.id === proof)?.title ?? "" };
+      : { href: `/projects/${proof}`, label: PROJECTS.find((p) => p.id === proof)?.title ?? "" };
 
   return (
     <div ref={boxRef} data-dropped={dropped || undefined} className="toolbox relative rounded-xl border border-line px-4 pt-6 pb-9 sm:px-6">

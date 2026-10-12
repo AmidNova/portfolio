@@ -32,7 +32,7 @@ describe("ProjectsCard", () => {
   it("mène chaque vignette au projet détaillé, sans doublon au clavier", () => {
     renderCard();
     for (const p of PROJECTS) {
-      expect(screen.getByRole("link", { name: p.title })).toHaveAttribute("href", `/projects#project-${p.id}`);
+      expect(screen.getByRole("link", { name: p.title })).toHaveAttribute("href", `/projects/${p.id}`);
     }
     const hiddenCopy = document.querySelector(".marquee-copy[aria-hidden]");
     expect(hiddenCopy).toHaveAttribute("inert");

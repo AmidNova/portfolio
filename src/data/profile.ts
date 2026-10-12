@@ -111,6 +111,8 @@ export interface ProjectMeta {
   tags: string[];
   /** Public source repository; no repo, no "Code" button. */
   repo?: string;
+  /** Public page of the dataset, linked from the project's context block. */
+  dataUrl?: string;
   /** Pinned first and badged on the projects page. */
   featured?: boolean;
 }
@@ -119,8 +121,9 @@ export const PROJECTS: ProjectMeta[] = [
   {
     id: "wikipedia-pulse",
     title: "Wikipedia Pulse",
-    tags: ["Kafka", "PySpark", "Airflow", "scikit-learn", "Elasticsearch", "Kibana"],
+    tags: ["Kafka", "PySpark", "Airflow", "Elasticsearch", "Kibana", "Docker"],
     repo: "https://github.com/AmidNova/wikipedia-pulse",
+    dataUrl: "https://wikitech.wikimedia.org/wiki/Event_Platform/EventStreams_HTTP_Service",
     featured: true,
   },
   {
@@ -128,6 +131,7 @@ export const PROJECTS: ProjectMeta[] = [
     title: "Retail Data Pipeline",
     tags: ["GCP", "GCS", "BigQuery", "Airflow", "dbt", "Soda", "BigQuery ML", "Metabase", "Docker"],
     repo: "https://github.com/AmidNova/retail-gcp-pipeline",
+    dataUrl: "https://archive.ics.uci.edu/dataset/502/online+retail+ii",
   },
   {
     id: "fraud-detection",
