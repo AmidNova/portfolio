@@ -61,6 +61,7 @@ describe("ProjectDetail", () => {
     expect(screen.getByText("Synthetic dataset provided by the course")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /View the code/ })).not.toBeInTheDocument();
     expect(screen.getByText("Code not public")).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /^Enlarge image/ })).toHaveLength(6);
   });
 
   it("agrandit une capture, navigue aux flèches et Échap ferme la lightbox", async () => {

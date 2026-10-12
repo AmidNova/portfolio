@@ -345,6 +345,14 @@ const en = {
           "A what-if parameter rather than a fixed estimate, so the savings figure moves with the assumptions.",
           "Governance written down: source inventory, metric definitions, freshness, access control, limitations and an ethics statement.",
         ],
+        shots: {
+          overview: "Overview: admissions, billing, length of stay and YoY / YTD indicators",
+          demographics: "Patient demographics: age, gender and blood type",
+          conditions: "Medical conditions: volume, stay, cost and results by condition",
+          stay: "Length of stay by condition, hospital and admission type",
+          finance: "Costs by condition, hospital and insurer",
+          outcomes: "Hospitals: patient volume and test results",
+        },
       },
       "wikipedia-pulse": {
         architecture:

@@ -344,6 +344,14 @@ const fr = {
           "Un paramètre what-if plutôt qu'une estimation figée : le chiffre d'économies suit les hypothèses.",
           "Gouvernance documentée : inventaire des sources, définitions des métriques, fraîcheur, contrôle d'accès, limites et déclaration éthique.",
         ],
+        shots: {
+          overview: "Vue d'ensemble : admissions, facturation, durée de séjour et indicateurs YoY / YTD",
+          demographics: "Démographie des patients : âge, genre et groupe sanguin",
+          conditions: "Conditions médicales : volume, durée, coût et résultats par pathologie",
+          stay: "Durée de séjour selon la pathologie, l'hôpital et le type d'admission",
+          finance: "Coûts par pathologie, hôpital et assureur",
+          outcomes: "Hôpitaux : volume de patients et résultats des tests",
+        },
       },
       "wikipedia-pulse": {
         architecture:
