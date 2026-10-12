@@ -75,7 +75,7 @@ export function ProjectsCard() {
           );
         })}
       </ul>
-      <Link to="/projects" viewTransition className="btn mt-4 w-full">
+      <Link to="/projects" viewTransition className="btn btn-primary mt-4 w-full">
         <Boxes size={18} aria-hidden="true" />
         {t.cards.projects.viewAll}
       </Link>
