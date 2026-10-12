@@ -20,22 +20,19 @@ function renderCard() {
 }
 
 describe("ProjectsCard", () => {
-  it("fait défiler une vignette par projet, chacune annoncée une seule fois", () => {
+  it("liste chaque projet avec son chiffre clé, chacun menant à sa page", () => {
     renderCard();
     const card = screen.getByRole("region", { name: "Projets" });
-    expect(within(card).getAllByRole("figure")).toHaveLength(PROJECTS.length);
-    for (const p of PROJECTS) {
-      expect(within(card).getByRole("figure", { name: p.title })).toBeInTheDocument();
-    }
+    const links = within(card).getAllByRole("link").filter((l) => l.getAttribute("href")?.startsWith("/projects/"));
+    expect(links.map((l) => l.getAttribute("href"))).toEqual(PROJECTS.map((p) => `/projects/${p.id}`));
+    const pulse = links[0];
+    expect(pulse).toHaveTextContent("Wikipedia Pulse");
+    expect(pulse).toHaveTextContent("212 788");
   });
 
-  it("mène chaque vignette au projet détaillé, sans doublon au clavier", () => {
+  it("ne fait rien défiler tout seul", () => {
     renderCard();
-    for (const p of PROJECTS) {
-      expect(screen.getByRole("link", { name: p.title })).toHaveAttribute("href", `/projects/${p.id}`);
-    }
-    const hiddenCopy = document.querySelector(".marquee-copy[aria-hidden]");
-    expect(hiddenCopy).toHaveAttribute("inert");
+    expect(screen.queryByRole("button", { name: /défilement/ })).not.toBeInTheDocument();
   });
 
   it("résume seulement : le détail est derrière « Voir tous les projets »", () => {

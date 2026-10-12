@@ -22,31 +22,31 @@ import { LangProvider } from "./context/LangContext";
 import { useLang } from "./hooks/useLang";
 import { useDocumentMeta } from "./hooks/useDocumentMeta";
 
-/** Bento home: identity + story on the left, tools and numbers on the right, work below. */
+/** Bento home: identity, then the work, then the story on the left; tools, numbers and credentials on the right. */
 function Home() {
   const { t } = useLang();
   useDocumentMeta(t.meta.homeTitle, t.meta.homeDescription);
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 px-4 pt-6 sm:px-6">
-      {/* Two balanced rows of two columns; min-w-0 stops marquees from widening a column. */}
+      {/* Projects sit right under the hero, so they come second on a phone too. min-w-0 lets long content shrink. */}
       <div className="grid gap-4 lg:grid-cols-[5fr_6fr]">
         <div className="flex min-w-0 flex-col gap-4">
           <Hero />
+          <ProjectsCard />
           <AboutCard />
         </div>
         <div className="flex min-w-0 flex-col gap-4">
           <StackCard />
           <StatTiles />
           <ServicesCard />
+          <Credentials />
         </div>
       </div>
       <div className="grid gap-4 lg:grid-cols-[5fr_6fr]">
         <div className="flex min-w-0 flex-col gap-4">
-          <ProjectsCard />
           <Journey />
         </div>
         <div className="flex min-w-0 flex-col gap-4">
-          <Credentials />
           <Contact />
         </div>
       </div>

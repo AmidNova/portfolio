@@ -1,14 +1,12 @@
-import { ArrowLeft, ArrowRight, Code2, Github, Lock, RotateCcw, Star } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Github, Lock, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useLang } from "../hooks/useLang";
 import { PROJECTS, type ProjectMeta } from "../data/profile";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
-import { filterByTech, parseTechParam, techOptions } from "../lib/projectFilter";
 import ProjectPreview from "./ProjectPreview";
 
 // Featured projects first; the rest keep their order in PROJECTS.
 const ORDERED = [...PROJECTS].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
-const TECHS = techOptions(PROJECTS);
 
 /** One project, summarized: picture, pitch, three figures, stack, then the ways in. */
 function ProjectTile({ project }: { project: ProjectMeta }) {
@@ -79,93 +77,26 @@ function ProjectTile({ project }: { project: ProjectMeta }) {
   );
 }
 
-interface TechFilterProps {
-  selected: string[];
-  shown: number;
-  onToggle: (tech: string) => void;
-  onReset: () => void;
-}
-
-/** Tech chips that narrow the grid; state lives in the URL (?tech=A,B) so a filtered view can be shared. */
-function TechFilter({ selected, shown, onToggle, onReset }: TechFilterProps) {
-  const { t, lang } = useLang();
-  const plural = new Intl.PluralRules(lang).select(shown) === "one" ? "one" : "other";
-
-  return (
-    <section aria-labelledby="tech-filter-title" className="card flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between">
-      <div className="min-w-0">
-        <h2 id="tech-filter-title" className="mb-3 flex items-center gap-2 text-sm font-medium text-subtle">
-          <Code2 size={16} aria-hidden="true" className="text-accent" />
-          {t.projects.page.filter}
-        </h2>
-        <ul className="flex flex-wrap gap-1.5">
-          {TECHS.map((tech) => {
-            const on = selected.includes(tech);
-            return (
-              <li key={tech}>
-                <button
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => onToggle(tech)}
-                  className={`rounded-md border px-2.5 py-1 text-xs font-medium transition-colors ${
-                    on ? "border-accent bg-accent text-accent-ink" : "border-line bg-bg text-muted hover:border-subtle hover:text-fg"
-                  }`}
-                >
-                  {tech}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end">
-        <p role="status" className="text-sm text-subtle">
-          <span className="font-semibold text-fg tabular-nums">{shown}</span> {t.projects.page.shown[plural]}
-        </p>
-        <button type="button" onClick={onReset} disabled={selected.length === 0} className="btn h-8 px-3 text-xs disabled:opacity-40">
-          <RotateCcw size={13} aria-hidden="true" />
-          {t.projects.page.reset}
-        </button>
-      </div>
-    </section>
-  );
-}
-
 function ProjectsPage() {
   const { t } = useLang();
   useDocumentMeta(t.meta.projectsTitle, t.meta.projectsDescription);
-  const [params, setParams] = useSearchParams();
-  const selected = parseTechParam(params.get("tech"), TECHS);
-  const visible = filterByTech(ORDERED, selected);
-
-  const setSelected = (next: string[]) =>
-    setParams(next.length ? { tech: next.join(",") } : {}, { replace: true, preventScrollReset: true });
-  const toggle = (tech: string) =>
-    setSelected(selected.includes(tech) ? selected.filter((s) => s !== tech) : [...selected, tech]);
 
   return (
     <div className="mx-auto max-w-[1100px] px-4 pt-10 sm:px-6 sm:pt-14">
-      <header className="mx-auto mb-10 max-w-2xl text-center">
+      <Link to="/" viewTransition className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-fg">
+        <ArrowLeft size={15} aria-hidden="true" />
+        {t.projects.page.back}
+      </Link>
+      <header className="mt-6 mb-10 max-w-2xl">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{t.projects.page.title}</h1>
-        <p className="mt-4 leading-relaxed text-muted">{t.projects.page.subtitle}</p>
-        <Link to="/" viewTransition className="btn btn-primary mt-6">
-          <ArrowLeft size={16} aria-hidden="true" />
-          {t.projects.page.back}
-        </Link>
+        <p className="mt-4 text-lg leading-relaxed text-muted">{t.projects.page.subtitle}</p>
       </header>
 
-      <TechFilter selected={selected} shown={visible.length} onToggle={toggle} onReset={() => setSelected([])} />
-
-      {visible.length > 0 ? (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((p) => (
-            <ProjectTile key={p.id} project={p} />
-          ))}
-        </div>
-      ) : (
-        <p className="card mt-4 p-10 text-center text-muted">{t.projects.page.empty}</p>
-      )}
-
+      <div className="grid gap-4 md:grid-cols-2">
+        {ORDERED.map((p) => (
+          <ProjectTile key={p.id} project={p} />
+        ))}
+      </div>
     </div>
   );
 }
